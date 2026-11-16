@@ -51,6 +51,11 @@ def _ae_universal(address: str, role: str, options: dict) -> Any:
     return _wrapped(_connect(role, address, lambda: module.generator(address)), "gen", role, address)
 
 
+def _ae_7434753(address: str, role: str, options: dict) -> Any:
+    module = _ae_module("AE_Commands_7434753")
+    return _wrapped(_connect(role, address, lambda: module.generator(address)), "gen", role, address)
+
+
 def _ae_serial_timing(address: str, role: str, options: dict) -> Any:
     module = _ae_module("AECommandsSerialTimingAdapter")
     return _wrapped(_connect(role, address, lambda: module.generator(0, address)), "gen", role, address)
@@ -81,6 +86,10 @@ ADAPTERS: dict[str, AdapterSpec] = {spec.name: spec for spec in (
     AdapterSpec("ae.universal", frozenset({"generator", "psync_slave_generator"}),
                 UNIVERSAL_GENERATOR_CAPS | {"ethernet"},
                 "AE generator over Ethernet AEBus (AECommandsUniversal).", _ae_universal),
+    AdapterSpec("ae.7434753", frozenset({"generator", "psync_slave_generator"}),
+                frozenset({"aebus", "ethernet", "rf_on_off", "power_setpoint", "regulation_mode", "pulsing",
+                           "pulse_sync", "process_status"}),
+                "AE generator over Ethernet AEBus, 7434753 firmware command set (AE_Commands_7434753).", _ae_7434753),
     AdapterSpec("ae.serial_timing", frozenset({"generator_com_port"}),
                 UNIVERSAL_GENERATOR_CAPS | {"serial", "rf_on_test"},
                 "AE generator over serial AEBus with single-frame RF ON (AECommandsSerialTimingAdapter).", _ae_serial_timing),
@@ -94,6 +103,11 @@ ADAPTERS: dict[str, AdapterSpec] = {spec.name: spec for spec in (
                 frozenset({"scpi"}),
                 "Generic SCPI session (VisaTransport); vendor-specific adapters replace it per model.", _visa_scpi),
 )}
+
+def csr_check(response) -> None:
+    """AECommandsUniversal.csrChecker, for scripts that send raw frames (gen.gen.create_buffer_cmd)."""
+    _ae_module("AECommandsUniversal").csrChecker(response)
+
 
 DEFAULT_ADAPTERS: dict[str, str] = {
     "generator": "ae.universal",

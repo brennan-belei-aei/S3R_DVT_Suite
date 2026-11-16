@@ -7,7 +7,6 @@ import tkinter as tk
 from tkinter import filedialog, ttk, messagebox
 
 import numpy as np
-import pyvisa
 
 # ==========================================================
 # LOAD AE-SPECIFIC DEPENDENCIES
@@ -19,7 +18,8 @@ from suite_common.bench import bench_default
 from suite_common.inputs import format_number_list, parse_number_list
 from suite_common.output_folders import create_unique_test_output_folder
 
-import AECommandsUniversal
+from suite_instruments.factory import InstrumentFactory
+from suite_instruments.transport.visa import resource_manager
 
 # ==========================================================
 # UNIFIED LAUNCHER COMPATIBILITY
@@ -567,8 +567,9 @@ def connect_scope():
         raise RuntimeError("Oscilloscope address is not set. Select a bench profile in the Unified Collection GUI or set PARAMOUNT_OSCILLOSCOPE_ADDRESS.")
 
     print("\nConnecting to oscilloscope...")
-    scope_resource_manager = pyvisa.ResourceManager()
-    scope = scope_resource_manager.open_resource(SCOPE_ADDRESS)
+    scope_resource_manager = resource_manager()
+    scope = InstrumentFactory({"oscilloscope": SCOPE_ADDRESS}).create(
+        "oscilloscope", resource_manager=scope_resource_manager, open_attempts=1)
     scope.timeout = 30000
     scope.read_termination = "\n"
     scope.write_termination = "\n"
@@ -585,7 +586,7 @@ def connect_generator():
         raise RuntimeError("DUT generator address is not set. Select a bench profile in the Unified Collection GUI or set PARAMOUNT_GENERATOR_ADDRESS.")
 
     print("\nConnecting to RF generator...")
-    gen = AECommandsUniversal.generator(GEN_IP)
+    gen = InstrumentFactory({"generator": GEN_IP}).create("generator")
 
     gen.rfOFF()
     sleep(0.2)

@@ -27,13 +27,16 @@ from types import SimpleNamespace
 
 import matplotlib.pyplot as plt
 import numpy as np
-import pyvisa
 
 sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
 import suite_common.bootstrap  # noqa: F401
 from suite_common.bench import bench_default
 
-import AE_Commands_7434753 as AE_Commands
+from suite_instruments.factory import InstrumentFactory
+from suite_instruments.transport.visa import resource_manager
+
+# Both generators keep the 7434753 command set (AE_Commands_7434753), not the default AECommandsUniversal.
+PSYNC_ADAPTERS = {"generator": "ae.7434753", "psync_slave_generator": "ae.7434753"}
 
 
 # ----------------------- integrated Tektronix MSO44 helpers -----------------------
@@ -54,10 +57,11 @@ def _channel(channel: int | str) -> str:
 
 @contextmanager
 def _session(resource: str = DEFAULT_RESOURCE) -> Iterator[Any]:
-    rm = pyvisa.ResourceManager()
+    rm = resource_manager()
     instrument = None
     try:
-        instrument = rm.open_resource(resource)
+        instrument = InstrumentFactory({"oscilloscope": resource}).create(
+            "oscilloscope", resource_manager=rm, open_attempts=1)
         instrument.timeout = TIMEOUT_MS
         instrument.read_termination = "\n"
         instrument.write_termination = "\n"
@@ -1020,7 +1024,7 @@ def main() -> int:
     try:
         if DRY_RUN:RUNTIME_DUTY_LIMITS=None;logging.info("Dry run: using timing-derived duty-cycle limits only.")
         else:
-            master=AE_Commands.generator(MASTER_ADDRESS);slave=AE_Commands.generator(SLAVE_ADDRESS);RUNTIME_DUTY_LIMITS=query_generator_duty_limits(master,slave);configure_pulse_sync_roles(master,slave)
+            factory=InstrumentFactory({"generator":MASTER_ADDRESS,"psync_slave_generator":SLAVE_ADDRESS},PSYNC_ADAPTERS);master=factory.create("generator");slave=factory.create("psync_slave_generator");RUNTIME_DUTY_LIMITS=query_generator_duty_limits(master,slave);configure_pulse_sync_roles(master,slave)
         test_points=list(iter_test_points(RUNTIME_DUTY_LIMITS));append_runtime_duty_limits(run_directory,RUNTIME_DUTY_LIMITS);total=len(test_points);logging.info("Planned captures after duty-cycle filtering: %d",total);logging.info("DRY_RUN=%s ENABLE_RF=%s",DRY_RUN,ENABLE_RF);progress=CollectionProgress(total)
         for index,point in enumerate(test_points,start=1):
             if progress.stop_requested:logging.warning("Stop requested by user before capture %d of %d",index,total);break

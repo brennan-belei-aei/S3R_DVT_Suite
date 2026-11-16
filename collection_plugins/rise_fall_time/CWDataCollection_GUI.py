@@ -9,7 +9,6 @@ from suite_common.bench import bench_default
 from suite_common.inputs import format_number_list, parse_number_list
 from suite_common.output_folders import create_unique_test_output_folder
 
-import pyvisa
 import numpy as np
 import pandas as pd
 from scipy.signal import hilbert
@@ -18,7 +17,9 @@ import tkinter as tk
 from tkinter import filedialog, ttk, messagebox
 from datetime import datetime
 from time import sleep, time
-import AECommandsUniversal
+from suite_instruments.adapters import csr_check
+from suite_instruments.factory import InstrumentFactory
+from suite_instruments.transport.visa import resource_manager
 
 # TODO: Send command in scope setup function to set channel input impedance to 50 Ohms.
 
@@ -649,8 +650,9 @@ if not SCOPE_ADDRESS:
 progress_window.update(3, "Connecting to oscilloscope", SCOPE_ADDRESS,
                        0, planned_collection_attempts())
 print("Connecting to scope...")
-rm_scope = pyvisa.ResourceManager()
-scope = rm_scope.open_resource(scope_visa_resource(SCOPE_ADDRESS))
+rm_scope = resource_manager()
+scope = InstrumentFactory({"oscilloscope": scope_visa_resource(SCOPE_ADDRESS)}).create(
+    "oscilloscope", resource_manager=rm_scope, open_attempts=1)
 scope.timeout = 30000
 scope.read_termination = "\n"
 scope.write_termination = "\n"
@@ -744,12 +746,12 @@ def configure_sync_out_track_rf():
     """
     print("Configuring DUT Pulse Sync Output = On...")
     response = gen.gen.create_buffer_cmd(26, '1:2,1:2,1:2', '1:1', 2, 1, 0)
-    AECommandsUniversal.csrChecker(response)
+    csr_check(response)
 
     print("Configuring DUT Pulse Sync Output Mode = Track RF...")
     # CMD 26, subcommand 10: 0 = Track RF, 1 = alternate mode.
     response = gen.gen.create_buffer_cmd(26, '1:2,1:2,1:2', '1:1', 10, 0, 0)
-    AECommandsUniversal.csrChecker(response)
+    csr_check(response)
 
     sync_output_state = gen.reportPulsingConfiguration(2)
     sync_output_mode = gen.reportPulsingConfiguration(10)
@@ -796,7 +798,7 @@ def set_fixed_frequency_khz(freq_khz):
         )
 
     response = gen.gen.create_buffer_cmd(61, '1:4', '1:1', freq_khz)
-    AECommandsUniversal.csrChecker(response)
+    csr_check(response)
     print(f"DUT fixed frequency set to {freq_khz} kHz.")
 
 # ==========================================================
@@ -806,7 +808,7 @@ def configure_gen():
     global gen
     if not GEN_IP:
         raise RuntimeError("DUT generator address is not set. Select a bench profile in the Unified Collection GUI or set PARAMOUNT_GENERATOR_ADDRESS.")
-    gen = AECommandsUniversal.generator(GEN_IP)
+    gen = InstrumentFactory({"generator": GEN_IP}).create("generator")
     gen.setActiveControlMode(2)
     gen.rfOFF()
     configure_sync_out_track_rf()

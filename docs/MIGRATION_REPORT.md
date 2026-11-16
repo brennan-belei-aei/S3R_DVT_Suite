@@ -432,3 +432,41 @@ Bench checks:
 
 1. Setpoint Transfer Function: run 1 cycle. Confirm the wavegen opens (and falls back to `::SOCKET` if the INSTR address is busy) and the transfer CSV is written.
 2. Analog Processing Timing: run 1 cycle. Confirm the operator `RUN` prompt, that the scope arms (READY) and triggers, and that the waveforms and summary are saved.
+
+## Phase 6 part 2, batch 3: Rise/Fall (CW, SLP, DLP) and Pulse Sync
+
+These four scripts are set up through a Tk window and run at module level, so the harness gained a way to run a script exactly as the operator does (`python script.py`).
+
+- `tests/tools/fake_tk.py` stands in for tkinter. It fills the labelled fields, picks the edge or transition choices, and clicks Start. Error dialogs are recorded.
+- The `time` module's clocks are virtual for the run, and `PARAMOUNT_*` variables are cleared, so only the scenario's entries apply.
+- Two new opt-in bench models:
+  - a single-sequence acquisition completes while RF is on;
+  - the DUT remembers pulse settings (CMD 26/172, 93/193, 96/196) per connection, so master and slave are independent.
+- A run counts as successful only with no error dialog and every expected `CURVE?` transfer.
+
+Golden logs were recorded from the unmodified scripts and committed first (`85e54aa`):
+
+| Scenario | Matrix | Waveforms |
+|---|---|---|
+| `rise_fall_cw_rise` / `rise_fall_cw_fall` | 2 RF frequencies x 2 setpoints x 1 | 4 each |
+| `rise_fall_slp` | Both Edges, 2 setpoints | 4 |
+| `rise_fall_dlp` | All transitions (50->100, 100->50) | 2 |
+| `pulse_sync` | Dry run off, RF on, views RISE + FULL_PULSE | 8 (4 channels x 2) |
+
+Migration (connection code only):
+
+- Scopes open through `InstrumentFactory(...).create("oscilloscope", resource_manager=..., open_attempts=1)`, and the DUT through `create("generator")`.
+- CW's three raw-frame CSR checks use the new `suite_instruments.adapters.csr_check`, which is `AECommandsUniversal.csrChecker`.
+- Pulse Sync keeps its `AE_Commands_7434753` command set. It goes through a new catalog adapter, `ae.7434753`, which is never a default and is requested explicitly via `PSYNC_ADAPTERS` for master and slave.
+- Pulse Sync's per-operation scope session (`_session`) still opens and closes a fresh manager and resource each time, exactly as before.
+- All 16 golden scenarios are identical, and the DLP frame-sequence goldens still pass. The full suite passes (386 tests).
+- pyflakes findings in these scripts are unchanged from before the migration.
+
+Only an instrument that cannot be opened behaves differently: the error is now `InstrumentConnectionError` instead of the raw pyvisa error.
+
+Bench checks:
+
+1. CW: Rising Edge, 1 acquisition, 1 frequency, 1 setpoint. Confirm Sync Out is verified (On, Track RF), the scope triggers, and the CSV is saved. Repeat with Falling Edge.
+2. SLP: Both Edges, 1 acquisition. Confirm the pulse readback passes, and the RISE and FALL CSVs are saved.
+3. DLP: one rising and one falling transition. Confirm DLP mode is set, the waveforms are saved, and RF is off and DLP disabled at the end.
+4. Pulse Sync: first a dry run (no instrument contact). Then a live run with 1 sample: confirm the master/slave role readback, the 4 channel CSVs per capture, and that RF is off and pulsing disabled at the end.
