@@ -310,3 +310,60 @@ Plugin ids now double as folder names: `aebus_command_latency`, `analog_port_tim
 - `SuiteContext.current()` falls back to the environment for standalone runs.
 
 Gate: **328 passed**, all three `--self-test`s pass, pyflakes is clean, and the tests write nothing into the real `runtime/`.
+## Phase 6, part 1: Instrument Abstraction Layer (branch `refactor/phase6-instruments`)
+
+All Phase 6 work is on its own branch, at the user's request. The Phase 0-5 state is preserved on `refactor/plugin-architecture` and tagged `phase5-complete`.
+
+### Moves (`git mv`)
+| From | To |
+|---|---|
+| `AESpecificDependencies/{AE_Com_Module, AECommandsUniversal, AECommands, AE_Commands_7434753, Lynx}.py` | `suite_instruments/adapters/ae/` |
+| `collection_plugins/rf_on_off_timing/AECommandsSerialTimingAdapter.py` | `suite_instruments/adapters/ae/` (as amendment A1 required) |
+| `AESpecificDependencies/SpectrumAnalyzer/{spectrum_analyzer, KeysightN9320B, __init__}.py` | `suite_instruments/adapters/keysight/` |
+| `AESpecificDependencies/SpectrumAnalyzer/*.pdf` (programmer's guides) | `docs/instruments/` |
+| `AESpecificDependencies/MISC/helperFunctions.py` | `collection_plugins/harmonics_spurious/helperFunctions.py` (its only user; `MISC/__init__.py` deleted) |
+| `AESpecificDependencies/README.md` | `suite_instruments/README.md` (rewritten) |
+
+`AESpecificDependencies/` no longer exists. No AE module's code was edited.
+
+### Rewiring
+- **`suite_common.bootstrap`** now puts `suite_instruments/adapters/ae/` on `sys.path`. `AE_ADAPTERS_DIR` overrides it, and the legacy `AE_SPECIFIC_DEPENDENCIES_DIR` still works. `suite_common.AE_DEPENDENCIES_DIR` became `AE_ADAPTERS_DIR`. AE modules stay **flat-imported**; a package-path import would create a second copy of each module.
+- **`AECommandsSerialTimingAdapter.py`:** the `rglob` dependency hunt was deleted, as A1 required. Its public API (`generator(ipAddress, comPort=None)`, `rfON_TEST`) is byte-for-byte unchanged. Its two users (`CommandProcessing.py`, `rf_onoff_scope_capture_GUI.py`) gained the repo-root line and `suite_common.bootstrap`. The AEBus latency runtime copies still work: they run beside the original, and the root line finds the repo from there.
+- **Harmonics:** imports `suite_instruments.adapters.keysight.spectrum_analyzer` and its sibling `helperFunctions`.
+- **RF Ramping** searches `suite_instruments/adapters/ae/`. **The launcher's** adapter check uses the new folder and still resolves AECommandsUniversal as verified.
+- **The example settings templates** still pointed at the Phase 3 `AESpecificDependencies/Command Latency/...` paths, a Phase 4 miss. They are fixed.
+
+### Pre-existing defect fixed
+`arc_management_collection.py` and **`frequency_tuning_collection.py` (RF Tuning, the user's selected test)** loaded the generator with `importlib.import_module("AESpecificDependencies.AECommandsUniversal")`, falling back to the flat name, without the bootstrap. Both failed: the package import breaks on the module's own `import AE_Com_Module`, and the flat name was never on the path. **Neither script could create a generator.** Both now import `suite_common.bootstrap`, and the dead package candidate is removed. `test_dynamic_loaders_find_the_adapter_modules` proves the import resolves.
+
+### New layer (`suite_instruments/`)
+- **`interfaces/`:** structural Protocols per role (`Generator`, `Oscilloscope`, `WaveformGenerator`, `DCSupply`, `SpectrumAnalyzer`, `PowerMeter`, `Tuner`) and `ROLE_INTERFACES`, which covers every bench equipment key.
+  - **`AECommandsUniversal.generator` satisfies `Generator` unmodified**, as amendment A2 required.
+  - The SCPI roles currently specify the SCPI session (`write`/`query`/`close`). Vendor-neutral methods (e.g. "arm single acquisition") are added in part 2, derived from the commands the scripts actually send, rather than invented now.
+- **`transport/visa.py` `VisaTransport`:** a drop-in for a pyvisa resource. It opens with bounded retries, applies `timeout_ms`, logs at DEBUG, and normalizes errors to `InstrumentTimeout` (also a `TimeoutError`) / `InstrumentError` with the original chained. Attributes pass through. It **never adds or resends commands**; retries apply only to opening.
+- **`transport/ae_com.py` `AeBusTransport`:** wraps an AE_Com_Module connection and logs every frame. Arguments, replies, and exceptions are unchanged, with no resends, because AE bus RF ON must never repeat implicitly.
+- **`adapters/__init__.py`:** the adapter catalog and `DEFAULT_ADAPTERS`:
+  - `ae.universal` (generator, psync slave) and `ae.serial_timing` (generator COM port);
+  - `ae.lynx` and `ae.navigator`;
+  - `keysight.n9320` (spectrum analyzer);
+  - `visa.scpi` (oscilloscope, waveform generator, DC supply).
+
+  AE adapters are built through each driver's **existing constructor**, so connection behavior is identical, and then have their connection attribute wrapped. Connect failures are normalized to `InstrumentConnectionError`.
+- **`factory.py` `InstrumentFactory`:**
+  - `from_bench()` follows the suite's address lookup order: environment, then profile. The per-profile adapter choice comes from an optional `"adapters"` section in `Bench_Profiles.json`; `suite_common.bench` now preserves that section through load and save. The Phase 5 branch ignores it and falls back to the defaults.
+  - `check()` / `require()` report every missing address, unknown or wrong-role adapter, and missing `plugin.json` capability.
+  - `create(role, **options)` also verifies the result implements the role's interface.
+- **Plan deviation, settings and limits:** "applies settings and limits" is limited to transport options (`timeout_ms`). Instrument limits are test-specific today and move with each script in part 2.
+
+### Gate (`tests/test_instruments.py`, 16 tests)
+- **All 568 recorded golden AE-bus cases** replay identically (frames, order, outcome) through a **factory-built** generator, so the logging transport is wire-transparent.
+- **AE roles:** generator, serial generator, Lynx, and Navigator are built by their own drivers and wrapped, and satisfy their role interface.
+- **Errors:** a refused connection is normalized with its cause chained.
+- **SCPI:** `visa.scpi` passes commands, attributes, and timeout through unchanged; close is idempotent and closes its resource manager. Timeout and I/O errors normalize correctly, and open retries then fail cleanly.
+- **Factory:** `check()` lists every problem kind and `require()` raises the right error. Every role required by a listed collection test can be served by its default adapter. `from_bench()` honors environment overrides and per-profile adapters, and the `adapters` section survives a bench profile save.
+- **The dynamic loaders** (Arc Management, RF Tuning) now resolve AECommandsUniversal.
+- **Result: 349 passed;** the Phase 0-5 suite (golden frames, plugin import resolution from every folder, self-tests) is unchanged and green. The three apps pass `--self-test`, and pyflakes is clean.
+
+### Not done yet (part 2)
+- **Script migration:** no collection script uses the factory yet; they still open pyvisa and AE modules directly. Part 2 migrates the 18 `pyvisa` scripts one at a time. Each migration first captures a golden SCPI log with the Phase 0 VISA fakes and must reproduce it exactly.
+- **Phase gate still open:** "no collection script imports `pyvisa` or an AE module directly" is part 2's exit criterion.

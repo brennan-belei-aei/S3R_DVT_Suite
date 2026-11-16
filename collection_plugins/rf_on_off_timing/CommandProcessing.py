@@ -1,8 +1,13 @@
 import csv
 import os
+import sys
 import time
 from datetime import datetime
-import AECommandsSerialTimingAdapter
+from pathlib import Path
+
+sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
+import suite_common.bootstrap  # noqa: E402,F401
+import AECommandsSerialTimingAdapter  # noqa: E402
 
 # ---------------------------
 # Command Code Mapping (AEBus command numbers used by AECommandsUniversal)

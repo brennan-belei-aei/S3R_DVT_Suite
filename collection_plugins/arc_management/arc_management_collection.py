@@ -34,6 +34,7 @@ from tkinter import filedialog, messagebox, ttk
 APP_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
 from suite_common.config import plugin_settings_path  # noqa: E402
+import suite_common.bootstrap  # noqa: E402,F401  (AE command modules on sys.path)
 SETTINGS_FILE = plugin_settings_path("arc_management", "collection")
 STOP = threading.Event()
 
@@ -305,7 +306,7 @@ def request_stop(*_args) -> None:
 
 def load_universal_module():
     errors = []
-    for name in ("AESpecificDependencies.AECommandsUniversal", "AECommandsUniversal"):
+    for name in ("AECommandsUniversal",):
         try:
             return importlib.import_module(name)
         except Exception as exc:

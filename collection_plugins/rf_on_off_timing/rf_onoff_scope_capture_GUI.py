@@ -72,7 +72,9 @@ from tkinter import filedialog, messagebox, ttk
 import numpy as np
 import pyvisa
 
-import AECommandsSerialTimingAdapter
+sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
+import suite_common.bootstrap  # noqa: E402,F401
+import AECommandsSerialTimingAdapter  # noqa: E402
 
 # ---------------------------
 # Configuration - edit these

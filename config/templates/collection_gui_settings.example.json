@@ -6,7 +6,7 @@
     "power_accuracy": "Power Linearity and Accuracy/Power_Accuracy_Collection_GUI.py",
     "power_linearity": "Power Linearity and Accuracy/Power_Linearity_Collection_GUI.py",
     "rise_fall_time_verification": "Rise and Fall/CWDataCollection_GUI.py",
-    "aebus_command_latency": "AESpecificDependencies/Command Latency/AEBus_Command_Latency_Collection_GUI.py",
+    "aebus_command_latency": "collection_plugins/aebus_command_latency/AEBus_Command_Latency_Collection_GUI.py",
     "power_profile": "Power Profile/Power_Profile_Collection_GUI.py",
     "psync": "Psync/Psync_Data_Collection.py"
   },

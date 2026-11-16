@@ -80,13 +80,13 @@ def load_generator_module():
     for root in roots:
         candidates.extend([
             root / module_filename,
-            root / "AESpecificDependencies" / module_filename,
+            root / "suite_instruments" / "adapters" / "ae" / module_filename,
             root / "libraries" / module_filename,
             root / "Library" / module_filename,
         ])
     # Also inspect parents of the script, which supports scripts kept in test subfolders.
     for parent in list(APP_DIR.parents)[:4]:
-        candidates.extend([parent / module_filename, parent / "AESpecificDependencies" / module_filename])
+        candidates.extend([parent / module_filename, parent / "suite_instruments" / "adapters" / "ae" / module_filename])
     found = next((c.resolve() for c in candidates if c.is_file()), None)
     # The plugin can be nested several levels below the repository. If the normal
     # locations fail, search the repository tree and the user's Documents tree.

@@ -60,6 +60,13 @@ def load_bench_profiles(path: Path | None = None) -> dict:
             for name, values in profiles.items()
             if isinstance(values, dict)
         } or data["profiles"]
+    # Optional per-profile adapter choice for suite_instruments: {"<profile>": {"<role>": "<adapter>"}}
+    adapters = saved.get("adapters")
+    if isinstance(adapters, dict):
+        data["adapters"] = {
+            str(name): {str(role): str(adapter) for role, adapter in roles.items()}
+            for name, roles in adapters.items() if isinstance(roles, dict)
+        }
     active = str(saved.get("active_profile", ""))
     data["active_profile"] = active if active in data["profiles"] else next(iter(data["profiles"]))
     return data

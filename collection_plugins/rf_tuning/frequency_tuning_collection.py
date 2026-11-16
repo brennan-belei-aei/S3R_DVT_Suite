@@ -34,6 +34,7 @@ APP_TITLE = "RF Tuning Data Collection"
 APP_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
 from suite_common.config import plugin_settings_path  # noqa: E402
+import suite_common.bootstrap  # noqa: E402,F401  (AE command modules on sys.path)
 SETTINGS_PATH = plugin_settings_path("rf_tuning", "collection")
 
 # Unified-launcher environment values. Multiple counter names are accepted so the
@@ -203,7 +204,6 @@ def create_generator(address: str):
     """Prefer the suite universal dependency, with legacy fallback for transition."""
     attempts = []
     candidates = (
-        ("AESpecificDependencies.AECommandsUniversal", ("generator", "Generator")),
         ("AECommandsUniversal", ("generator", "Generator")),
         ("AE_Commands_7434753", ("generator", "Generator")),
     )
@@ -227,7 +227,6 @@ def create_generator(address: str):
 def create_navigator(port: str):
     attempts = []
     candidates = (
-        ("AESpecificDependencies.AECommandsUniversal", ("navigator", "Navigator")),
         ("AECommandsUniversal", ("navigator", "Navigator")),
         ("AECommands", ("navigator", "Navigator")),
     )

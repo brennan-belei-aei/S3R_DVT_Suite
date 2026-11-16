@@ -1,7 +1,8 @@
 """Compatibility adapter for Serial RF On-Off Latency collection.
 
 This module intentionally preserves the small API expected by the existing
-rf_onoff_scope_capture_GUI.py script while using the suite's shared dependencies:
+rf_onoff_scope_capture_GUI.py script while using the suite's shared dependencies
+(it lives beside them in suite_instruments/adapters/ae; import it after suite_common.bootstrap):
 
     AE_Com_Module.py
     AECommandsUniversal.py
@@ -17,44 +18,6 @@ working collection script does not need any other changes:
     generator(0, "COM5")        -> direct serial AEBus
     generator("PMNT012837", None) -> Ethernet AEBus
 """
-
-import sys
-from pathlib import Path
-
-# Locate the suite's shared dependencies without assuming they are directly in
-# Digital Timing or exactly one folder above it. Start at this adapter's folder
-# and walk upward; at each level, search recursively for both required files.
-# The directory containing both files is added to sys.path.
-ADAPTER_DIR = Path(__file__).resolve().parent
-DEPENDENCY_DIR = None
-SEARCHED_ROOTS = []
-for root in (ADAPTER_DIR, *ADAPTER_DIR.parents):
-    SEARCHED_ROOTS.append(str(root))
-    # Prefer direct placement before recursive search.
-    if (root / "AE_Com_Module.py").is_file() and (root / "AECommandsUniversal.py").is_file():
-        DEPENDENCY_DIR = root
-        break
-    try:
-        com_candidates = list(root.rglob("AE_Com_Module.py"))
-    except (OSError, PermissionError):
-        continue
-    for com_path in com_candidates:
-        candidate = com_path.parent
-        if (candidate / "AECommandsUniversal.py").is_file():
-            DEPENDENCY_DIR = candidate
-            break
-    if DEPENDENCY_DIR is not None:
-        break
-
-if DEPENDENCY_DIR is None:
-    raise ModuleNotFoundError(
-        "Could not locate AE_Com_Module.py and AECommandsUniversal.py in the same folder. "
-        "Place both shared dependency files together anywhere inside the repository. "
-        f"Adapter location: {ADAPTER_DIR}."
-    )
-
-if str(DEPENDENCY_DIR) not in sys.path:
-    sys.path.insert(0, str(DEPENDENCY_DIR))
 
 import AE_Com_Module
 import AECommandsUniversal

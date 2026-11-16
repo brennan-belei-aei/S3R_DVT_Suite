@@ -16,8 +16,8 @@ import csv
 import json
 import shutil
 import numpy as np
-from SpectrumAnalyzer.spectrum_analyzer import *
-from MISC.helperFunctions import *
+from suite_instruments.adapters.keysight.spectrum_analyzer import *
+from helperFunctions import *
 import matplotlib
 from matplotlib import pyplot as plt
 from scipy.signal import find_peaks
