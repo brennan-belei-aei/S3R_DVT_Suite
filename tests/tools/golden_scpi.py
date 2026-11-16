@@ -15,6 +15,8 @@ import importlib
 import importlib.util
 import io
 import json
+import logging
+import os
 import re
 import sys
 import time as real_time
@@ -68,6 +70,9 @@ class Bench:
     host_rf: bool = False
     trigger_model: bool = False                      # scope READY after arming, SAVE after the next stimulus
     armed: set[str] = field(default_factory=set)
+    acquisition_model: bool = False                  # an armed single sequence completes (ACQ:STATE 0) while RF is on
+    pulse_model: bool = False                        # DUT remembers CMD 26/93/96 per connection and reports them back
+    pulse: dict[Any, dict] = field(default_factory=dict)
 
     def record(self, *entry: Any) -> None:
         self.log.append(repr(entry))
@@ -132,6 +137,12 @@ class Bench:
             return f"FAKE,{resource},0,1"
         if upper == "*OPC?":
             return "1"
+        if self.acquisition_model and upper in ("ACQ:STATE?", "ACQUIRE:STATE?"):
+            key = upper[:-1]
+            state = self.setting(resource, key, "0")
+            if state.upper() in {"ON", "1", "RUN"} and self.rf_on():
+                self.settings[(resource, key)] = state = "0"
+            return state
         if upper == "TRIG:STATE?":
             return self.setting(resource, "TRIG:STATE", "SAVE") if self.trigger_model else "SAVE"
         siglent = re.fullmatch(r"(C\d):OUTP\?", upper)
@@ -151,9 +162,22 @@ class Bench:
         return "0"
 
     # -- AE bus (frame-level DUT model) ---------------------------------------------------
-    def ae_reply(self, cmd: int, recv_sizes: str, args: tuple) -> list:
+    def ae_reply(self, cmd: int, recv_sizes: str, args: tuple, target: Any = None) -> list:
         from tests.tools.golden_frames import _bench_reply
 
+        if self.pulse_model and cmd in (26, 172, 93, 193, 96, 196):
+            state = self.pulse.setdefault(target, {"config": {}, 93: 0, 96: 0})
+            if cmd == 26:
+                state["config"][int(args[0])] = int(args[1])
+                return [0, 0, 0]
+            if cmd == 172:  # 16/17: minimum/maximum duty cycle (%)
+                selection = int(args[0])
+                return [0, 4, state["config"].get(selection, {16: 1, 17: 99}.get(selection, 0))]
+            if cmd in (93, 96):  # pulse frequency (Hz) / duty cycle (%); raw-payload callers send bytes
+                value = args[0] if len(args) == 1 else bytes(int(a) for a in args)
+                state[cmd] = int.from_bytes(value, "little") if isinstance(value, (bytes, bytearray)) else int(value)
+                return [0, 0, 0]
+            return [0, 4 if cmd == 193 else 2, state[cmd - 100]]
         if cmd == 14:
             self.mode = int(args[0])
             return [0, 0, 0]
@@ -258,7 +282,7 @@ class ScriptedAeConnection:
         self._bench.record("ae-connect", address)
 
     def create_buffer_cmd(self, cmd, send_sizes, recv_sizes, *args, **kwargs) -> list:
-        reply = self._bench.ae_reply(cmd, recv_sizes, tuple(args))
+        reply = self._bench.ae_reply(cmd, recv_sizes, tuple(args), self._target)
         self._bench.record("ae", cmd, send_sizes, recv_sizes, tuple(args), reply)
         return list(reply)
 
@@ -297,6 +321,79 @@ def load_script(relative: str, clock: Clock) -> types.ModuleType:
         spec.loader.exec_module(module)
     module.time = clock_module(clock)
     return module
+
+
+@dataclass(frozen=True)
+class GuiRun:
+    """A script run end to end as __main__, set up through its own setup window (see fake_tk)."""
+    entries: dict[str, str]
+    start: str
+    curves: int                                    # waveform transfers a complete run makes
+    choices: dict[str, Any] = field(default_factory=dict)
+
+
+def run_gui_script(relative: str, gui: GuiRun, bench: Bench, clock: Clock, parent: Path) -> int:
+    """Run a module-level GUI script exactly as the operator would (python script.py).
+
+    tkinter is replaced by fake_tk, and the time module's clocks/sleep by the virtual clock
+    (the scripts bind them with `from time import ...` at import). Environment variables that
+    select bench addresses or launcher modes are cleared so only the scenario's entries apply.
+    """
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot  # noqa: F401  (backend chosen before the fake tkinter is installed)
+    for name in ("suite_common.bench", "suite_common.inputs", "suite_common.output_folders",
+                 "suite_instruments.factory", "suite_instruments.transport.visa"):
+        importlib.import_module(name)
+    from tests.tools import fake_tk
+
+    operator = fake_tk.Operator(gui.entries, gui.choices, gui.start, str(parent), bench.record)
+    fakes = fake_tk.modules(operator)
+    path = REPO_ROOT / relative
+    spec = importlib.util.spec_from_file_location("__main__", path)
+    module = importlib.util.module_from_spec(spec)
+    clocks = ("sleep", "time", "monotonic", "perf_counter")
+    saved_modules = {name: sys.modules.get(name) for name in (*fakes, "__main__")}
+    saved_clocks = {name: getattr(real_time, name) for name in clocks}
+    saved_env = {k: v for k, v in os.environ.items() if k.startswith("PARAMOUNT_")}
+    root_logger = logging.getLogger()
+    saved_handlers, saved_level = list(root_logger.handlers), root_logger.level
+    try:
+        for key in saved_env:
+            del os.environ[key]
+        os.environ["PARAMOUNT_COLLECTION_PARENT_FOLDER"] = str(parent)
+        sys.modules.update(fakes)
+        sys.modules["__main__"] = module
+        for name in clocks:
+            setattr(real_time, name, getattr(clock, name))
+        try:
+            spec.loader.exec_module(module)
+        except SystemExit as stop:
+            if stop.code not in (None, 0):
+                raise
+    finally:
+        for name in clocks:
+            setattr(real_time, name, saved_clocks[name])
+        for name, saved in saved_modules.items():
+            if saved is None:
+                sys.modules.pop(name, None)
+            else:
+                sys.modules[name] = saved
+        for key in [k for k in os.environ if k.startswith("PARAMOUNT_")]:
+            del os.environ[key]
+        os.environ.update(saved_env)
+        for handler in [h for h in root_logger.handlers if h not in saved_handlers]:
+            root_logger.removeHandler(handler)
+            handler.close()
+        root_logger.setLevel(saved_level)
+        fake_tk.Widget.operator = None
+    errors = [title for kind, title, _ in operator.messages if kind == "showerror"]
+    if errors:
+        raise RuntimeError(f"error dialog: {errors[0]}")
+    curves = sum(1 for entry in bench.log if entry.startswith("('query_binary_values'") and "'CURVE?'" in entry)
+    if curves != gui.curves:
+        raise RuntimeError(f"{curves} waveform transfers; a complete run makes {gui.curves}")
+    return 0
 
 
 # -- drivers: one per migrated script -------------------------------------------------------
@@ -360,12 +457,32 @@ def _analog_processing_bk9141_connect(module, bench: Bench, parent: Path):
         inst.close()
 
 
+PSYNC_SLAVE = "PSYNCSLAVE"
+PULSED = {"acquisition_model": True, "pulse_model": True}
+
+CW_GUI = {"Oscilloscope IP address": "192.0.2.10", "DUT IP / hostname": DUT, "Acquisitions per setpoint": "1",
+          "RF frequencies (kHz)": "13000, 13560", "Power setpoints (script units)": "10, 50"}
+SLP_GUI = {"Scope VISA address": SCOPE, "DUT IP / hostname": DUT, "Acquisitions per condition": "1",
+           "RF frequencies (kHz)": "13560", "Base power setpoints": "10, 50", "Pulse frequencies (Hz)": "4000",
+           "Duty cycles (%)": "20"}
+DLP_GUI = {"Scope VISA address": SCOPE, "DUT IP / hostname": DUT, "Acquisitions per condition": "1",
+           "RF frequencies (kHz)": "13560", "Pulse frequencies (Hz)": "4000", "Duty cycles (%)": "50",
+           "Ordered DLP transitions (W)": "50 -> 100\n100 -> 50"}
+PSYNC_GUI = {"Master generator hostname / IP": DUT, "Slave generator hostname / IP": PSYNC_SLAVE,
+             "Oscilloscope hostname or IP address": "192.0.2.10", "RF frequencies [MHz]": "13.56",
+             "Power setpoints [W]": "100", "Pulse frequencies [Hz]": "1000", "Requested duty cycles [%]": "50",
+             "Samples per condition": "1", "Capture views": "RISE, FULL_PULSE"}
+PSYNC_LIVE = {"Dry run: do not contact instruments": False, "Enable RF during captures": True}
+
+
 @dataclass(frozen=True)
 class Scenario:
     name: str
     script: str
-    drive: Callable[[types.ModuleType, Bench, Path], Any]
+    drive: Callable[[types.ModuleType, Bench, Path], Any] | None
     refuse: frozenset[str] = frozenset()
+    gui: GuiRun | None = None
+    bench: dict[str, Any] = field(default_factory=dict)     # Bench model switches
 
 
 SCENARIOS = {s.name: s for s in (
@@ -391,6 +508,17 @@ SCENARIOS = {s.name: s for s in (
     Scenario("analog_processing_timing_bk9141_socket_fallback",
              "collection_plugins/analog_port_timing/analog_processing_timing_collection.py",
              _analog_processing_bk9141_connect, frozenset({SUPPLY})),
+    # Rise/Fall and Pulse Sync run end to end as __main__ through their setup windows.
+    Scenario("rise_fall_cw_rise", "collection_plugins/rise_fall_time/CWDataCollection_GUI.py", None,
+             gui=GuiRun(CW_GUI, "Start Collection", 4, {"Rising Edge": True}), bench={"pulse_model": True}),
+    Scenario("rise_fall_cw_fall", "collection_plugins/rise_fall_time/CWDataCollection_GUI.py", None,
+             gui=GuiRun(CW_GUI, "Start Collection", 4, {"Falling Edge": True}), bench={"pulse_model": True}),
+    Scenario("rise_fall_slp", "collection_plugins/rise_fall_time/SLPDataCollection_GUI.py", None,
+             gui=GuiRun(SLP_GUI, "Start Collection", 4, {"Both Edges": True}), bench=PULSED),
+    Scenario("rise_fall_dlp", "collection_plugins/rise_fall_time/DLPDataCollection_GUI.py", None,
+             gui=GuiRun(DLP_GUI, "Start Test", 2, {"All configured transitions": True}), bench=PULSED),
+    Scenario("pulse_sync", "collection_plugins/pulse_sync/Psync_Data_Collection.py", None,
+             gui=GuiRun(PSYNC_GUI, "Start Test", 8, PSYNC_LIVE), bench=PULSED),
     Scenario("rf_enable_timing_wavegen_fallback",
              "collection_plugins/analog_port_timing/RF_enable_timing_collection.py", _rf_enable,
              frozenset({WAVEGEN})),
@@ -399,9 +527,16 @@ SCENARIOS = {s.name: s for s in (
 
 def run_scenario(name: str, parent: Path) -> dict:
     scenario = SCENARIOS[name]
-    bench = Bench(refuse=set(scenario.refuse))
+    bench = Bench(refuse=set(scenario.refuse), **scenario.bench)
     clock = Clock()
     with scripted_bench(bench):
+        if scenario.gui is not None:
+            try:
+                with contextlib.redirect_stdout(io.StringIO()):
+                    outcome = "return " + repr(run_gui_script(scenario.script, scenario.gui, bench, clock, parent))
+            except (Exception, SystemExit) as error:
+                outcome = f"raise {type(error).__name__}: {error}"
+            return {"scenario": name, "outcome": outcome, "log": bench.log}
         module = load_script(scenario.script, clock)
         try:
             with contextlib.redirect_stdout(io.StringIO()):
