@@ -367,3 +367,46 @@ All Phase 6 work is on its own branch, at the user's request. The Phase 0-5 stat
 ### Not done yet (part 2)
 - **Script migration:** no collection script uses the factory yet; they still open pyvisa and AE modules directly. Part 2 migrates the 18 `pyvisa` scripts one at a time. Each migration first captures a golden SCPI log with the Phase 0 VISA fakes and must reproduce it exactly.
 - **Phase gate still open:** "no collection script imports `pyvisa` or an AE module directly" is part 2's exit criterion.
+## Phase 6, part 2, batch 1: CEX Lock Acquisition, Interlock Response Timing, RF Enable Timing
+
+### Golden SCPI/AE-bus harness (`tests/tools/golden_scpi.py`)
+- **What it runs:** each script's real collection routine (`run_collection`), against:
+  - scripted VISA instruments;
+  - a frame-level DUT model: control mode via frames 14/155, RF on/off from host frames 1/2 or from the RF Enable line in User Port mode, interlock from the BK supply output, CEX lock from the CEX reference output, fixed-frequency limits 12.88-14.24 MHz, regulation mode, and power limit;
+  - a virtual clock, so `sleep()` advances it and polling loops are deterministic and instant.
+- **What it records, in one ordered log:** the resource manager open/close, every VISA open (and refused open), attribute set (`timeout`, `read_termination`, `write_termination`, `chunk_size`), write, query with reply, binary read with options, close, and every AE-bus frame with reply.
+- **Fake instrument models:**
+  - Siglent `C<n>:OUTP?` reports output state and load;
+  - Tektronix `CH<n>:TERMINATION?` echoes what was set;
+  - BK 9141 `MEAS:VOLT?` follows `APPL` and the output state.
+- **Golden logs** were recorded from the **unmodified** scripts and committed *before* any script changed (`46bc442`). Six scenarios, every one ending `return 0` (full success path):
+  - the normal path for each of the three scripts;
+  - CEX and RF Enable with the waveform generator's VISA address refused (`::SOCKET` fallback);
+  - Interlock with the DC supply's VISA address refused.
+
+  Re-recording reproduces them byte for byte.
+
+### Migration (connection code only; no measurement code touched)
+- `import pyvisa` and `import AECommandsUniversal` were removed.
+- `pyvisa.ResourceManager()` became `suite_instruments.transport.visa.resource_manager()`; it is still one shared manager, so Interlock's `rm.visalib` print still works.
+- `rm.open_resource(addr)` became `InstrumentFactory(...).create(role, [address=fallback,] resource_manager=rm, open_attempts=1)`. The roles are `oscilloscope`, `waveform_generator`, and `dc_supply`. `open_attempts=1` keeps each script's own fallback loop authoritative (no added retries).
+- `AECommandsUniversal.generator(addr)` became `factory.create("generator")`.
+- **Factory additions:** `create(..., address=...)` for fallback addresses, and the `resource_manager()` helper.
+- **Behavior notes (failure paths only):**
+  - An open failure is now an `InstrumentConnectionError`, so the "Unable to connect" message names it instead of the raw pyvisa error. All three scripts catch `Exception`.
+  - A bare IP typed into a script's address field is now normalized to a VISA resource (`TCPIP0::<ip>::INSTR`) as the bench profile already does. Before, it was passed raw to pyvisa, which rejects it.
+- **Gate:**
+  - all 6 golden logs are **identical** after migration (`tests/test_golden_scpi.py`);
+  - a guard test fails if a migrated script imports `pyvisa` or an AE module directly;
+  - the plugin import-resolution tests pass;
+  - **369 passed** in total.
+
+### Finding: Windows path length
+Under pytest's deep temp folder, the Interlock scripts' waveform path (`<parent>\<timestamp> - Interlock Response Timing - <DUT>\INTERLOCK_RESPONSE_TIMING_<power>W_Cycle<n>_Interlock_FALL_CH<n>_<timestamp>.csv.partial`) went past the 260-character Windows path limit, and the write failed. This is pre-existing. On the bench, choose a collection parent folder with a short path, e.g. `C:\Data`, or enable Windows long paths.
+
+### Bench validation for batch 1 (run on hardware before relying on these tests)
+For each script, run 1 power point with 1 cycle/acquisition from the Collection GUI. Compare the output files and console with a pre-refactor run:
+1. **CEX Lock Acquisition:** the scope and waveform generator connect (console shows both `*IDN?`), the DUT connects, the CEX reference toggles, and the lock/unlock checks pass. CH1-CH3 CSVs and `Lock_State_Verification.csv` are written.
+2. **Interlock Response Timing:** the BK 9141 programs 25 V / 0.5 A, the interlock falls, RF drops, and CH1-CH2 CSVs are written. If the supply is reachable only by socket, confirm the `::SOCKET` fallback message.
+3. **RF Enable Timing:** RF ON and RF OFF edges are captured at each power, and CH1-CH3 CSVs are written.
+4. **All three:** the run folder now also contains `run_manifest.json` (Phase 5).

@@ -22,6 +22,12 @@ LOG = logging.getLogger("suite_instruments.visa")
 _OWN = {"_resource", "_resource_name", "_role", "_manager", "_owns_manager", "_closed"}
 
 
+def resource_manager(*args, **kwargs) -> Any:
+    """A pyvisa ResourceManager, for scripts that share one manager across several instruments."""
+    import pyvisa
+    return pyvisa.ResourceManager(*args, **kwargs)
+
+
 def _is_timeout(error: Exception) -> bool:
     text = f"{type(error).__name__} {error}".lower()
     return "timeout" in text or "tmo" in text

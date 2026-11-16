@@ -80,11 +80,12 @@ class InstrumentFactory:
             kind = InstrumentCapabilityError if all("lacks capabilities" in p for p in problems) else InstrumentNotConfigured
             raise kind("; ".join(problems))
 
-    def create(self, role: str, **options: Any) -> Any:
-        """Open the instrument for `role`. Options go to the adapter (e.g. timeout_ms for SCPI)."""
+    def create(self, role: str, *, address: str | None = None, **options: Any) -> Any:
+        """Open the instrument for `role`. `address` overrides the profile's (e.g. a ::SOCKET fallback);
+        other options go to the adapter (e.g. timeout_ms, resource_manager, open_attempts for SCPI)."""
         if role not in ROLE_INTERFACES:
             raise InstrumentNotConfigured("unknown instrument role", role=role)
-        address = self.addresses.get(role, "")
+        address = (address if address is not None else self.addresses.get(role, "")).strip()
         if not address:
             raise InstrumentNotConfigured(f"no address in bench profile '{self.profile}'", role=role)
         instrument = self.adapter(role).create(address, role, options)

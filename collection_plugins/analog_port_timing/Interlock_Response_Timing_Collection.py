@@ -23,12 +23,12 @@ from pathlib import Path
 from typing import Any, Callable, Iterable, Optional
 
 import numpy as np
-import pyvisa
 
 sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
 import suite_common.bootstrap  # noqa: F401
 from suite_common.bench import bench_default, visa_socket_resource
-import AECommandsUniversal
+from suite_instruments.factory import InstrumentFactory
+from suite_instruments.transport.visa import resource_manager
 
 TEST_NAME = "Interlock Response Timing"
 TEST_ID = "INTERLOCK_RESPONSE_TIMING"
@@ -171,14 +171,14 @@ class Instruments:
     def __init__(self,dut_address,scope_address,wavegen_address,supply_address):
         self.dut_address=dut_address.strip();self.scope_address=scope_address.strip();self.wavegen_address=wavegen_address.strip();self.supply_address=supply_address.strip()
         self.wavegen_fallback=visa_socket_resource(self.wavegen_address);self.supply_fallback=visa_socket_resource(self.supply_address)
-        self.rm=self.scope=self.wavegen=self.supply=self.dut=None
+        self.rm=self.factory=self.scope=self.wavegen=self.supply=self.dut=None
 
-    def _open_with_fallback(self,addresses,label):
+    def _open_with_fallback(self,addresses,label,role):
         errors=[]
         for address in dict.fromkeys(addresses):
             candidate=None
             try:
-                candidate=self.rm.open_resource(address);candidate.timeout=INSTRUMENT_TIMEOUT_MS
+                candidate=self.factory.create(role,address=address,resource_manager=self.rm,open_attempts=1);candidate.timeout=INSTRUMENT_TIMEOUT_MS
                 if str(address).endswith("::SOCKET"): candidate.read_termination="\n";candidate.write_termination="\n"
                 print(f"{label} connected using {address}: {candidate.query('*IDN?').strip()}");return candidate
             except Exception as exc:
@@ -189,14 +189,15 @@ class Instruments:
         raise RuntimeError(f"Unable to connect to {label}. "+" | ".join(errors))
 
     def connect(self):
-        self.rm=pyvisa.ResourceManager();print(f"VISA backend: {self.rm.visalib}")
-        self.scope=self.rm.open_resource(self.scope_address);self.scope.timeout=INSTRUMENT_TIMEOUT_MS
+        self.rm=resource_manager();print(f"VISA backend: {self.rm.visalib}")
+        self.factory=InstrumentFactory({"generator":self.dut_address,"oscilloscope":self.scope_address,"waveform_generator":self.wavegen_address,"dc_supply":self.supply_address})
+        self.scope=self.factory.create("oscilloscope",resource_manager=self.rm,open_attempts=1);self.scope.timeout=INSTRUMENT_TIMEOUT_MS
         self.scope.read_termination="\n";self.scope.write_termination="\n";self.scope.chunk_size=WAVEFORM_TRANSFER_CHUNK_SIZE_BYTES
         print("Scope:",self.scope.query("*IDN?").strip())
-        self.wavegen=self._open_with_fallback((self.wavegen_address,self.wavegen_fallback),"waveform generator")
-        self.supply=self._open_with_fallback((self.supply_address,self.supply_fallback),"BK Precision 9141")
+        self.wavegen=self._open_with_fallback((self.wavegen_address,self.wavegen_fallback),"waveform generator","waveform_generator")
+        self.supply=self._open_with_fallback((self.supply_address,self.supply_fallback),"BK Precision 9141","dc_supply")
         configure_interlock_supply(self.supply)
-        self.dut=AECommandsUniversal.generator(self.dut_address);print("DUT connected.")
+        self.dut=self.factory.create("generator");print("DUT connected.")
 
     def close(self):
         try:
