@@ -33,7 +33,7 @@ def test_instrument_log_matches_golden(name):
     if current["log"] != golden["log"]:
         diff = "\n".join(list(difflib.unified_diff(golden["log"], current["log"], "golden", "current", lineterm="", n=2))[:40])
         pytest.fail(f"instrument log changed:\n{diff}")
-    assert golden["outcome"] == "return 0", "golden must cover the successful collection path"
+    assert golden["outcome"] == SCENARIOS[name].expect, "golden must cover the intended (normally successful) path"
 
 
 @pytest.mark.parametrize("script", MIGRATED_SCRIPTS)

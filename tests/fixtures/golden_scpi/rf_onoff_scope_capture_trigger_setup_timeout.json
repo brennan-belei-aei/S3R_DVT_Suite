@@ -1,0 +1,25 @@
+{
+ "scenario": "rf_onoff_scope_capture_trigger_setup_timeout",
+ "outcome": "raise SystemExit: 1",
+ "log": [
+  "('rm-open',)",
+  "('open', 'TCPIP0::192.0.2.10::inst0::INSTR')",
+  "('set', 'TCPIP0::192.0.2.10::inst0::INSTR', 'timeout', 60000)",
+  "('set', 'TCPIP0::192.0.2.10::inst0::INSTR', 'read_termination', '\\n')",
+  "('set', 'TCPIP0::192.0.2.10::inst0::INSTR', 'write_termination', '\\n')",
+  "('write', 'TCPIP0::192.0.2.10::inst0::INSTR', 'HEADer OFF')",
+  "('write', 'TCPIP0::192.0.2.10::inst0::INSTR', 'VERBose ON')",
+  "('query', 'TCPIP0::192.0.2.10::inst0::INSTR', '*IDN?', 'FAKE,TCPIP0::192.0.2.10::inst0::INSTR,0,1')",
+  "('set', 'TCPIP0::192.0.2.10::inst0::INSTR', 'timeout', 5000)",
+  "('write', 'TCPIP0::192.0.2.10::inst0::INSTR', '*CLS')",
+  "('write', 'TCPIP0::192.0.2.10::inst0::INSTR', 'ACQuire:STATE OFF')",
+  "('write', 'TCPIP0::192.0.2.10::inst0::INSTR', 'TRIGger:A:TYPe EDGE')",
+  "('write', 'TCPIP0::192.0.2.10::inst0::INSTR', 'TRIGger:A:EDGE:SOUrce CH2')",
+  "('write', 'TCPIP0::192.0.2.10::inst0::INSTR', 'TRIGger:A:EDGE:SLOpe RISe')",
+  "('write', 'TCPIP0::192.0.2.10::inst0::INSTR', 'TRIGger:A:MODe NORMal')",
+  "('write', 'TCPIP0::192.0.2.10::inst0::INSTR', 'ACQuire:STOPAfter SEQuence')",
+  "('visa-timeout', 'TCPIP0::192.0.2.10::inst0::INSTR', 'TRIGger:A:EDGE:SOUrce?')",
+  "('clear', 'TCPIP0::192.0.2.10::inst0::INSTR')",
+  "('set', 'TCPIP0::192.0.2.10::inst0::INSTR', 'timeout', 60000)"
+ ]
+}

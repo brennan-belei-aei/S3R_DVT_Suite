@@ -22,7 +22,7 @@ def _noop(*args, **kwargs):
 
 
 class Operator:
-    def __init__(self, entries: dict[str, str], choices: dict[str, Any], start: str, directory: str,
+    def __init__(self, entries: dict[str, str], choices: dict[str, Any], start: str | None, directory: str,
                  record: Callable[..., None]):
         self.entries = dict(entries)
         self.choices = dict(choices)
@@ -35,7 +35,7 @@ class Operator:
 
     # -- the operator's one interaction with the setup window ------------------------------
     def run_setup(self, root: "Tk") -> None:
-        if self.started or not any(w.text == self.start for w in self.widgets if isinstance(w, Button)):
+        if self.started or self.start is None or not any(w.text == self.start for w in self.widgets if isinstance(w, Button)):
             return
         self.started = True
         rows = {}
@@ -204,6 +204,11 @@ class Tk(Widget):
     def __init__(self, *args, **kw):
         super().__init__(None)
         self.destroyed = False
+
+    def after(self, delay, callback=None, *args):
+        if callback is not None:  # scheduled UI updates run at once (workers report through after())
+            callback(*args)
+        return "after#0"
 
     def mainloop(self, *args):
         if Widget.operator is not None and not self.destroyed:

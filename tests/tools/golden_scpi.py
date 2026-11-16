@@ -73,6 +73,22 @@ class Bench:
     acquisition_model: bool = False                  # an armed single sequence completes (ACQ:STATE 0) while RF is on
     pulse_model: bool = False                        # DUT remembers CMD 26/93/96 per connection and reports them back
     pulse: dict[Any, dict] = field(default_factory=dict)
+    ae_trigger_model: bool = False                   # an armed scope triggers on the next AE-bus command
+    identities: dict[str, str] = field(default_factory=dict)   # *IDN? reply per resource
+    navigator_port: str | None = None                # serial port answered by the Navigator model
+    nav: dict[int, int] = field(default_factory=lambda: {112: 0, 122: 0})
+    visa_faults: dict[str, int] = field(default_factory=dict)  # command -> times it times out (VisaIOError)
+    fixed_frequency_hz: tuple[int, int] = (12_880_000, 14_240_000)  # DUT fixed-frequency range (min, max)
+    power_limits_w: tuple[int, int] | None = None    # (low power limit, supply size) reported by CMD 129
+    ae_values: dict[int, int] = field(default_factory=dict)  # report cmd -> value; set cmd (report - 100) updates it
+
+    def fault(self, resource: str, command: str) -> None:
+        key = command.strip().upper()
+        if self.visa_faults.get(key, 0) > 0:
+            import pyvisa
+            self.visa_faults[key] -= 1
+            self.record("visa-timeout", resource, command)
+            raise pyvisa.errors.VisaIOError(pyvisa.constants.StatusCode.error_timeout)
 
     def record(self, *entry: Any) -> None:
         self.log.append(repr(entry))
@@ -88,6 +104,9 @@ class Bench:
                 for scope in [s for s in self.armed if s != resource]:
                     self.settings[(scope, "TRIG:STATE")] = "SAVE"
                     self.armed.discard(scope)
+        if self.ae_trigger_model and text.upper() in {"ACQ:STATE ON", "ACQUIRE:STATE ON", "ACQUIRE:STATE RUN", "ACQ:STATE RUN"}:
+            self.armed.add(resource)
+            self.settings[(resource, "TRIG:STATE")] = "READY"
         siglent = re.fullmatch(r"(C\d):OUTP\s+(LOAD,\w+|ON|OFF)", text, re.I)
         if siglent:
             part = siglent.group(2).upper()
@@ -134,7 +153,7 @@ class Bench:
         text = command.strip()
         upper = text.upper()
         if upper == "*IDN?":
-            return f"FAKE,{resource},0,1"
+            return self.identities.get(resource, f"FAKE,{resource},0,1")
         if upper == "*OPC?":
             return "1"
         if self.acquisition_model and upper in ("ACQ:STATE?", "ACQUIRE:STATE?"):
@@ -143,8 +162,10 @@ class Bench:
             if state.upper() in {"ON", "1", "RUN"} and self.rf_on():
                 self.settings[(resource, key)] = state = "0"
             return state
+        if self.ae_trigger_model and upper == "TRIGGER:STATE?":
+            upper = "TRIG:STATE?"
         if upper == "TRIG:STATE?":
-            return self.setting(resource, "TRIG:STATE", "SAVE") if self.trigger_model else "SAVE"
+            return self.setting(resource, "TRIG:STATE", "SAVE") if self.trigger_model or self.ae_trigger_model else "SAVE"
         siglent = re.fullmatch(r"(C\d):OUTP\?", upper)
         if siglent:
             ch = siglent.group(1)
@@ -165,6 +186,19 @@ class Bench:
     def ae_reply(self, cmd: int, recv_sizes: str, args: tuple, target: Any = None) -> list:
         from tests.tools.golden_frames import _bench_reply
 
+        if self.ae_trigger_model and self.armed:
+            for scope in self.armed:
+                self.settings[(scope, "TRIG:STATE")] = "SAVE"
+                self.settings[(scope, "ACQ:STATE")] = self.settings[(scope, "ACQUIRE:STATE")] = "0"
+            self.armed.clear()
+        if self.navigator_port is not None and target == self.navigator_port:
+            if cmd in (112, 122):  # move load / tune motor
+                self.nav[cmd] = int(args[0])
+                return [0, 0, 0]
+            if cmd == 135:  # motors moving?
+                return [0, 1, 0]
+            if cmd == 180:  # capacitor positions
+                return [0, 4, self.nav[112], self.nav[122]]
         if self.pulse_model and cmd in (26, 172, 93, 193, 96, 196):
             state = self.pulse.setdefault(target, {"config": {}, 93: 0, 96: 0})
             if cmd == 26:
@@ -190,11 +224,22 @@ class Bench:
             self.host_rf = False
             return [0, 0, 0]
         if cmd == 161:  # fixed frequency (Hz): 0/1 current, 2 maximum, 3 minimum
-            return [0, 4, {2: 14_240_000, 3: 12_880_000}.get(int(args[0]), 13_560_000)]
+            low, high = self.fixed_frequency_hz
+            return [0, 4, {2: high, 3: low}.get(int(args[0]), 13_560_000)]
         if cmd == 154:  # regulation mode: forward power
             return [0, 2, 6]
         if cmd == 169:  # user power limit (W)
             return [0, 2, 6000]
+        if cmd < 128 and cmd + 100 in self.ae_values and args:
+            self.ae_values[cmd + 100] = int(args[0])
+            return [0, 0, 0]
+        if cmd in self.ae_values:
+            return [0, 4, self.ae_values[cmd]]
+        if cmd == 129 and self.power_limits_w is not None:  # 6 ASCII digits: 0 = supply size, 1 = low limit
+            value = self.power_limits_w[1] if int(args[0]) == 0 else self.power_limits_w[0]
+            return [0, 6, *f"{value:06d}".encode("ascii")]
+        if cmd == 223:  # fault/warning code list: none active
+            return [0, 2, 0]
         if cmd == 162:  # process status: byte0 bit5 = RF on, byte3 bit7 = CEX locked
             return [0, 4, 0b00100000 if self.rf_on() else 0, 0, 0, 0x80 if self.cex_locked() else 0]
         return _bench_reply(types.SimpleNamespace(cmd=cmd, recv_sizes=recv_sizes))
@@ -213,11 +258,13 @@ class ScriptedInstrument:
         object.__setattr__(self, name, value)
 
     def write(self, command: str, *args, **kwargs) -> int:
+        self._bench.fault(self._resource, command)
         self._bench.record("write", self._resource, command)
         self._bench.wrote(self._resource, command)
         return len(command)
 
     def query(self, command: str, *args, **kwargs) -> str:
+        self._bench.fault(self._resource, command)
         reply = self._bench.reply(self._resource, command)
         self._bench.record("query", self._resource, command, reply)
         return reply
@@ -231,6 +278,7 @@ class ScriptedInstrument:
         return [float(v) for v in self._bench.reply(self._resource, command).split(",") if v.strip()]
 
     def query_binary_values(self, command: str, *args, **kwargs):
+        self._bench.fault(self._resource, command)
         options = {k: kwargs[k] for k in sorted(kwargs) if k != "container"}
         self._bench.record("query_binary_values", self._resource, command, options)
         return WAVEFORM_POINTS.copy()
@@ -272,6 +320,8 @@ class ScriptedResourceManager:
 
 
 class ScriptedAeConnection:
+    latency_ms = 0.5  # AE_Com_Module's per-frame latency (CommandProcessing reports it)
+
     def __init__(self, bench: Bench, kind: str, target: Any = None):
         self._bench = bench
         self._target = target
@@ -327,9 +377,10 @@ def load_script(relative: str, clock: Clock) -> types.ModuleType:
 class GuiRun:
     """A script run end to end as __main__, set up through its own setup window (see fake_tk)."""
     entries: dict[str, str]
-    start: str
+    start: str | None                              # None: no setup window (argv-driven script)
     curves: int                                    # waveform transfers a complete run makes
     choices: dict[str, Any] = field(default_factory=dict)
+    argv: tuple[str, ...] = ()
 
 
 def run_gui_script(relative: str, gui: GuiRun, bench: Bench, clock: Clock, parent: Path) -> int:
@@ -356,6 +407,7 @@ def run_gui_script(relative: str, gui: GuiRun, bench: Bench, clock: Clock, paren
     saved_modules = {name: sys.modules.get(name) for name in (*fakes, "__main__")}
     saved_clocks = {name: getattr(real_time, name) for name in clocks}
     saved_env = {k: v for k, v in os.environ.items() if k.startswith("PARAMOUNT_")}
+    saved_argv, saved_cwd = sys.argv, os.getcwd()
     root_logger = logging.getLogger()
     saved_handlers, saved_level = list(root_logger.handlers), root_logger.level
     try:
@@ -364,6 +416,8 @@ def run_gui_script(relative: str, gui: GuiRun, bench: Bench, clock: Clock, paren
         os.environ["PARAMOUNT_COLLECTION_PARENT_FOLDER"] = str(parent)
         sys.modules.update(fakes)
         sys.modules["__main__"] = module
+        sys.argv = [str(path), *gui.argv]
+        os.chdir(parent)  # scripts that write relative paths (logs/) write into the run folder
         for name in clocks:
             setattr(real_time, name, getattr(clock, name))
         try:
@@ -372,6 +426,8 @@ def run_gui_script(relative: str, gui: GuiRun, bench: Bench, clock: Clock, paren
             if stop.code not in (None, 0):
                 raise
     finally:
+        sys.argv = saved_argv
+        os.chdir(saved_cwd)
         for name in clocks:
             setattr(real_time, name, saved_clocks[name])
         for name, saved in saved_modules.items():
@@ -390,7 +446,7 @@ def run_gui_script(relative: str, gui: GuiRun, bench: Bench, clock: Clock, paren
     errors = [title for kind, title, _ in operator.messages if kind == "showerror"]
     if errors:
         raise RuntimeError(f"error dialog: {errors[0]}")
-    curves = sum(1 for entry in bench.log if entry.startswith("('query_binary_values'") and "'CURVE?'" in entry)
+    curves = sum(1 for entry in bench.log if entry.startswith("('query_binary_values'") and "'CURVE?'" in entry.upper())
     if curves != gui.curves:
         raise RuntimeError(f"{curves} waveform transfers; a complete run makes {gui.curves}")
     return 0
@@ -457,6 +513,76 @@ def _analog_processing_bk9141_connect(module, bench: Bench, parent: Path):
         inst.close()
 
 
+def _arc(module, bench: Bench, parent: Path):
+    module.execute(module.Settings(
+        generator_address=DUT, scope_ip="192.0.2.10", function_generator_ip="192.0.2.11",
+        parent_folder=str(parent), sample_count=2, power_w=250, fixed_frequency_khz=13_560,
+        regulation_mode=6, trigger_level_v=1.0, trigger_timeout_s=5.0, rf_settle_s=0.0, clacker_channel=2,
+        clacker_on_s=0.0, post_arc_recovery_s=0.0, inter_sample_delay_s=0.0,
+        arc_management_confirmed=True, clacker_preconfigured_confirmed=True))
+    return 0
+
+
+RF_RAMP_FIELDS = {
+    "generator": DUT, "scope": "192.0.2.10", "parent": None, "product": "Golden", "power_levels": "50, 1000",
+    "ramps": "200", "frequency_khz": "13560", "channel": "CH1", "volts_div": "AUTO", "trigger_low_v": "0.0",
+    "trigger_high_v": "0.075", "record_length": "100000", "pretrigger_pct": "20", "repetitions": "1",
+    "settle_s": "0", "capture_pre_delay_pct": 100.0, "capture_stop_delay_pct": 100.0,
+    "inter_condition_delay_s": 0.0, "raw_per_ms": "1", "ramp_mode": "2", "reg_mode": "6",
+    "measure_definition": "10_TO_90", "rise": True, "fall": True, "rf_off_between": False,
+}
+
+
+def _rf_ramp(module, bench: Bench, parent: Path):
+    """App.collect() (the worker behind Start Collection) on a headless App with every field set."""
+    from tests.tools import fake_tk
+
+    operator = fake_tk.Operator({}, {}, None, str(parent), bench.record)
+    fakes = fake_tk.modules(operator)
+    module.tk, module.ttk = fakes["tkinter"], fakes["tkinter.ttk"]
+    module.filedialog, module.messagebox = fakes["tkinter.filedialog"], fakes["tkinter.messagebox"]
+    try:
+        app = module.App(fakes["tkinter"].Tk())
+        assert set(app.v) == set(RF_RAMP_FIELDS), sorted(set(app.v) ^ set(RF_RAMP_FIELDS))
+        for key, value in RF_RAMP_FIELDS.items():
+            app.v[key].set(str(parent) if key == "parent" else value)
+        app.collect()
+    finally:
+        fake_tk.Widget.operator = None
+    errors = [title for kind, title, _ in operator.messages if kind == "showerror"]
+    if errors:
+        raise RuntimeError(f"error dialog: {errors[0]}")
+    return 0
+
+
+def _rf_tuning(module, bench: Bench, parent: Path):
+    """Generator and Navigator connection, a fault check, and a verified Navigator move."""
+    module.STOP.clear()
+    module.NAVIGATOR_COMMAND_DWELL_SECONDS = module.NAVIGATOR_SETTLE_SECONDS = 0.0
+    generator = navigator = None
+    try:
+        generator = module.create_generator(DUT)
+        module.safe_rf_off(generator)
+        module.verify_no_preexisting_faults(generator)
+        navigator = module.create_navigator("COM11")
+        load, tune = module.MATCH_BY_TARGET_KHZ[module.CENTER_FREQUENCY_KHZ]
+        module.move_and_verify_navigator(navigator, load, tune)
+    finally:
+        module.safe_rf_off(generator)
+        module.close_device(navigator, "Navigator")
+        module.close_device(generator, "generator")
+    return 0
+
+
+RF_ONOFF_ARGS = ("--no-gui", "--unit", "refreshed 3013", "--scope-ip", "192.0.2.10", "--com-port", "COM5",
+                 "--dut-name", DUT, "--trial", "--setpoints", "1000")
+SDG = "TCPIP0::192.0.2.11::INSTR"
+ARC_BENCH = {"ae_trigger_model": True, "identities": {SDG: "Siglent Technologies,SDG6022X,SDG6XGOLDEN,1.0"}}
+
+# A 5 kW, 2 MHz unit (CommandProcessing's command values) with tuning limits it reports back.
+COMMAND_PROCESSING_BENCH = {"fixed_frequency_hz": (1_700_000, 2_300_000), "power_limits_w": (10, 5000),
+                            "ae_values": {144: 1700, 145: 2300, 146: 1985}}
+
 PSYNC_SLAVE = "PSYNCSLAVE"
 PULSED = {"acquisition_model": True, "pulse_model": True}
 
@@ -483,6 +609,7 @@ class Scenario:
     refuse: frozenset[str] = frozenset()
     gui: GuiRun | None = None
     bench: dict[str, Any] = field(default_factory=dict)     # Bench model switches
+    expect: str = "return 0"                                # golden outcome (error-path scenarios differ)
 
 
 SCENARIOS = {s.name: s for s in (
@@ -519,6 +646,30 @@ SCENARIOS = {s.name: s for s in (
              gui=GuiRun(DLP_GUI, "Start Test", 2, {"All configured transitions": True}), bench=PULSED),
     Scenario("pulse_sync", "collection_plugins/pulse_sync/Psync_Data_Collection.py", None,
              gui=GuiRun(PSYNC_GUI, "Start Test", 8, PSYNC_LIVE), bench=PULSED),
+    Scenario("arc_management", "collection_plugins/arc_management/arc_management_collection.py", _arc,
+             bench=ARC_BENCH),
+    # Wrong instrument at the clacker address: the failure path (scope recovery, cleanup) is unchanged.
+    Scenario("arc_management_wrong_function_generator",
+             "collection_plugins/arc_management/arc_management_collection.py", _arc, bench={"ae_trigger_model": True},
+             expect="raise RuntimeError: Connected instrument is not an SDG6022X: 'FAKE,TCPIP0::192.0.2.11::INSTR,0,1'"),
+    Scenario("rf_ramping", "collection_plugins/rf_ramping/RF_Ramp_Collection.py", _rf_ramp),
+    Scenario("rf_tuning_connect_and_match", "collection_plugins/rf_tuning/frequency_tuning_collection.py", _rf_tuning,
+             bench={"navigator_port": "COM11"}),
+    Scenario("rf_onoff_scope_capture", "collection_plugins/rf_on_off_timing/rf_onoff_scope_capture_GUI.py", None,
+             gui=GuiRun({}, None, 6, argv=RF_ONOFF_ARGS), bench={"ae_trigger_model": True}),
+    # A VISA timeout mid-capture takes the scope-recovery branch, not the trigger-timeout branch.
+    Scenario("rf_onoff_scope_capture_visa_timeout",
+             "collection_plugins/rf_on_off_timing/rf_onoff_scope_capture_GUI.py", None,
+             gui=GuiRun({}, None, 3, argv=RF_ONOFF_ARGS), bench={"ae_trigger_model": True, "visa_faults": {"CURVE?": 1}}),
+    # A VISA timeout while configuring the trigger: device clear, then the script exits with an error.
+    Scenario("rf_onoff_scope_capture_trigger_setup_timeout",
+             "collection_plugins/rf_on_off_timing/rf_onoff_scope_capture_GUI.py", None,
+             gui=GuiRun({}, None, 0, argv=RF_ONOFF_ARGS),
+             bench={"ae_trigger_model": True, "visa_faults": {"TRIGGER:A:EDGE:SOURCE?": 1}}, expect="raise SystemExit: 1"),
+    Scenario("command_processing", "collection_plugins/rf_on_off_timing/CommandProcessing.py", None,
+             gui=GuiRun({}, None, 0), bench=COMMAND_PROCESSING_BENCH,
+             # Bench-specific benchmark: runs until a firmware-feature check the scripted DUT does not model.
+             expect="raise Exception: Cannot do this if Tuning algorithm III is not enabled!"),
     Scenario("rf_enable_timing_wavegen_fallback",
              "collection_plugins/analog_port_timing/RF_enable_timing_collection.py", _rf_enable,
              frozenset({WAVEGEN})),
@@ -527,7 +678,7 @@ SCENARIOS = {s.name: s for s in (
 
 def run_scenario(name: str, parent: Path) -> dict:
     scenario = SCENARIOS[name]
-    bench = Bench(refuse=set(scenario.refuse), **scenario.bench)
+    bench = Bench(refuse=set(scenario.refuse), **{k: (dict(v) if isinstance(v, dict) else v) for k, v in scenario.bench.items()})
     clock = Clock()
     with scripted_bench(bench):
         if scenario.gui is not None:
