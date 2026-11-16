@@ -2,11 +2,10 @@ import csv
 import os
 import time
 from datetime import datetime
-from turtle import delay
-import AE_Commands_PMNT_HF_Anj
+import AECommandsSerialTimingAdapter
 
 # ---------------------------
-# Command Code Mapping (from AE_Commands_PMNT_HF_Anj.py)
+# Command Code Mapping (AEBus command numbers used by AECommandsUniversal)
 # ---------------------------
 COMMAND_CODES = {
     "reportPowerSupplyType": 128,
@@ -178,9 +177,9 @@ codes = [17, 18, 21, 24, 25, 26, 27, 28, 29, 31, 32, 34, 35, 38, 39, 40]
 # ---------------------------
 if __name__ == "__main__":
     if COMM_TYPE == "serial":
-        gen = AE_Commands_PMNT_HF_Anj.generator(0, COM_PORT)
+        gen = AECommandsSerialTimingAdapter.generator(0, COM_PORT)
     else:
-        gen = AE_Commands_PMNT_HF_Anj.generator(IP_ADDRESS, None)
+        gen = AECommandsSerialTimingAdapter.generator(IP_ADDRESS, None)
 
 
     # for i in range(857):

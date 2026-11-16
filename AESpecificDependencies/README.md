@@ -12,7 +12,8 @@ AE instrument and command libraries used by the collection scripts. To put this 
 | `Lynx.py` | Lynx power meter |
 | `SpectrumAnalyzer/` | Spectrum analyzer drivers (Harmonics). There is no common interface yet. |
 | `MISC/helperFunctions.py` | Harmonics plotting and report helpers |
-| `Command Latency/` | AEBus command-latency collection and analysis GUIs |
-| `_archive/` | Unused legacy code. Nothing imports it. |
+| `Command Latency/` | AEBus command-latency collection and analysis GUIs. Both collectors it runs live in `Digital Timing/`. |
+
+Unused legacy code lives in [archive/](../archive/README.md). Standalone utilities that used to sit in `MISC/` (ParamPorter, PPT generators) are in [tools/](../tools/README.md).
 
 Planned work: a base generator class plus per-product subclasses, and a spectrum analyzer interface. See [docs/roadmap/NEXT_STEPS.md](../docs/roadmap/NEXT_STEPS.md).

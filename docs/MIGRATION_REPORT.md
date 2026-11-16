@@ -36,3 +36,47 @@ Branch: `refactor/plugin-architecture`. Each phase appends its section here. The
   - `is_low_power_fall` in `CWDataAnalysis_GUI.py:1275`.
   - `j` in `MISC/helperFunctions.py:2341`.
 - **Invalid-escape `SyntaxWarning`s** (`'C:\Windows\...'`, `'$\mu$'`) in the AE modules and `helperFunctions.py`. They are harmless today, but will become errors in a future Python.
+
+## Phase 1: Hygiene
+
+### Removed
+| Path | Why |
+|---|---|
+| `RF Execution Timing/` (3 files) | Deprecated by the user. `Digital Timing/` is the live version, and its CLI and `UNITS` are supersets of the deprecated copy. |
+| `suite_sdk/AE_Commands_PMNT_HF_1XX.py` | Byte-identical to `AESpecificDependencies/AE_Commands_PMNT_HF_1XX.py`. |
+| `suite_sdk/AE_Com_Module.py` | An older strict subset of `AESpecificDependencies/AE_Com_Module.py`: it lacks `create_buffer_cmd_fastDAQ` and `AEB32.close` and has no unique code. |
+
+### Untracked (files kept locally; now gitignored)
+- `logs/log_1..12.csv`: output of `Digital Timing/CommandProcessing.py` (`CSV_PATH = "logs/log_%d.csv"`, relative to the working directory).
+- `RF Ramping/RF_Ramp_Collection_Settings.json`: per-PC settings. Phase 2 migrates it to `runtime/`.
+- New ignore rules: `logs/`, `runtime/`, `*_Settings.json`.
+
+### Moved
+| From | To |
+|---|---|
+| `AESpecificDependencies/_archive/*` | `archive/` (`README.txt` became `README.md`) |
+| `Analog Port Timing/CollectionBeta.py`, `AnalysisBeta.py` | `archive/analog_port_timing/` |
+| `AESpecificDependencies/MISC/ParamPorter/`, `PulseEyePPTGenerator.py`, `omegaSigmaFastDAQPowerPointGenerator.py` | `tools/` |
+
+**Plan deviation:** `MISC/helperFunctions.py` (with `MISC/__init__.py`) stays in `AESpecificDependencies/`. It is live code: `Harmonics_Spurious_Collection.py` does `from MISC.helperFunctions import *`.
+
+### Changed
+- **`Digital Timing/CommandProcessing.py`** now builds `AECommandsSerialTimingAdapter.generator(0, COM_PORT)` / `(IP_ADDRESS, None)` instead of the nonexistent `AE_Commands_PMNT_HF_Anj`. All 23 generator methods it calls exist on `AECommandsUniversal.generator`. The unused `from turtle import delay` is removed.
+- **`AEBus_Command_Latency_Collection_GUI.py`:**
+  - **Pre-existing bug fixed as part of the required repoint.** `find_script` searched only its own folder, so both latency modes failed with "Missing required script". It now uses `suite_common.paths.discover_script`, which resolves both collectors in `Digital Timing/`.
+  - The `rf_scope` mode runs `rf_onoff_scope_capture_GUI.py` with `--no-gui --output-parent <run folder>/rf_onoff_scope --dut-name <generator>`. The Digital Timing script otherwise opens its own settings GUI and writes to `PARAMOUNT_COLLECTION_PARENT_FOLDER` instead of the AEBus run folder.
+  - The checkbox label is updated.
+- **`RF_Ramp_Collection.py`:** the module search checks `AESpecificDependencies/` where it used to check `suite_sdk/`. It now loads the superset `AE_Com_Module`.
+- **Quasi-CW / Split-CW collapse:**
+  - `Rise and Fall/QuasiCWDataCollection_GUI.py`: `main(split_cw=False)` and `capture_transition(..., split_cw=False)`. `SplitCWDataCollection_GUI.py` is now a wrapper calling `main(split_cw=True)`.
+  - A recording mock showed identical call sequences against the original files: 29 calls for Quasi-CW, 32 for Split-CW.
+  - `SplitCWDataAnalysis_GUI.py`, `SplitCWOscillationsCollection_GUI.py`, and `SplitCWOscillationsAnalysis_GUI.py` were byte-identical to their Quasi counterparts and are now `runpy` wrappers.
+- **`suite_common/paths.py`:** discovery also skips `archive/`.
+- **`Unified_Collection_GUI_Settings.example.json`:** the legacy `analog_port_timing -> CollectionBeta.py` script entry is dropped. If a saved settings file still points there, `load_config` now rediscovers `analog_processing_timing_collection.py`, because the archived path no longer resolves.
+
+### Observations for the user
+- `Quasi CW Oscillations/SplitCWOscillationsCollection_GUI.py` was byte-identical to the Quasi version. Unlike the Rise and Fall Split-CW collector, it never called `setSplitCWEnable`. That behavior is preserved, but it may be an oversight.
+- All four Quasi/Split-CW collectors still reference the missing `AECommands_forFastDAQ` module and methods absent from `AECommandsUniversal` (`setStartFreq`, `RF_ON`, `serialNumber`, ...). They cannot run today.
+
+### Tests added
+`test_aebus_latency_collectors.py` (both collectors resolve to Digital Timing, and every patched constant matches exactly once), `test_quasi_split_cw.py`, and `test_retired_modules.py`. Gate: **122 passed**, all three `--self-test`s pass, and the AEBus adapter resolves `AESpecificDependencies/`.

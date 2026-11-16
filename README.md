@@ -69,4 +69,4 @@ Script paths are stored relative to the repo. If a saved path no longer exists, 
 
 ## Docs
 
-See [docs/README.md](docs/README.md) for the documentation index: project memory, AI workflow, review write-ups, roadmap, and legacy notes. AI agents should start at [AGENTS.md](AGENTS.md). `AESpecificDependencies/_archive/` holds unused legacy scripts kept for reference; nothing imports them.
+See [docs/README.md](docs/README.md) for the documentation index: project memory, AI workflow, review write-ups, roadmap, and legacy notes. AI agents should start at [AGENTS.md](AGENTS.md). `archive/` holds unused legacy scripts kept for reference; nothing imports them. `tools/` holds standalone utilities that are not part of the suite.

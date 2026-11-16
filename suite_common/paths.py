@@ -10,7 +10,7 @@ from pathlib import Path
 from suite_common import REPO_ROOT
 
 # Folders never searched when discovering suite scripts.
-EXCLUDED_DISCOVERY_PARTS = {".git", ".venv", "venv", "node_modules", "__pycache__", "_archive"}
+EXCLUDED_DISCOVERY_PARTS = {".git", ".venv", "venv", "node_modules", "__pycache__", "_archive", "archive"}
 
 
 def discover_script(candidates: list[str], root: Path = REPO_ROOT) -> str:

@@ -328,7 +328,8 @@ def save_waveform_csv(
 def capture_transition(
         Egen,
         start_power,
-        end_power):
+        end_power,
+        split_cw=False):
 
     print(
         f"\nCapturing transition:"
@@ -339,6 +340,9 @@ def capture_transition(
         start_power * HALO_MULTIPLIER,
         start_power * HALO_MULTIPLIER
     )
+
+    if split_cw:
+        Egen.setSplitCWEnable()
 
     time.sleep(
         SETPOINT_SETTLE_TIME
@@ -438,7 +442,8 @@ def save_settings_file(
 # MAIN
 # ==========================================================
 
-def main():
+def main(split_cw=False):
+    """Run the Quasi-CW collection; split_cw=True is the Split-CW variant."""
 
     config = get_user_settings()
 
@@ -512,7 +517,8 @@ def main():
         rise_time, rise_power = capture_transition(
             Egen,
             config["initial_power"],
-            power_limit
+            power_limit,
+            split_cw
         )
 
         save_waveform_csv(
@@ -531,7 +537,8 @@ def main():
         fall_time, fall_power = capture_transition(
             Egen,
             power_limit,
-            config["initial_power"]
+            config["initial_power"],
+            split_cw
         )
 
         save_waveform_csv(
@@ -544,6 +551,9 @@ def main():
         )
 
         Egen.RF_OFF()
+
+        if split_cw:
+            Egen.setSplitCWDisable()
 
         print("\nCollection Complete")
 

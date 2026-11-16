@@ -27,6 +27,12 @@ _backup_local_settings/
 # Log files
 *.log
 Power_Linearity_Error.log
+logs/
+
+# Generated per-PC data (Phase 2 moves all settings here)
+runtime/
+# Per-test settings written beside scripts (templates are *.example.json)
+*_Settings.json
 
 # IDE
 .idea/

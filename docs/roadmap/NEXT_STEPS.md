@@ -29,7 +29,7 @@ Goal: a stable, tagged release that test engineers can run on several benches an
 11. **Shared base for collection and analysis GUIs.** Factor out progress windows, settings load/save, and process polling.
 12. **AE command library.** Write a base class plus one subclass per product (PMNT_HF_1XX vs 7434753 overlap about 90%), and give the spectrum analyzer drivers a common interface.
 13. **Unified PowerPoint export.** One `export_powerpoint_package(manifest_payload)` replacing 8 copies.
-14. **Analog Port Timing.** Decode the base85 blobs in `AnalysisBeta.py` into reviewable modules, then promote the Beta scripts out of beta.
+14. **Analog Port Timing.** Done: the five tests run as standalone scripts, and the Beta monolith (`CollectionBeta.py`, `AnalysisBeta.py`) is archived in `archive/analog_port_timing/`.
 
 ## Phase 4: quality
 15. **CI on every push.** pyflakes, `py_compile`, the self-test, and offline analysis unit tests that use recorded waveform CSVs as fixtures.

@@ -25,20 +25,19 @@ from tkinter import filedialog, messagebox, ttk
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from suite_common.bench import bench_default
+from suite_common.paths import discover_script
 
 APP_DIR = Path(__file__).resolve().parent
 TEST_NAME = "AEBus Command Latency"
+# Both collectors live in the Digital Timing test folder.
 COLLECTION_SCRIPT_CANDIDATES = {
     "command_processing": ["CommandProcessing.py"],
-    "rf_scope": ["rf_onoff_scope_capture.py"],
+    "rf_scope": ["rf_onoff_scope_capture_GUI.py"],
 }
 
 
 def find_script(candidates):
-    for name in candidates:
-        path = APP_DIR / name
-        if path.is_file(): return path
-    return APP_DIR / candidates[0]
+    return Path(discover_script(candidates))
 
 
 def safe_component(value):
@@ -111,7 +110,7 @@ class App:
         modes=ttk.Frame(nb,padding=12);inst=ttk.Frame(nb,padding=12);cmd=ttk.Frame(nb,padding=12);rf=ttk.Frame(nb,padding=12);ift=ttk.Frame(nb,padding=12);out=ttk.Frame(nb,padding=12)
         for frame,title in [(modes,"Collection Modes"),(inst,"Instruments"),(cmd,"Command Processing"),(rf,"RF ON/OFF Scope"),(ift,"IF Tools"),(out,"Output")]:nb.add(frame,text=title)
         ttk.Checkbutton(modes,text="AEBus transaction latency (CommandProcessing.py)",variable=self.command_var).pack(anchor="w",pady=7)
-        ttk.Checkbutton(modes,text="RF ON/OFF physical-response latency (rf_onoff_scope_capture.py)",variable=self.rf_var).pack(anchor="w",pady=7)
+        ttk.Checkbutton(modes,text="RF ON/OFF physical-response latency (rf_onoff_scope_capture_GUI.py)",variable=self.rf_var).pack(anchor="w",pady=7)
         ttk.Checkbutton(modes,text="IF Tools trace workflow/import",variable=self.if_var).pack(anchor="w",pady=7)
         self.entry(inst,0,"Generator hostname / IP","generator","Used for Ethernet; defaults from unified GUI.")
         self.entry(inst,1,"Oscilloscope hostname / IP","scope","Defaults from unified GUI.")
@@ -212,7 +211,8 @@ class App:
                     (r'^REPORT_ROOT\s*=.*$',f'REPORT_ROOT = {str(folder.resolve())!r}',"report root"),
                 ]
                 runtime=runtime_copy(original,folder,replacements);runtime_files.append(runtime)
-                args=[sys.executable,str(runtime),"--unit",self.vars["unit"].get().strip(),"--scope-ip",self.vars["scope"].get().strip(),"--com-port",self.vars["com"].get().strip(),"--iterations",str(ri),"--measurement",str(measurement),"--setpoints",*[str(x) for x in setpoints]]
+                # --no-gui: this GUI already collected the settings; --output-parent keeps data in this run folder.
+                args=[sys.executable,str(runtime),"--no-gui","--output-parent",str(folder.resolve()),"--dut-name",self.vars["generator"].get().strip() or "Generator","--unit",self.vars["unit"].get().strip(),"--scope-ip",self.vars["scope"].get().strip(),"--com-port",self.vars["com"].get().strip(),"--iterations",str(ri),"--measurement",str(measurement),"--setpoints",*[str(x) for x in setpoints]]
                 self.run_subprocess(args,folder,env);completed+=1;self.bar["value"]=completed
             if "if_tools" in modes and not self.stop_requested:
                 self.status.set("Preparing IF Tools trace folder");folder=run/"if_tools";write_if_tools_readme(folder)
