@@ -33,27 +33,21 @@ from suite_common.config import (
 )
 from suite_common.paths import (
     child_creation_flags,
-    discover_script,
     load_json_settings,
     resolve_portable_path,
-    resolve_script_setting,
+    resolve_saved_script,
     save_json_settings,
     to_portable_path,
 )
+from suite_sdk.registry import describe_unavailable, load_registry
 
 APP_TITLE = "Paramount Unified Data Collection"
 APP_DIR = Path(__file__).resolve().parent
 POLL_INTERVAL_MS = 400
 COLLECTION_PARENT_FOLDER_ENV = "PARAMOUNT_COLLECTION_PARENT_FOLDER"
 RISE_FALL_TEST_KEY = "rise_fall_time_verification"
-RISE_FALL_MODES = ("CW", "SLP", "DLP")
 RISE_FALL_EDGES = ("RISE", "FALL")
 SEQUENCE_MODE_SEPARATOR = "::"
-RISE_FALL_SCRIPT_CANDIDATES = {
-    "CW": ["CWDataCollection_GUI.py"],
-    "SLP": ["SLPDataCollection_GUI.py"],
-    "DLP": ["DLPDataCollection_GUI.py"],
-}
 EQUIPMENT_LABELS = {item.key: item.label for item in EQUIPMENT_FIELDS}
 
 
@@ -61,141 +55,33 @@ EQUIPMENT_LABELS = {item.key: item.label for item in EQUIPMENT_FIELDS}
 class TestDefinition:
     key: str
     name: str
-    default_scripts: list[str]
+    script: str
     equipment: list[str]
     instructions: str
     image: str = ""
 
 
+# Tests come from the plugin registry (plugin.json files); add a test there, not here.
+REGISTRY = load_registry()
 TESTS = [
-    TestDefinition(
-        "dc_operating_point", "DC Operating Point",
-        ["DC_Operating_Point_Collection_GUI.py"],
-        ["generator", "lynx"],
-        "Configure the DC Operating Point bench. Confirm generator and Lynx connections, then continue to the test-specific GUI.",
-    ),
-    TestDefinition(
-        "harmonics_spurious", "Harmonics and Spurious",
-        ["Harmonics_Spurious_Collection.py"],
-        ["generator", "spectrum_analyzer"],
-        "Connect the generator and spectrum analyzer for Harmonics and Spurious collection. Confirm the RF path and analyzer input protection before continuing.",
-    ),
-    TestDefinition(
-        "power_accuracy", "Power Accuracy",
-        ["Power_Accuracy_Collection_GUI.py"],
-        ["generator", "lynx"],
-        "Configure the Power Accuracy bench with the generator and Lynx. Verify the measurement path before continuing.",
-    ),
-    TestDefinition(
-        "power_linearity", "Power Linearity",
-        ["Power_Linearity_Collection_GUI.py"],
-        ["generator", "lynx", "navigator"],
-        "Configure the Power Linearity bench. Confirm generator, Lynx, and optional tuner connections before continuing.",
-    ),
-    TestDefinition(
-        "rise_fall_time_verification", "Rise and Fall Time Verification",
-        RISE_FALL_SCRIPT_CANDIDATES["CW"],
-        ["generator", "oscilloscope", "waveform_generator"],
-        "Configure the Rise and Fall Time Verification bench. Confirm the generator and oscilloscope connections, probes, trigger source, and waveform channels before continuing.",
-    ),
-    TestDefinition(
-        "setpoint_transfer_function", "Setpoint Transfer Function",
-        ["Setpoint_Transfer_Function_Collection.py", "setpoint_transfer_function_collection.py"],
-        ["generator", "waveform_generator"],
-        ("Connect waveform-generator CH1 to the User Port analog setpoint input and CH2 to RF Enable. "
-         "Verify the User Port returns, RF load, cooling, interlocks, and emergency shutdown access before continuing."),
-    ),
-    TestDefinition(
-        "analog_processing_timing", "Analog Processing Timing",
-        ["Analog_Processing_Timing_Collection.py", "analog_processing_timing_collection.py"],
-        ["generator", "oscilloscope", "waveform_generator"],
-        ("Connect waveform-generator CH1 to the analog setpoint input and CH2 to RF Enable. "
-         "Connect scope CH1 to the setpoint signal and CH2 to the RF waveform monitor. Verify 50-ohm CH2 termination."),
-    ),
-    TestDefinition(
-        "rf_enable_timing", "RF Enable Timing",
-        ["RF_Enable_Timing_Collection.py", "rf_enable_timing_collection.py"],
-        ["generator", "oscilloscope", "waveform_generator"],
-        ("Connect waveform-generator CH1 to the analog setpoint input and CH2 to RF Enable. "
-         "Connect scope CH1 to RF Enable, CH2 to the RF waveform monitor, and CH3 to the approved RF detector."),
-    ),
-    TestDefinition(
-        "interlock_response_timing", "Interlock Response Timing",
-        ["Interlock_Response_Timing_Collection.py", "interlock_response_timing_collection.py"],
-        ["generator", "oscilloscope", "waveform_generator", "dc_supply"],
-        ("Connect the BK Precision 9141 interlock stimulus, waveform-generator analog setpoint and RF Enable, "
-         "scope CH1 to the interlock signal, and scope CH2 to the RF waveform monitor. Verify the safety shutdown path."),
-    ),
-    TestDefinition(
-        "cex_lock_acquisition", "CEX Lock Acquisition",
-        ["CEX_Lock_Acquisition_Collection.py", "cex_lock_acquisition_collection.py"],
-        ["generator", "oscilloscope", "waveform_generator"],
-        ("Connect the external manual setpoint supply, RF Enable, and 13.56 MHz CEX reference. "
-         "Connect scope CH1 to the CEX reference, CH2 to the RF waveform monitor, and CH3 to active-low CEX LOCK."),
-    ),
-    TestDefinition(
-        "aebus_command_latency", "AEBus Command Latency",
-        ["AEBus_Command_Latency_Collection_GUI.py"],
-        ["generator", "generator_com_port", "oscilloscope"],
-        (
-            "Configure the AEBus Command Latency test. Confirm generator communication, "
-            "oscilloscope connections, RF ON/OFF settings, and the IF Tools workflow "
-            "before continuing."
-        ),
-    ),
-    TestDefinition(
-        "power_profile", "Power Profile",
-        ["Power_Profile_Collection_GUI.py"],
-        ["generator", "lynx", "navigator"],
-        "Configure the Power Profile bench. Confirm generator, Lynx, Navigator/tuner, and tuner-map connections before continuing.",
-    ),
-    TestDefinition(
-        "psync", "Pulse Sync",
-        ["Psync_Data_Collection.py"],
-        ["generator", "psync_slave_generator", "oscilloscope"],
-        "Configure the Pulse Sync bench. Confirm master and slave generator connections, the sync cable, and scope channels before continuing.",
-    ),
-    TestDefinition(
-        "rf_tuning", "RF Tuning",
-        ["RF_Tuning_Collection.py", "rf_tuning_collection.py"],
-        ["generator", "navigator"],
-        (
-            "Configure the RF Tuning bench. Confirm generator and Navigator connections, "
-            "connect the RF frequency-monitor signal to the Keysight 53220A counter, and "
-            "verify the RF load, cooling, interlocks, and emergency shutdown access before continuing."
-        ),
-    ),
+    TestDefinition(t.key, t.name, str(t.script), list(t.equipment), t.instructions, t.image)
+    for t in REGISTRY.tests("collection")
 ]
 TEST_BY_KEY = {test.key: test for test in TESTS}
-LEGACY_ANALOG_PORT_TIMING_KEY = "analog_port_timing"
-ANALOG_PORT_TIMING_REPLACEMENT_KEYS = (
-    "setpoint_transfer_function",
-    "analog_processing_timing",
-    "rf_enable_timing",
-    "interlock_response_timing",
-    "cex_lock_acquisition",
-)
+RISE_FALL_SCRIPTS = {mode: str(path) for mode, path in REGISTRY.test("collection", RISE_FALL_TEST_KEY).modes.items()}
+RISE_FALL_MODES = tuple(RISE_FALL_SCRIPTS)
 
 
-def migrate_legacy_analog_port_selection(values: list[str]) -> list[str]:
-    """Replace the former combined Analog Port Timing entry without disturbing order."""
-    migrated = []
-    for value in values:
-        replacements = ANALOG_PORT_TIMING_REPLACEMENT_KEYS if value == LEGACY_ANALOG_PORT_TIMING_KEY else (value,)
-        for replacement in replacements:
-            if replacement in TEST_BY_KEY and replacement not in migrated:
-                migrated.append(replacement)
-    return migrated
+def migrate_selection(values: list[str]) -> list[str]:
+    """Map legacy keys in saved settings (plugin.json "aliases") to current tests, keeping order."""
+    return [key for key in REGISTRY.resolve_aliases("collection", values) if key in TEST_BY_KEY]
 
 
 def default_config() -> dict:
     return {
         "collection_parent_folder": str(Path.home()),
-        "scripts": {test.key: discover_script(test.default_scripts) for test in TESTS},
-        "rise_fall_scripts": {
-            mode: discover_script(candidates)
-            for mode, candidates in RISE_FALL_SCRIPT_CANDIDATES.items()
-        },
+        "scripts": {test.key: test.script for test in TESTS},
+        "rise_fall_scripts": dict(RISE_FALL_SCRIPTS),
         "selected_tests": [test.key for test in TESTS],
         "test_order": [test.key for test in TESTS],
         "show_setup_pages": True,
@@ -213,32 +99,27 @@ def load_config() -> dict:
     saved = load_json_settings(collection_gui_settings_path())
     for key, saved_path in (saved.get("scripts") or {}).items():
         if key in TEST_BY_KEY:
-            config["scripts"][key] = resolve_script_setting(saved_path, TEST_BY_KEY[key].default_scripts)
+            config["scripts"][key] = resolve_saved_script(saved_path, TEST_BY_KEY[key].script)
     for mode, saved_path in (saved.get("rise_fall_scripts") or {}).items():
-        if mode in RISE_FALL_SCRIPT_CANDIDATES:
-            config["rise_fall_scripts"][mode] = resolve_script_setting(saved_path, RISE_FALL_SCRIPT_CANDIDATES[mode])
+        if mode in RISE_FALL_SCRIPTS:
+            config["rise_fall_scripts"][mode] = resolve_saved_script(saved_path, RISE_FALL_SCRIPTS[mode])
     if isinstance(saved.get("setup_images"), dict):
         config["setup_images"].update(saved["setup_images"])
-        legacy_image = str(saved["setup_images"].get(LEGACY_ANALOG_PORT_TIMING_KEY, "")).strip()
-        if legacy_image:
-            for replacement_key in ANALOG_PORT_TIMING_REPLACEMENT_KEYS:
+        # An image saved under a legacy key carries over to the tests that replaced it.
+        for legacy_key, image in saved["setup_images"].items():
+            if legacy_key in TEST_BY_KEY or not str(image).strip():
+                continue
+            for replacement_key in migrate_selection([legacy_key]):
                 if not str(saved["setup_images"].get(replacement_key, "")).strip():
-                    config["setup_images"][replacement_key] = legacy_image
+                    config["setup_images"][replacement_key] = str(image).strip()
     for key in (
         "selected_tests", "test_order", "show_setup_pages",
         "open_child_console", "rise_fall_modes", "rise_fall_mode_edges",
     ):
         if key in saved:
             config[key] = saved[key]
-    # Upgrade existing settings that used one combined Analog Port Timing entry.
-    legacy_scripts = saved.get("scripts") or {}
-    legacy_analog_script = str(legacy_scripts.get(LEGACY_ANALOG_PORT_TIMING_KEY, "")).strip()
-    if legacy_analog_script and not str(legacy_scripts.get("analog_processing_timing", "")).strip():
-        config["scripts"]["analog_processing_timing"] = resolve_script_setting(
-            legacy_analog_script, TEST_BY_KEY["analog_processing_timing"].default_scripts
-        )
     for key in ("selected_tests", "test_order"):
-        config[key] = migrate_legacy_analog_port_selection([str(item) for item in config[key]])
+        config[key] = migrate_selection([str(item) for item in config[key]])
     if saved.get("collection_parent_folder"):
         config["collection_parent_folder"] = resolve_portable_path(saved["collection_parent_folder"])
     return config
@@ -991,6 +872,13 @@ class UnifiedCollectionApp:
         self.root.destroy()
 
 
+def _warn_unavailable_plugins(root: tk.Tk) -> None:
+    problems = describe_unavailable(REGISTRY)
+    if problems:
+        print("\n".join(problems))
+        messagebox.showwarning("Plugins unavailable", "These plugins were skipped:\n\n" + "\n\n".join(problems), parent=root)
+
+
 def self_test() -> int:
     config = default_config()
     addresses = {**empty_addresses(), "generator": "GEN01", "oscilloscope": "10.0.0.5"}
@@ -1003,10 +891,12 @@ def self_test() -> int:
     assert env[COLLECTION_PARENT_FOLDER_ENV] == config["collection_parent_folder"]
     assert _com_port_from_visa("ASRL5::INSTR") == "COM5"
     assert len(TESTS) == 14
-    assert set(ANALOG_PORT_TIMING_REPLACEMENT_KEYS) <= set(TEST_BY_KEY)
-    assert migrate_legacy_analog_port_selection(["power_accuracy", "analog_port_timing", "psync"]) == [
-        "power_accuracy", *ANALOG_PORT_TIMING_REPLACEMENT_KEYS, "psync"
+    analog_keys = ["setpoint_transfer_function", "analog_processing_timing", "rf_enable_timing",
+                   "interlock_response_timing", "cex_lock_acquisition"]
+    assert migrate_selection(["power_accuracy", "analog_port_timing", "psync"]) == [
+        "power_accuracy", *analog_keys, "psync"
     ]
+    assert RISE_FALL_MODES == ("CW", "SLP", "DLP")
     expected_equipment = {
         "setpoint_transfer_function": {"generator", "waveform_generator"},
         "analog_processing_timing": {"generator", "oscilloscope", "waveform_generator"},
@@ -1027,6 +917,8 @@ def self_test() -> int:
     ]
     if missing:
         print("Scripts not discovered:\n  " + "\n  ".join(missing))
+    for line in describe_unavailable(REGISTRY):
+        print(f"Plugin {line}")
     print("Unified collection launcher self-test passed.")
     return 0
 
@@ -1036,6 +928,7 @@ def main() -> int:
         return self_test()
     migrate_legacy_settings()
     root = tk.Tk()
+    _warn_unavailable_plugins(root)
     UnifiedCollectionApp(root)
     root.mainloop()
     return 0

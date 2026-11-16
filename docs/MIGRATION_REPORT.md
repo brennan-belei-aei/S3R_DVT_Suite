@@ -168,3 +168,53 @@ Gate: **177 passed**, all three `--self-test`s pass, and RF Ramping resolves `AE
 
 ### Tests
 `tests/test_config_paths.py` covers migration of a temporary legacy tree (content preserved, originals kept), idempotence, no overwrite when a legacy file reappears, first-access adoption, and a guard that only `package*.json` is tracked at the repo root. Gate: **183 passed**, all three `--self-test`s pass, and pyflakes on the core is clean.
+## Phase 3: Plugin framework (in place)
+
+### `suite_sdk/` (new package; the old `suite_sdk/` held only duplicate modules and was removed in Phase 1)
+- **`plugin.schema.json`:** the plugin contract. Plugin files reference it in `$schema` for editor validation.
+- **`schema.py`:** a small validator for the JSON Schema keywords that file uses. The plan allows no new runtime dependencies, so it does not use `jsonschema`.
+- **`registry.py`:** `load_registry()` discovers plugin files with a pruned `os.walk` that skips `.venv`, `archive/`, `runtime/`, and `tests/`. It validates schema, file-name kind, entry and mode script existence, duplicate plugin ids, and duplicate test keys. Invalid plugins go to `registry.unavailable` with the reason and never raise. Queries:
+  - `tests(kind, product=, firmware=, include_unlisted=)`, sorted by `order`;
+  - `test(kind, key)` and `plugin(kind, id)`;
+  - `resolve_aliases(kind, saved_keys)`.
+- **`context.py`:** a `SuiteContext` dataclass with JSON `save`, `load`, and `from_environment` (`PARAMOUNT_SUITE_CONTEXT`), so Phase 5 can wire it in. It ignores unknown fields, so newer files still load.
+
+### Plugin files (26)
+- **Layout:** while collection and analysis scripts still share a folder, each folder has `plugin.collection.json` and `plugin.analysis.json`. Phase 4 splits them into `collection_plugins/<id>/plugin.json` and `analysis_plugins/<id>/plugin.json`.
+- **Generated, not hand-written:** a one-off generator built them from the Phase 2 `TESTS`, `RISE_FALL_SCRIPT_CANDIDATES`, and `BUILTIN_ANALYSES`. Names, equipment, instruction text, descriptions, and order are therefore verbatim. Entries use each script's real on-disk filename.
+- **Plugin ids:** follow the plan's mapping: `dc_operating_point`, `harmonics_spurious`, `power_linearity_accuracy`, `rise_fall_time`, `analog_port_timing`, `aebus_command_latency`, `power_profile`, `pulse_sync`, `rf_tuning`, `arc_management`, `rf_ramping`, `quasi_cw_oscillations`, `rf_on_off_timing`. Test keys are unchanged, so saved settings keep working.
+- **Rise/Fall:** keeps one collection key, `rise_fall_time_verification`, with `modes` `{CW, SLP, DLP}` mapped to scripts.
+- **Legacy keys move into `aliases`:** collection `analog_port_timing`; analysis `t4`-`t8` and `analog_port_timing`.
+- **Unlisted tests:** tests that exist on disk but were never in the GUIs are included with `"listed": false`, so the GUIs look exactly as before. They are Arc Management, RF Ramping, Quasi-CW / Split-CW Oscillations, Rise/Fall Quasi-CW and Split-CW, and Digital Timing (`rf_onoff_scope_capture`, `rf_onoff_command_processing`, `rf_onoff_latency`). Their `requires` is empty because those scripts hardcode their instruments and never call `bench_default`.
+
+### GUI changes
+- **Collection GUI:**
+  - `TESTS`, `TEST_BY_KEY`, `RISE_FALL_SCRIPTS`, and `RISE_FALL_MODES` are now built from the registry.
+  - **Deleted:** `RISE_FALL_SCRIPT_CANDIDATES`, the hardcoded `TestDefinition` list, `LEGACY_ANALOG_PORT_TIMING_KEY`, `ANALOG_PORT_TIMING_REPLACEMENT_KEYS`, `migrate_legacy_analog_port_selection`, and the legacy CollectionBeta script-path upgrade (its target was archived in Phase 1).
+  - **New:** `migrate_selection()` uses the registry aliases. Setup images saved under any legacy key carry over to the replacement tests, a generalization of the old analog-only rule.
+- **Analysis GUI:**
+  - `BUILTIN_ANALYSES` is now built from the registry.
+  - **Deleted:** `NEW_ANALOG_ANALYSIS_KEYS` and `migrate_legacy_analysis_entries`; `migrate_analysis_entries()` replaces them. Unknown keys (custom analyses) pass through unchanged.
+  - **Custom analyses** still work: they are found again by filename. Built-ins use the registry path.
+- **Saved script paths:** `suite_common.paths.resolve_saved_script(saved, default)` keeps a saved script path if it still exists, otherwise uses the plugin default. The filename-candidate lists are gone from both GUIs.
+- **Unavailable plugins:** both GUIs warn about them at startup (console plus a dialog), and both `--self-test`s print them.
+- **AEBus Command Latency** finds its two Digital Timing collectors with `load_registry().test("collection", key)`, as amendment A1 required.
+
+### Behavior changes (intended)
+- **`rf_tuning` now resolves:** collection `Frequency Tuning/frequency_tuning_collection.py`, analysis `frequency_tuning_analysis.py`. Before, the GUIs looked for nonexistent `RF_Tuning_*.py` names and showed "Missing". This user's saved selection is RF Tuning only, so it now works.
+- **The test suite runs in about 3 s instead of about 40 s,** because filename discovery no longer walks `.venv`.
+
+### Gate
+- **Registry baseline:** `tests/test_registry_snapshot.py` passes against the **Phase 0** baseline (the baseline file was not regenerated): same 14 collection tests, 3 Rise/Fall modes, 16 analyses, order, names, equipment, instructions, and legacy aliases. No test lost discoverability; `rf_tuning` gained it.
+- **Real settings:** loaded through both GUIs, all 14 + 3 + 16 script paths resolve.
+- **`tests/test_plugin_registry.py`:**
+  - every shipped plugin is valid;
+  - `requires` values are real bench equipment keys;
+  - every `paired_with` resolves;
+  - six kinds of invalid file are reported, not raised;
+  - a duplicate key keeps the first plugin;
+  - the file name kind must match the file's `kind`;
+  - product and firmware filters work;
+  - unlisted tests stay hidden;
+  - `SuiteContext` round-trips.
+- **Result: 204 passed**, all three `--self-test`s pass, and pyflakes is clean on `suite_sdk`, `suite_common`, and the three apps.

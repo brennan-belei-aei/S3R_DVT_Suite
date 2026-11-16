@@ -27,14 +27,14 @@ def gui():
 
 @pytest.mark.parametrize("mode", sorted(PATCHED_CONSTANTS))
 def test_collectors_resolve_to_digital_timing(gui, mode):
-    script = gui.find_script(gui.COLLECTION_SCRIPT_CANDIDATES[mode])
+    script = gui.find_script(mode)
     assert script.is_file()
     assert script.parent.name == "Digital Timing"
 
 
 @pytest.mark.parametrize("mode", sorted(PATCHED_CONSTANTS))
 def test_runtime_copy_patches_every_constant(gui, mode, tmp_path):
-    original = gui.find_script(gui.COLLECTION_SCRIPT_CANDIDATES[mode])
+    original = gui.find_script(mode)
     replacements = [
         (rf"^{name}\s*=.*$", f"{name} = 'PATCHED_{name}'", name) for name in PATCHED_CONSTANTS[mode]
     ]

@@ -1,0 +1,86 @@
+{
+  "$schema": "../suite_sdk/plugin.schema.json",
+  "schema_version": 1,
+  "id": "analog_port_timing",
+  "name": "Analog Port Timing",
+  "kind": "collection",
+  "version": "1.0.0",
+  "paired_with": "analog_port_timing",
+  "tests": [
+    {
+      "key": "setpoint_transfer_function",
+      "name": "Setpoint Transfer Function",
+      "entry": "Setpoint Transfer Function/setpoint_transfer_function_collection.py",
+      "order": 60,
+      "requires": [
+        "generator",
+        "waveform_generator"
+      ],
+      "instructions": "Connect waveform-generator CH1 to the User Port analog setpoint input and CH2 to RF Enable. Verify the User Port returns, RF load, cooling, interlocks, and emergency shutdown access before continuing.",
+      "aliases": [
+        "analog_port_timing"
+      ]
+    },
+    {
+      "key": "analog_processing_timing",
+      "name": "Analog Processing Timing",
+      "entry": "Analog Processing Timing/analog_processing_timing_collection.py",
+      "order": 70,
+      "requires": [
+        "generator",
+        "oscilloscope",
+        "waveform_generator"
+      ],
+      "instructions": "Connect waveform-generator CH1 to the analog setpoint input and CH2 to RF Enable. Connect scope CH1 to the setpoint signal and CH2 to the RF waveform monitor. Verify 50-ohm CH2 termination.",
+      "aliases": [
+        "analog_port_timing"
+      ]
+    },
+    {
+      "key": "rf_enable_timing",
+      "name": "RF Enable Timing",
+      "entry": "RF Enable Timing/RF_enable_timing_collection.py",
+      "order": 80,
+      "requires": [
+        "generator",
+        "oscilloscope",
+        "waveform_generator"
+      ],
+      "instructions": "Connect waveform-generator CH1 to the analog setpoint input and CH2 to RF Enable. Connect scope CH1 to RF Enable, CH2 to the RF waveform monitor, and CH3 to the approved RF detector.",
+      "aliases": [
+        "analog_port_timing"
+      ]
+    },
+    {
+      "key": "interlock_response_timing",
+      "name": "Interlock Response Timing",
+      "entry": "Interlock Response Timing/Interlock_Response_Timing_Collection.py",
+      "order": 90,
+      "requires": [
+        "generator",
+        "oscilloscope",
+        "waveform_generator",
+        "dc_supply"
+      ],
+      "instructions": "Connect the BK Precision 9141 interlock stimulus, waveform-generator analog setpoint and RF Enable, scope CH1 to the interlock signal, and scope CH2 to the RF waveform monitor. Verify the safety shutdown path.",
+      "aliases": [
+        "analog_port_timing"
+      ]
+    },
+    {
+      "key": "cex_lock_acquisition",
+      "name": "CEX Lock Acquisition",
+      "entry": "CEX Lock Acquisition Timing/CEX_Lock_Acquisition_Collection.py",
+      "order": 100,
+      "requires": [
+        "generator",
+        "oscilloscope",
+        "waveform_generator"
+      ],
+      "instructions": "Connect the external manual setpoint supply, RF Enable, and 13.56 MHz CEX reference. Connect scope CH1 to the CEX reference, CH2 to the RF waveform monitor, and CH3 to active-low CEX LOCK.",
+      "aliases": [
+        "analog_port_timing"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "../suite_sdk/plugin.schema.json",
+  "schema_version": 1,
+  "id": "pulse_sync",
+  "name": "Pulse Sync",
+  "kind": "analysis",
+  "version": "1.0.0",
+  "paired_with": "pulse_sync",
+  "tests": [
+    {
+      "key": "psync",
+      "name": "Pulse Sync",
+      "entry": "Psync_Data_Analysis.py",
+      "order": 150
+    }
+  ]
+}

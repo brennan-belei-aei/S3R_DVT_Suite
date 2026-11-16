@@ -1,0 +1,43 @@
+{
+  "$schema": "../suite_sdk/plugin.schema.json",
+  "schema_version": 1,
+  "id": "rise_fall_time",
+  "name": "Rise and Fall Time",
+  "kind": "analysis",
+  "version": "1.0.0",
+  "paired_with": "rise_fall_time",
+  "tests": [
+    {
+      "key": "rise_fall_cw",
+      "name": "Rise/Fall Time - CW",
+      "entry": "CWDataAnalysis_GUI.py",
+      "order": 60
+    },
+    {
+      "key": "rise_fall_slp",
+      "name": "Rise/Fall Time - SLP",
+      "entry": "SLPDataAnalysis_GUI.py",
+      "order": 70
+    },
+    {
+      "key": "rise_fall_dlp",
+      "name": "Rise/Fall Time - DLP",
+      "entry": "DLPDataAnalysis_GUI.py",
+      "order": 80
+    },
+    {
+      "key": "rise_fall_quasi_cw",
+      "name": "Rise/Fall Time - Quasi-CW",
+      "entry": "QuasiCWDataAnalysis_GUI.py",
+      "order": 1040,
+      "listed": false
+    },
+    {
+      "key": "rise_fall_split_cw",
+      "name": "Rise/Fall Time - Split-CW",
+      "entry": "SplitCWDataAnalysis_GUI.py",
+      "order": 1050,
+      "listed": false
+    }
+  ]
+}

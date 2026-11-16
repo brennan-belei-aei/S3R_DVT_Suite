@@ -1,0 +1,27 @@
+{
+  "$schema": "../suite_sdk/plugin.schema.json",
+  "schema_version": 1,
+  "id": "rf_on_off_timing",
+  "name": "RF On/Off Timing (Digital)",
+  "kind": "collection",
+  "version": "1.0.0",
+  "paired_with": "rf_on_off_timing",
+  "tests": [
+    {
+      "key": "rf_onoff_scope_capture",
+      "name": "Serial RF On-Off Latency (scope capture)",
+      "entry": "rf_onoff_scope_capture_GUI.py",
+      "order": 1060,
+      "listed": false,
+      "requires": []
+    },
+    {
+      "key": "rf_onoff_command_processing",
+      "name": "AEBus Command Processing Latency",
+      "entry": "CommandProcessing.py",
+      "order": 1070,
+      "listed": false,
+      "requires": []
+    }
+  ]
+}

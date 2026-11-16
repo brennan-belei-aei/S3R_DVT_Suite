@@ -26,10 +26,13 @@ Bench automation for collecting and analyzing AE RF generator transparency data.
 Transparency_Test_Suite_Launcher.py              product selection; starts the two unified GUIs
 ├── Paramount_Data_Collection_Unified_GUI.py     bench profile + test sequence; runs each *Collection* script as a child process
 └── Paramount_Data_Analysis_Unified_GUI.py       runs each *Analysis* script, then Paramount_PowerPoint_Builder.py
-suite_common/                                    shared helpers (bench addresses, output folders, parsing, script discovery)
-AESpecificDependencies/                          AE command modules, Lynx, spectrum analyzer drivers
-<Test folder>/                                   one Collection + one Analysis script per test
+suite_common/                                    shared helpers (config paths, bench addresses, output folders, parsing)
+suite_sdk/                                       plugin registry, plugin.json schema, suite context
+AESpecificDependencies/                          AE command modules (AECommandsUniversal = DUT adapter), Lynx, spectrum analyzer drivers
+<Test folder>/                                   collection + analysis scripts, plus plugin.collection.json / plugin.analysis.json
 ```
+
+- **Plugins:** each test folder describes its tests in `plugin.collection.json` and `plugin.analysis.json`. Both GUIs build their test lists from the plugin registry (`suite_sdk/registry.py`). An invalid plugin file is skipped with a warning that gives the reason; it never stops the GUI.
 
 - **Child processes:** the GUIs never import test scripts. Each script runs as its own process and receives `PARAMOUNT_*` environment variables.
 - **Standalone runs:** every collection script can also run on its own. It then reads addresses from the active bench profile.
@@ -52,7 +55,7 @@ AESpecificDependencies/                          AE command modules, Lynx, spect
 
 All paths come from `suite_common/config.py`; never build a settings path by hand. Settings files from before the refactor (at the repo root or beside a test script) are moved into `runtime/` automatically the first time they are needed, and the originals are kept in `runtime/migrated_legacy/`.
 
-Script paths are stored relative to the repo. If a saved path no longer exists, the GUI finds the script again by filename.
+Script paths are stored relative to the repo. If a saved path no longer exists, the GUI falls back to the script named in the plugin file.
 
 ## Adding a test
 
@@ -63,14 +66,17 @@ Script paths are stored relative to the repo. If a saved path no longer exists, 
    from suite_common.bench import bench_default
    ```
 2. Get every instrument address with `bench_default("<equipment key>")`. Never hardcode IPs, serials, or COM ports.
-3. Register the test in `TESTS` in `Paramount_Data_Collection_Unified_GUI.py`, and in `BUILTIN_ANALYSES` in `Paramount_Data_Analysis_Unified_GUI.py`.
+3. Describe the test in `plugin.collection.json` (and `plugin.analysis.json`) in the same folder. Copy an existing one; the format is defined in [suite_sdk/plugin.schema.json](suite_sdk/plugin.schema.json). Each entry under `tests` needs a unique `key`, a display `name`, the script path in `entry`, an `order`, and, for collection tests, the bench equipment in `requires` and the setup text in `instructions`. Do not edit the GUIs.
+4. Run `.venv\Scripts\python -m pytest tests/test_plugin_registry.py` to confirm the plugin is valid.
+
+Tests that exist on disk but are not offered in the GUIs yet (Arc Management, RF Ramping, Quasi-CW / Split-CW, Digital Timing) are in the plugin files with `"listed": false`. Set it to `true` to show one.
 
 ## Checks
 
 ```powershell
 .venv\Scripts\pip install -r requirements-dev.txt   # once: adds pytest and pyflakes
 .venv\Scripts\python -m pytest tests
-.venv\Scripts\python -m pyflakes suite_common *.py
+.venv\Scripts\python -m pyflakes suite_common suite_sdk *.py
 ```
 
 `tests/` needs no hardware. `tests/fakes/` records AE-bus frames and SCPI traffic so command sequences can be compared before and after a change. If you intentionally change a test definition, regenerate the registry baseline with `.venv\Scripts\python -m tests.tools.dump_registry --write`.

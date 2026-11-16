@@ -2,8 +2,8 @@
 
 The launcher never imports or modifies an analysis script. Each selected analyzer
 runs in its own Python process, using its own GUI, folder selection, progress
-window, and outputs. Add future analyzers through the GUI or the BUILTIN_ANALYSES
-registry below.
+window, and outputs. Built-in analyses come from the plugin registry (plugin.json
+files); users can also add their own scripts through the GUI.
 """
 from __future__ import annotations
 
@@ -22,11 +22,12 @@ from suite_common.paths import (
     discover_script,
     load_json_settings,
     resolve_portable_path,
-    resolve_script_setting,
+    resolve_saved_script,
     save_json_settings,
     to_portable_path,
 )
 from suite_common.config import analysis_gui_settings_path, display_path, migrate_legacy_settings
+from suite_sdk.registry import describe_unavailable, load_registry
 
 APP_TITLE = "Paramount Unified Data Analysis"
 APP_DIR = Path(__file__).resolve().parent
@@ -48,72 +49,25 @@ class AnalysisDefinition:
     default_filenames: list[str]
     description: str = ""
     custom: bool = False
+    default_script: str = ""
 
 
+def default_script(item: AnalysisDefinition) -> str:
+    """Registry path for built-ins; custom scripts are found again by filename."""
+    return item.default_script or discover_script(item.default_filenames)
+
+
+# Built-in analyses come from the plugin registry (plugin.json files); add one there, not here.
+REGISTRY = load_registry()
 BUILTIN_ANALYSES = [
-    AnalysisDefinition("dc_operating_point", "DC Operating Point", ["DC_Operating_Point_Analysis_GUI.py"]),
-    AnalysisDefinition("harmonics_spurious", "Harmonics and Spurious", ["Harmonics_Spurious_Analysis.py"]),
-    AnalysisDefinition("power_accuracy", "Power Accuracy", ["Power_Accuracy_Analysis_GUI.py"]),
-    AnalysisDefinition("power_linearity", "Power Linearity", ["Power_Linearity_Analysis_GUI.py"]),
-    AnalysisDefinition("power_profile", "Power Profile", ["Power_Profile_Analysis_GUI.py"]),
-    AnalysisDefinition("rise_fall_cw", "Rise/Fall Time - CW", ["CWDataAnalysis_GUI.py"]),
-    AnalysisDefinition("rise_fall_slp", "Rise/Fall Time - SLP", ["SLPDataAnalysis_GUI.py"]),
-    AnalysisDefinition("rise_fall_dlp", "Rise/Fall Time - DLP", ["DLPDataAnalysis_GUI.py"]),
-    AnalysisDefinition(
-        "aebus_command_latency",
-        "AEBus Command Latency",
-        ["AEBus_Command_Latency_Analysis_GUI.py"],
-    ),
-    AnalysisDefinition("setpoint_transfer_function", "Setpoint Transfer Function",
-                       ["Setpoint_Transfer_Function_Analysis.py", "setpoint_transfer_function_analysis.py"],
-                       "Transfer-function fit, error, linearity, and repeatability."),
-    AnalysisDefinition("analog_processing_timing", "Analog Processing Timing",
-                       ["Analog_Processing_Timing_Analysis.py", "analog_processing_timing_analysis.py"],
-                       "Analog-command latency and RF rise/fall transition timing."),
-    AnalysisDefinition("rf_enable_timing", "RF Enable Timing",
-                       ["RF_Enable_Timing_Analysis.py", "rf_enable_timing_analysis.py"],
-                       "RF ON/OFF latency for RF Monitor and RF Detector."),
-    AnalysisDefinition("interlock_response_timing", "Interlock Response Timing",
-                       ["Interlock_Response_Timing_Analysis.py", "interlock_response_timing_analysis.py"],
-                       "Falling interlock edge to RF-envelope shutdown timing."),
-    AnalysisDefinition("cex_lock_acquisition", "CEX Lock Acquisition",
-                       ["CEX_Lock_Acquisition_Analysis.py", "cex_lock_acquisition_analysis.py"],
-                       "CEX reference activity to active-low lock response timing."),
-    AnalysisDefinition(
-        "psync",
-        "Pulse Sync",
-        ["Psync_Data_Analysis.py"],
-    ),
-    AnalysisDefinition(
-        "rf_tuning",
-        "RF Tuning",
-        ["RF_Tuning_Analysis.py", "rf_tuning_analysis.py"],
-        "Directed RF frequency tuning time, settling behavior, final-frequency error, and repeatability.",
-    ),
+    AnalysisDefinition(t.key, t.name, [t.script.name], t.description, False, str(t.script))
+    for t in REGISTRY.tests("analysis")
 ]
 
 
-NEW_ANALOG_ANALYSIS_KEYS = (
-    "setpoint_transfer_function", "analog_processing_timing", "rf_enable_timing",
-    "interlock_response_timing", "cex_lock_acquisition",
-)
-
-
-def migrate_legacy_analysis_entries(values: list[str]) -> list[str]:
-    aliases = {
-        "t4": ("setpoint_transfer_function",),
-        "t5": ("analog_processing_timing",),
-        "t6": ("rf_enable_timing",),
-        "t7": ("interlock_response_timing",),
-        "t8": ("cex_lock_acquisition",),
-        "analog_port_timing": NEW_ANALOG_ANALYSIS_KEYS,
-    }
-    migrated = []
-    for value in values:
-        for replacement in aliases.get(value, (value,)):
-            if replacement not in migrated:
-                migrated.append(replacement)
-    return migrated
+def migrate_analysis_entries(values: list[str]) -> list[str]:
+    """Map legacy keys in saved settings (plugin.json "aliases") to current analyses, keeping order."""
+    return REGISTRY.resolve_aliases("analysis", values)
 
 
 def safe_key(name: str, existing: set[str]) -> str:
@@ -126,7 +80,7 @@ def safe_key(name: str, existing: set[str]) -> str:
 
 def default_config() -> dict:
     return {
-        "scripts": {item.key: discover_script(item.default_filenames) for item in BUILTIN_ANALYSES},
+        "scripts": {item.key: default_script(item) for item in BUILTIN_ANALYSES},
         "selected": [item.key for item in BUILTIN_ANALYSES],
         "order": [item.key for item in BUILTIN_ANALYSES],
         "custom_analyses": [],
@@ -161,11 +115,11 @@ def default_config() -> dict:
 def load_config() -> dict:
     config = default_config()
     saved = load_json_settings(analysis_gui_settings_path())
-    defaults_by_key = {item.key: item.default_filenames for item in BUILTIN_ANALYSES}
+    builtin_by_key = {item.key: item for item in BUILTIN_ANALYSES}
     for key, value in (saved.get("scripts") or {}).items():
         key = str(key)
-        if key in defaults_by_key:
-            config["scripts"][key] = resolve_script_setting(str(value), defaults_by_key[key])
+        if key in builtin_by_key:
+            config["scripts"][key] = resolve_saved_script(str(value), default_script(builtin_by_key[key]))
         else:
             config["scripts"][key] = resolve_portable_path(str(value))
     if isinstance(saved.get("custom_analyses"), list):
@@ -174,7 +128,7 @@ def load_config() -> dict:
         if key in saved:
             config[key] = saved[key]
     for key in ("selected", "order"):
-        config[key] = migrate_legacy_analysis_entries([str(item) for item in config.get(key, [])])
+        config[key] = migrate_analysis_entries([str(item) for item in config.get(key, [])])
     if isinstance(saved.get("dataset_defaults"), dict):
         config["dataset_defaults"].update(saved["dataset_defaults"])
     if isinstance(saved.get("presentation"), dict):
@@ -219,7 +173,7 @@ class UnifiedAnalysisApp:
         self.active_key: str | None = None
         self.stopping = False
         self.status_by_key = {item.key: "Not selected" for item in self.definitions}
-        self.script_vars = {item.key: tk.StringVar(value=self.config.get("scripts", {}).get(item.key, discover_script(item.default_filenames))) for item in self.definitions}
+        self.script_vars = {item.key: tk.StringVar(value=self.config.get("scripts", {}).get(item.key, default_script(item))) for item in self.definitions}
         selected = set(self.config.get("selected", []))
         self.selected_vars = {item.key: tk.BooleanVar(value=item.key in selected) for item in self.definitions}
         self.console_var = tk.BooleanVar(value=bool(self.config.get("open_child_console", True)))
@@ -961,11 +915,14 @@ def self_test() -> int:
     assert POWERPOINT_BUILDER_FILENAME.endswith(".py")
     assert default_config()["dataset_defaults"]["preferred_mode"] == ANALYSIS_MODE_INDIVIDUAL
     assert set(ANALYSIS_MODE_VALUES) == {"INDIVIDUAL", "SINGLE", "COMPARE"}
-    assert set(NEW_ANALOG_ANALYSIS_KEYS) <= {item.key for item in BUILTIN_ANALYSES}
-    assert migrate_legacy_analysis_entries(["power_accuracy", "analog_port_timing", "psync"]) == [
-        "power_accuracy", *NEW_ANALOG_ANALYSIS_KEYS, "psync"
+    analog_keys = ["setpoint_transfer_function", "analog_processing_timing", "rf_enable_timing",
+                   "interlock_response_timing", "cex_lock_acquisition"]
+    assert set(analog_keys) <= {item.key for item in BUILTIN_ANALYSES}
+    assert migrate_analysis_entries(["power_accuracy", "analog_port_timing", "psync"]) == [
+        "power_accuracy", *analog_keys, "psync"
     ]
-    assert migrate_legacy_analysis_entries(["t4", "t5", "t6", "t7", "t8"]) == list(NEW_ANALOG_ANALYSIS_KEYS)
+    assert migrate_analysis_entries(["t4", "t5", "t6", "t7", "t8"]) == analog_keys
+    assert migrate_analysis_entries(["my_custom"]) == ["my_custom"]
     sample = APP_DIR / "temporary_analysis_test.py"
     try:
         sample.write_text("print('ok')\n", encoding="utf-8")
@@ -973,6 +930,8 @@ def self_test() -> int:
         assert Path(discover_script(definition.default_filenames)).is_file()
     finally:
         sample.unlink(missing_ok=True)
+    for line in describe_unavailable(REGISTRY):
+        print(f"Plugin {line}")
     print("Unified analysis launcher self-test passed.")
     return 0
 
@@ -982,6 +941,10 @@ def main() -> int:
         return self_test()
     migrate_legacy_settings()
     root = tk.Tk()
+    problems = describe_unavailable(REGISTRY)
+    if problems:
+        print("\n".join(problems))
+        messagebox.showwarning("Plugins unavailable", "These plugins were skipped:\n\n" + "\n\n".join(problems), parent=root)
     UnifiedAnalysisApp(root)
     root.mainloop()
     return 0

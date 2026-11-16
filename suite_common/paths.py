@@ -52,6 +52,14 @@ def resolve_script_setting(saved: str, candidates: list[str]) -> str:
     return discover_script(candidates)
 
 
+def resolve_saved_script(saved: str, default: str | Path) -> str:
+    """Use a saved script path when it still exists, otherwise the plugin registry's default."""
+    resolved = resolve_portable_path(saved)
+    if resolved and Path(resolved).is_file():
+        return resolved
+    return str(default)
+
+
 def load_json_settings(path: Path) -> dict:
     if not path.is_file():
         return {}

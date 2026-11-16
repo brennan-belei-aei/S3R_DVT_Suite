@@ -25,19 +25,19 @@ from tkinter import filedialog, messagebox, ttk
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from suite_common.bench import bench_default
-from suite_common.paths import discover_script
+from suite_sdk.registry import load_registry
 
 APP_DIR = Path(__file__).resolve().parent
 TEST_NAME = "AEBus Command Latency"
-# Both collectors live in the Digital Timing test folder.
-COLLECTION_SCRIPT_CANDIDATES = {
-    "command_processing": ["CommandProcessing.py"],
-    "rf_scope": ["rf_onoff_scope_capture_GUI.py"],
+# Both collectors belong to the rf_on_off_timing plugin (Digital Timing); look them up by test key.
+COLLECTION_SCRIPT_KEYS = {
+    "command_processing": "rf_onoff_command_processing",
+    "rf_scope": "rf_onoff_scope_capture",
 }
 
 
-def find_script(candidates):
-    return Path(discover_script(candidates))
+def find_script(mode):
+    return load_registry().test("collection", COLLECTION_SCRIPT_KEYS[mode]).script
 
 
 def safe_component(value):
@@ -165,7 +165,7 @@ class App:
         setpoints=[int(x) for x in self.vars["setpoints"].get().split()]
         if not setpoints:raise ValueError("Enter at least one RF scope setpoint.")
         for key in modes:
-            if key!="if_tools" and not find_script(COLLECTION_SCRIPT_CANDIDATES[key]).is_file():raise ValueError(f"Missing required script: {find_script(COLLECTION_SCRIPT_CANDIDATES[key])}")
+            if key!="if_tools" and not find_script(key).is_file():raise ValueError(f"Missing required script: {find_script(key)}")
         return modes,parent,comm,ci,ri,measurement,setpoints
 
     def start(self):
@@ -190,7 +190,7 @@ class App:
             completed=0
             if "command_processing" in modes and not self.stop_requested:
                 self.status.set("Running AEBus transaction-latency collection");folder=run/"command_processing";folder.mkdir()
-                original=find_script(COLLECTION_SCRIPT_CANDIDATES["command_processing"])
+                original=find_script("command_processing")
                 csv_path=(folder/"Command_Processing_Latency.csv").resolve()
                 replacements=[
                     (r'^COMM_TYPE\s*=.*$',f'COMM_TYPE = {comm!r}',"communication type"),
@@ -203,7 +203,7 @@ class App:
                 self.run_subprocess([sys.executable,str(runtime)],folder,env);completed+=1;self.bar["value"]=completed
             if "rf_scope" in modes and not self.stop_requested:
                 self.status.set("Running RF ON/OFF scope collection");folder=run/"rf_onoff_scope";folder.mkdir()
-                original=find_script(COLLECTION_SCRIPT_CANDIDATES["rf_scope"])
+                original=find_script("rf_scope")
                 replacements=[
                     (r'^COMM_TYPE\s*=.*$',f'COMM_TYPE = {comm!r}',"communication type"),
                     (r'^IP_ADDRESS\s*=.*$',f'IP_ADDRESS = {self.vars["generator"].get().strip()!r}',"generator address"),

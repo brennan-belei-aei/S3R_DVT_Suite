@@ -1,0 +1,25 @@
+{
+  "$schema": "../suite_sdk/plugin.schema.json",
+  "schema_version": 1,
+  "id": "quasi_cw_oscillations",
+  "name": "Quasi-CW Oscillations",
+  "kind": "analysis",
+  "version": "1.0.0",
+  "paired_with": "quasi_cw_oscillations",
+  "tests": [
+    {
+      "key": "quasi_cw_oscillations",
+      "name": "Quasi-CW Oscillations",
+      "entry": "QuasiCWOscillationsAnalysis_GUI.py",
+      "order": 1020,
+      "listed": false
+    },
+    {
+      "key": "split_cw_oscillations",
+      "name": "Split-CW Oscillations",
+      "entry": "SplitCWOscillationsAnalysis_GUI.py",
+      "order": 1030,
+      "listed": false
+    }
+  ]
+}

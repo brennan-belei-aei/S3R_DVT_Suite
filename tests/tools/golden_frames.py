@@ -101,7 +101,7 @@ DLP_PROFILES = ("bench", "csr_ok", "data", "csr12_on_cmd8", "csr12_all")
 def _ensure_paths() -> None:
     if str(REPO_ROOT) not in sys.path:
         sys.path.insert(0, str(REPO_ROOT))
-    import suite_common.bootstrap  # noqa: F401
+    importlib.import_module("suite_common.bootstrap")  # puts AE dependency modules on sys.path
 
 
 @contextlib.contextmanager

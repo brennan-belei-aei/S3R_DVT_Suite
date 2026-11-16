@@ -1,0 +1,22 @@
+{
+  "$schema": "../suite_sdk/plugin.schema.json",
+  "schema_version": 1,
+  "id": "harmonics_spurious",
+  "name": "Harmonics and Spurious",
+  "kind": "collection",
+  "version": "1.0.0",
+  "paired_with": "harmonics_spurious",
+  "tests": [
+    {
+      "key": "harmonics_spurious",
+      "name": "Harmonics and Spurious",
+      "entry": "Harmonics_Spurious_Collection.py",
+      "order": 20,
+      "requires": [
+        "generator",
+        "spectrum_analyzer"
+      ],
+      "instructions": "Connect the generator and spectrum analyzer for Harmonics and Spurious collection. Confirm the RF path and analyzer input protection before continuing."
+    }
+  ]
+}

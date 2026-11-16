@@ -1,8 +1,7 @@
 """Dump the suite's test/analysis registry to JSON.
 
-Phase 0 baseline: reads TESTS / BUILTIN_ANALYSES from the unified GUIs. After the plugin
-registry lands, this function is the single place to switch to registry output; the
-snapshot test then proves nothing was lost.
+Reads what the unified GUIs actually show (TESTS / BUILTIN_ANALYSES, now built from the
+plugin registry) so the snapshot test proves the Phase 0 lists survived every refactor.
 
     .venv\\Scripts\\python -m tests.tools.dump_registry --write   # regenerate the baseline
 """
@@ -17,10 +16,8 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 BASELINE_PATH = REPO_ROOT / "tests" / "fixtures" / "registry_baseline.json"
 
 
-def _discovered(candidates: list[str]) -> str | None:
-    from suite_common.paths import discover_script
-
-    path = Path(discover_script(list(candidates)))
+def _discovered(script: str) -> str | None:
+    path = Path(script)
     return path.name if path.is_file() else None
 
 
@@ -37,14 +34,14 @@ def current_registry() -> dict:
             "equipment": list(t.equipment),
             "instructions": t.instructions,
             "image": t.image,
-            "script_candidates": list(t.default_scripts),
-            "discovered_script": _discovered(t.default_scripts),
+            "script_candidates": [Path(t.script).name],
+            "discovered_script": _discovered(t.script),
         }
         for t in collection_gui.TESTS
     ]
     rise_fall_modes = {
-        mode: {"script_candidates": list(c), "discovered_script": _discovered(c)}
-        for mode, c in collection_gui.RISE_FALL_SCRIPT_CANDIDATES.items()
+        mode: {"script_candidates": [Path(script).name], "discovered_script": _discovered(script)}
+        for mode, script in collection_gui.RISE_FALL_SCRIPTS.items()
     }
     analyses = [
         {
@@ -53,7 +50,7 @@ def current_registry() -> dict:
             "description": a.description,
             "custom": a.custom,
             "script_candidates": list(a.default_filenames),
-            "discovered_script": _discovered(a.default_filenames),
+            "discovered_script": _discovered(a.default_script),
         }
         for a in analysis_gui.BUILTIN_ANALYSES
     ]
@@ -62,10 +59,10 @@ def current_registry() -> dict:
         "rise_fall_modes": rise_fall_modes,
         "analyses": analyses,
         "legacy_collection_aliases": {
-            collection_gui.LEGACY_ANALOG_PORT_TIMING_KEY: list(collection_gui.ANALOG_PORT_TIMING_REPLACEMENT_KEYS)
+            "analog_port_timing": collection_gui.migrate_selection(["analog_port_timing"])
         },
         "legacy_analysis_aliases": {
-            alias: analysis_gui.migrate_legacy_analysis_entries([alias])
+            alias: analysis_gui.migrate_analysis_entries([alias])
             for alias in ("t4", "t5", "t6", "t7", "t8", "analog_port_timing")
         },
     }

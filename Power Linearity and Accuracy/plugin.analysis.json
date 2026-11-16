@@ -1,0 +1,23 @@
+{
+  "$schema": "../suite_sdk/plugin.schema.json",
+  "schema_version": 1,
+  "id": "power_linearity_accuracy",
+  "name": "Power Linearity and Accuracy",
+  "kind": "analysis",
+  "version": "1.0.0",
+  "paired_with": "power_linearity_accuracy",
+  "tests": [
+    {
+      "key": "power_accuracy",
+      "name": "Power Accuracy",
+      "entry": "Power_Accuracy_Analysis_GUI.py",
+      "order": 30
+    },
+    {
+      "key": "power_linearity",
+      "name": "Power Linearity",
+      "entry": "Power_Linearity_Analysis_GUI.py",
+      "order": 40
+    }
+  ]
+}
