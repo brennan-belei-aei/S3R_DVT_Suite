@@ -1,0 +1,17 @@
+{
+  "$schema": "../../suite_sdk/plugin.schema.json",
+  "schema_version": 1,
+  "id": "power_profile",
+  "name": "Power Profile",
+  "kind": "analysis",
+  "version": "1.0.0",
+  "paired_with": "power_profile",
+  "tests": [
+    {
+      "key": "power_profile",
+      "name": "Power Profile",
+      "entry": "Power_Profile_Analysis_GUI.py",
+      "order": 50
+    }
+  ]
+}

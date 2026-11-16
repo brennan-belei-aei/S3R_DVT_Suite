@@ -1,0 +1,34 @@
+{
+  "$schema": "../../suite_sdk/plugin.schema.json",
+  "schema_version": 1,
+  "id": "power_linearity_accuracy",
+  "name": "Power Linearity and Accuracy",
+  "kind": "collection",
+  "version": "1.0.0",
+  "paired_with": "power_linearity_accuracy",
+  "tests": [
+    {
+      "key": "power_accuracy",
+      "name": "Power Accuracy",
+      "entry": "Power_Accuracy_Collection_GUI.py",
+      "order": 30,
+      "requires": [
+        "generator",
+        "lynx"
+      ],
+      "instructions": "Configure the Power Accuracy bench with the generator and Lynx. Verify the measurement path before continuing."
+    },
+    {
+      "key": "power_linearity",
+      "name": "Power Linearity",
+      "entry": "Power_Linearity_Collection_GUI.py",
+      "order": 40,
+      "requires": [
+        "generator",
+        "lynx",
+        "navigator"
+      ],
+      "instructions": "Configure the Power Linearity bench. Confirm generator, Lynx, and optional tuner connections before continuing."
+    }
+  ]
+}

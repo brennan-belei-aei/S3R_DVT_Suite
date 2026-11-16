@@ -1,0 +1,22 @@
+{
+  "$schema": "../../suite_sdk/plugin.schema.json",
+  "schema_version": 1,
+  "id": "dc_operating_point",
+  "name": "DC Operating Point",
+  "kind": "collection",
+  "version": "1.0.0",
+  "paired_with": "dc_operating_point",
+  "tests": [
+    {
+      "key": "dc_operating_point",
+      "name": "DC Operating Point",
+      "entry": "DC_Operating_Point_Collection_GUI.py",
+      "order": 10,
+      "requires": [
+        "generator",
+        "lynx"
+      ],
+      "instructions": "Configure the DC Operating Point bench. Confirm generator and Lynx connections, then continue to the test-specific GUI."
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "schema_version": 2,
+  "products": [
+    {
+      "id": "UNSPECIFIED",
+      "display_name": "Other / Unspecified",
+      "description": "No product-specific recommendations are applied.",
+      "collection_recommendations": {},
+      "analysis_recommendations": {},
+      "metadata": {},
+      "firmware": []
+    },
+    {
+      "id": "PARAMOUNT",
+      "display_name": "Paramount",
+      "description": "Paramount product-line profile. Recommended settings can be added later.",
+      "collection_recommendations": {},
+      "analysis_recommendations": {},
+      "metadata": {},
+      "firmware": [
+        {
+          "version": "7433660J00",
+          "dut_adapter": "AECommandsUniversal",
+          "compatibility": "verified",
+          "notes": "Listed as known-good in AECommandsUniversal.py.",
+          "test_defaults": {},
+          "constraints": {}
+        },
+        {
+          "version": "7434759A31",
+          "dut_adapter": "AECommandsUniversal",
+          "compatibility": "unverified",
+          "notes": "AECommandsUniversal.py: to be determined.",
+          "test_defaults": {},
+          "constraints": {}
+        }
+      ]
+    },
+    {
+      "id": "PARAMOUNT PLUS",
+      "display_name": "Paramount Plus",
+      "description": "Paramount Plus product-line profile. Recommended settings can be added later.",
+      "collection_recommendations": {},
+      "analysis_recommendations": {},
+      "metadata": {},
+      "firmware": []
+    },
+    {
+      "id": "APEX",
+      "display_name": "Apex",
+      "description": "Apex product-line profile. Recommended settings can be added later.",
+      "collection_recommendations": {},
+      "analysis_recommendations": {},
+      "metadata": {},
+      "firmware": []
+    }
+  ]
+}

@@ -10,7 +10,7 @@ from pathlib import Path
 from suite_common import REPO_ROOT
 
 # Folders never searched when discovering suite scripts.
-EXCLUDED_DISCOVERY_PARTS = {".git", ".venv", "venv", "node_modules", "__pycache__", "_archive"}
+EXCLUDED_DISCOVERY_PARTS = {".git", ".venv", "venv", "node_modules", "__pycache__", "_archive", "archive"}
 
 
 def discover_script(candidates: list[str], root: Path = REPO_ROOT) -> str:
@@ -50,6 +50,14 @@ def resolve_script_setting(saved: str, candidates: list[str]) -> str:
     if resolved and Path(resolved).is_file():
         return resolved
     return discover_script(candidates)
+
+
+def resolve_saved_script(saved: str, default: str | Path) -> str:
+    """Use a saved script path when it still exists, otherwise the plugin registry's default."""
+    resolved = resolve_portable_path(saved)
+    if resolved and Path(resolved).is_file():
+        return resolved
+    return str(default)
 
 
 def load_json_settings(path: Path) -> dict:

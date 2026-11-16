@@ -1,0 +1,437 @@
+{
+  "collection_tests": [
+    {
+      "key": "dc_operating_point",
+      "name": "DC Operating Point",
+      "equipment": [
+        "generator",
+        "lynx"
+      ],
+      "instructions": "Configure the DC Operating Point bench. Confirm generator and Lynx connections, then continue to the test-specific GUI.",
+      "image": "",
+      "script_candidates": [
+        "DC_Operating_Point_Collection_GUI.py"
+      ],
+      "discovered_script": "DC_Operating_Point_Collection_GUI.py"
+    },
+    {
+      "key": "harmonics_spurious",
+      "name": "Harmonics and Spurious",
+      "equipment": [
+        "generator",
+        "spectrum_analyzer"
+      ],
+      "instructions": "Connect the generator and spectrum analyzer for Harmonics and Spurious collection. Confirm the RF path and analyzer input protection before continuing.",
+      "image": "",
+      "script_candidates": [
+        "Harmonics_Spurious_Collection.py"
+      ],
+      "discovered_script": "Harmonics_Spurious_Collection.py"
+    },
+    {
+      "key": "power_accuracy",
+      "name": "Power Accuracy",
+      "equipment": [
+        "generator",
+        "lynx"
+      ],
+      "instructions": "Configure the Power Accuracy bench with the generator and Lynx. Verify the measurement path before continuing.",
+      "image": "",
+      "script_candidates": [
+        "Power_Accuracy_Collection_GUI.py"
+      ],
+      "discovered_script": "Power_Accuracy_Collection_GUI.py"
+    },
+    {
+      "key": "power_linearity",
+      "name": "Power Linearity",
+      "equipment": [
+        "generator",
+        "lynx",
+        "navigator"
+      ],
+      "instructions": "Configure the Power Linearity bench. Confirm generator, Lynx, and optional tuner connections before continuing.",
+      "image": "",
+      "script_candidates": [
+        "Power_Linearity_Collection_GUI.py"
+      ],
+      "discovered_script": "Power_Linearity_Collection_GUI.py"
+    },
+    {
+      "key": "rise_fall_time_verification",
+      "name": "Rise and Fall Time Verification",
+      "equipment": [
+        "generator",
+        "oscilloscope",
+        "waveform_generator"
+      ],
+      "instructions": "Configure the Rise and Fall Time Verification bench. Confirm the generator and oscilloscope connections, probes, trigger source, and waveform channels before continuing.",
+      "image": "",
+      "script_candidates": [
+        "CWDataCollection_GUI.py"
+      ],
+      "discovered_script": "CWDataCollection_GUI.py"
+    },
+    {
+      "key": "setpoint_transfer_function",
+      "name": "Setpoint Transfer Function",
+      "equipment": [
+        "generator",
+        "waveform_generator"
+      ],
+      "instructions": "Connect waveform-generator CH1 to the User Port analog setpoint input and CH2 to RF Enable. Verify the User Port returns, RF load, cooling, interlocks, and emergency shutdown access before continuing.",
+      "image": "",
+      "script_candidates": [
+        "Setpoint_Transfer_Function_Collection.py",
+        "setpoint_transfer_function_collection.py"
+      ],
+      "discovered_script": "Setpoint_Transfer_Function_Collection.py"
+    },
+    {
+      "key": "analog_processing_timing",
+      "name": "Analog Processing Timing",
+      "equipment": [
+        "generator",
+        "oscilloscope",
+        "waveform_generator"
+      ],
+      "instructions": "Connect waveform-generator CH1 to the analog setpoint input and CH2 to RF Enable. Connect scope CH1 to the setpoint signal and CH2 to the RF waveform monitor. Verify 50-ohm CH2 termination.",
+      "image": "",
+      "script_candidates": [
+        "Analog_Processing_Timing_Collection.py",
+        "analog_processing_timing_collection.py"
+      ],
+      "discovered_script": "Analog_Processing_Timing_Collection.py"
+    },
+    {
+      "key": "rf_enable_timing",
+      "name": "RF Enable Timing",
+      "equipment": [
+        "generator",
+        "oscilloscope",
+        "waveform_generator"
+      ],
+      "instructions": "Connect waveform-generator CH1 to the analog setpoint input and CH2 to RF Enable. Connect scope CH1 to RF Enable, CH2 to the RF waveform monitor, and CH3 to the approved RF detector.",
+      "image": "",
+      "script_candidates": [
+        "RF_Enable_Timing_Collection.py",
+        "rf_enable_timing_collection.py"
+      ],
+      "discovered_script": "RF_Enable_Timing_Collection.py"
+    },
+    {
+      "key": "interlock_response_timing",
+      "name": "Interlock Response Timing",
+      "equipment": [
+        "generator",
+        "oscilloscope",
+        "waveform_generator",
+        "dc_supply"
+      ],
+      "instructions": "Connect the BK Precision 9141 interlock stimulus, waveform-generator analog setpoint and RF Enable, scope CH1 to the interlock signal, and scope CH2 to the RF waveform monitor. Verify the safety shutdown path.",
+      "image": "",
+      "script_candidates": [
+        "Interlock_Response_Timing_Collection.py",
+        "interlock_response_timing_collection.py"
+      ],
+      "discovered_script": "Interlock_Response_Timing_Collection.py"
+    },
+    {
+      "key": "cex_lock_acquisition",
+      "name": "CEX Lock Acquisition",
+      "equipment": [
+        "generator",
+        "oscilloscope",
+        "waveform_generator"
+      ],
+      "instructions": "Connect the external manual setpoint supply, RF Enable, and 13.56 MHz CEX reference. Connect scope CH1 to the CEX reference, CH2 to the RF waveform monitor, and CH3 to active-low CEX LOCK.",
+      "image": "",
+      "script_candidates": [
+        "CEX_Lock_Acquisition_Collection.py",
+        "cex_lock_acquisition_collection.py"
+      ],
+      "discovered_script": "CEX_Lock_Acquisition_Collection.py"
+    },
+    {
+      "key": "aebus_command_latency",
+      "name": "AEBus Command Latency",
+      "equipment": [
+        "generator",
+        "generator_com_port",
+        "oscilloscope"
+      ],
+      "instructions": "Configure the AEBus Command Latency test. Confirm generator communication, oscilloscope connections, RF ON/OFF settings, and the IF Tools workflow before continuing.",
+      "image": "",
+      "script_candidates": [
+        "AEBus_Command_Latency_Collection_GUI.py"
+      ],
+      "discovered_script": "AEBus_Command_Latency_Collection_GUI.py"
+    },
+    {
+      "key": "power_profile",
+      "name": "Power Profile",
+      "equipment": [
+        "generator",
+        "lynx",
+        "navigator"
+      ],
+      "instructions": "Configure the Power Profile bench. Confirm generator, Lynx, Navigator/tuner, and tuner-map connections before continuing.",
+      "image": "",
+      "script_candidates": [
+        "Power_Profile_Collection_GUI.py"
+      ],
+      "discovered_script": "Power_Profile_Collection_GUI.py"
+    },
+    {
+      "key": "psync",
+      "name": "Pulse Sync",
+      "equipment": [
+        "generator",
+        "psync_slave_generator",
+        "oscilloscope"
+      ],
+      "instructions": "Configure the Pulse Sync bench. Confirm master and slave generator connections, the sync cable, and scope channels before continuing.",
+      "image": "",
+      "script_candidates": [
+        "Psync_Data_Collection.py"
+      ],
+      "discovered_script": "Psync_Data_Collection.py"
+    },
+    {
+      "key": "rf_tuning",
+      "name": "RF Tuning",
+      "equipment": [
+        "generator",
+        "navigator"
+      ],
+      "instructions": "Configure the RF Tuning bench. Confirm generator and Navigator connections, connect the RF frequency-monitor signal to the Keysight 53220A counter, and verify the RF load, cooling, interlocks, and emergency shutdown access before continuing.",
+      "image": "",
+      "script_candidates": [
+        "RF_Tuning_Collection.py",
+        "rf_tuning_collection.py"
+      ],
+      "discovered_script": null
+    }
+  ],
+  "rise_fall_modes": {
+    "CW": {
+      "script_candidates": [
+        "CWDataCollection_GUI.py"
+      ],
+      "discovered_script": "CWDataCollection_GUI.py"
+    },
+    "SLP": {
+      "script_candidates": [
+        "SLPDataCollection_GUI.py"
+      ],
+      "discovered_script": "SLPDataCollection_GUI.py"
+    },
+    "DLP": {
+      "script_candidates": [
+        "DLPDataCollection_GUI.py"
+      ],
+      "discovered_script": "DLPDataCollection_GUI.py"
+    }
+  },
+  "analyses": [
+    {
+      "key": "dc_operating_point",
+      "name": "DC Operating Point",
+      "description": "",
+      "custom": false,
+      "script_candidates": [
+        "DC_Operating_Point_Analysis_GUI.py"
+      ],
+      "discovered_script": "DC_Operating_Point_Analysis_GUI.py"
+    },
+    {
+      "key": "harmonics_spurious",
+      "name": "Harmonics and Spurious",
+      "description": "",
+      "custom": false,
+      "script_candidates": [
+        "Harmonics_Spurious_Analysis.py"
+      ],
+      "discovered_script": "Harmonics_Spurious_Analysis.py"
+    },
+    {
+      "key": "power_accuracy",
+      "name": "Power Accuracy",
+      "description": "",
+      "custom": false,
+      "script_candidates": [
+        "Power_Accuracy_Analysis_GUI.py"
+      ],
+      "discovered_script": "Power_Accuracy_Analysis_GUI.py"
+    },
+    {
+      "key": "power_linearity",
+      "name": "Power Linearity",
+      "description": "",
+      "custom": false,
+      "script_candidates": [
+        "Power_Linearity_Analysis_GUI.py"
+      ],
+      "discovered_script": "Power_Linearity_Analysis_GUI.py"
+    },
+    {
+      "key": "power_profile",
+      "name": "Power Profile",
+      "description": "",
+      "custom": false,
+      "script_candidates": [
+        "Power_Profile_Analysis_GUI.py"
+      ],
+      "discovered_script": "Power_Profile_Analysis_GUI.py"
+    },
+    {
+      "key": "rise_fall_cw",
+      "name": "Rise/Fall Time - CW",
+      "description": "",
+      "custom": false,
+      "script_candidates": [
+        "CWDataAnalysis_GUI.py"
+      ],
+      "discovered_script": "CWDataAnalysis_GUI.py"
+    },
+    {
+      "key": "rise_fall_slp",
+      "name": "Rise/Fall Time - SLP",
+      "description": "",
+      "custom": false,
+      "script_candidates": [
+        "SLPDataAnalysis_GUI.py"
+      ],
+      "discovered_script": "SLPDataAnalysis_GUI.py"
+    },
+    {
+      "key": "rise_fall_dlp",
+      "name": "Rise/Fall Time - DLP",
+      "description": "",
+      "custom": false,
+      "script_candidates": [
+        "DLPDataAnalysis_GUI.py"
+      ],
+      "discovered_script": "DLPDataAnalysis_GUI.py"
+    },
+    {
+      "key": "aebus_command_latency",
+      "name": "AEBus Command Latency",
+      "description": "",
+      "custom": false,
+      "script_candidates": [
+        "AEBus_Command_Latency_Analysis_GUI.py"
+      ],
+      "discovered_script": "AEBus_Command_Latency_Analysis_GUI.py"
+    },
+    {
+      "key": "setpoint_transfer_function",
+      "name": "Setpoint Transfer Function",
+      "description": "Transfer-function fit, error, linearity, and repeatability.",
+      "custom": false,
+      "script_candidates": [
+        "Setpoint_Transfer_Function_Analysis.py",
+        "setpoint_transfer_function_analysis.py"
+      ],
+      "discovered_script": "Setpoint_Transfer_Function_Analysis.py"
+    },
+    {
+      "key": "analog_processing_timing",
+      "name": "Analog Processing Timing",
+      "description": "Analog-command latency and RF rise/fall transition timing.",
+      "custom": false,
+      "script_candidates": [
+        "Analog_Processing_Timing_Analysis.py",
+        "analog_processing_timing_analysis.py"
+      ],
+      "discovered_script": "Analog_Processing_Timing_Analysis.py"
+    },
+    {
+      "key": "rf_enable_timing",
+      "name": "RF Enable Timing",
+      "description": "RF ON/OFF latency for RF Monitor and RF Detector.",
+      "custom": false,
+      "script_candidates": [
+        "RF_Enable_Timing_Analysis.py",
+        "rf_enable_timing_analysis.py"
+      ],
+      "discovered_script": "RF_Enable_Timing_Analysis.py"
+    },
+    {
+      "key": "interlock_response_timing",
+      "name": "Interlock Response Timing",
+      "description": "Falling interlock edge to RF-envelope shutdown timing.",
+      "custom": false,
+      "script_candidates": [
+        "Interlock_Response_Timing_Analysis.py",
+        "interlock_response_timing_analysis.py"
+      ],
+      "discovered_script": "Interlock_Response_Timing_Analysis.py"
+    },
+    {
+      "key": "cex_lock_acquisition",
+      "name": "CEX Lock Acquisition",
+      "description": "CEX reference activity to active-low lock response timing.",
+      "custom": false,
+      "script_candidates": [
+        "CEX_Lock_Acquisition_Analysis.py",
+        "cex_lock_acquisition_analysis.py"
+      ],
+      "discovered_script": "CEX_Lock_Acquisition_Analysis.py"
+    },
+    {
+      "key": "psync",
+      "name": "Pulse Sync",
+      "description": "",
+      "custom": false,
+      "script_candidates": [
+        "Psync_Data_Analysis.py"
+      ],
+      "discovered_script": "Psync_Data_Analysis.py"
+    },
+    {
+      "key": "rf_tuning",
+      "name": "RF Tuning",
+      "description": "Directed RF frequency tuning time, settling behavior, final-frequency error, and repeatability.",
+      "custom": false,
+      "script_candidates": [
+        "RF_Tuning_Analysis.py",
+        "rf_tuning_analysis.py"
+      ],
+      "discovered_script": null
+    }
+  ],
+  "legacy_collection_aliases": {
+    "analog_port_timing": [
+      "setpoint_transfer_function",
+      "analog_processing_timing",
+      "rf_enable_timing",
+      "interlock_response_timing",
+      "cex_lock_acquisition"
+    ]
+  },
+  "legacy_analysis_aliases": {
+    "t4": [
+      "setpoint_transfer_function"
+    ],
+    "t5": [
+      "analog_processing_timing"
+    ],
+    "t6": [
+      "rf_enable_timing"
+    ],
+    "t7": [
+      "interlock_response_timing"
+    ],
+    "t8": [
+      "cex_lock_acquisition"
+    ],
+    "analog_port_timing": [
+      "setpoint_transfer_function",
+      "analog_processing_timing",
+      "rf_enable_timing",
+      "interlock_response_timing",
+      "cex_lock_acquisition"
+    ]
+  }
+}

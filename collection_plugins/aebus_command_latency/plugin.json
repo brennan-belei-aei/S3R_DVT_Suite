@@ -1,0 +1,23 @@
+{
+  "$schema": "../../suite_sdk/plugin.schema.json",
+  "schema_version": 1,
+  "id": "aebus_command_latency",
+  "name": "AEBus Command Latency",
+  "kind": "collection",
+  "version": "1.0.0",
+  "paired_with": "aebus_command_latency",
+  "tests": [
+    {
+      "key": "aebus_command_latency",
+      "name": "AEBus Command Latency",
+      "entry": "AEBus_Command_Latency_Collection_GUI.py",
+      "order": 110,
+      "requires": [
+        "generator",
+        "generator_com_port",
+        "oscilloscope"
+      ],
+      "instructions": "Configure the AEBus Command Latency test. Confirm generator communication, oscilloscope connections, RF ON/OFF settings, and the IF Tools workflow before continuing."
+    }
+  ]
+}

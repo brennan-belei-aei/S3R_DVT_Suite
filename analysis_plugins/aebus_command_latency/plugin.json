@@ -1,0 +1,17 @@
+{
+  "$schema": "../../suite_sdk/plugin.schema.json",
+  "schema_version": 1,
+  "id": "aebus_command_latency",
+  "name": "AEBus Command Latency",
+  "kind": "analysis",
+  "version": "1.0.0",
+  "paired_with": "aebus_command_latency",
+  "tests": [
+    {
+      "key": "aebus_command_latency",
+      "name": "AEBus Command Latency",
+      "entry": "AEBus_Command_Latency_Analysis_GUI.py",
+      "order": 90
+    }
+  ]
+}

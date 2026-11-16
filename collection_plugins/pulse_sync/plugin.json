@@ -1,0 +1,23 @@
+{
+  "$schema": "../../suite_sdk/plugin.schema.json",
+  "schema_version": 1,
+  "id": "pulse_sync",
+  "name": "Pulse Sync",
+  "kind": "collection",
+  "version": "1.0.0",
+  "paired_with": "pulse_sync",
+  "tests": [
+    {
+      "key": "psync",
+      "name": "Pulse Sync",
+      "entry": "Psync_Data_Collection.py",
+      "order": 130,
+      "requires": [
+        "generator",
+        "psync_slave_generator",
+        "oscilloscope"
+      ],
+      "instructions": "Configure the Pulse Sync bench. Confirm master and slave generator connections, the sync cable, and scope channels before continuing."
+    }
+  ]
+}

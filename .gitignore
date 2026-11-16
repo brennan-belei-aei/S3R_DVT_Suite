@@ -8,11 +8,21 @@ __pycache__/
 .venv/
 venv/
 
-# Per-PC / per-bench settings (copy the *.example.json templates)
+# Per-PC data: bench profiles, GUI settings, per-plugin settings (templates in config/templates/)
+runtime/
+
+# Pre-refactor settings locations, in case old code recreates them (now migrated into runtime/)
 Bench_Profiles.json
 Unified_Collection_GUI_Settings.json
 Unified_Analysis_GUI_Settings.json
 AE_Transparency_Testing_Suite_Settings.json
+*_Settings.json
+
+# Pre-refactor copies of the per-PC settings above (delete once migration is confirmed)
+_backup_local_settings/
+
+# Test tooling
+.pytest_cache/
 
 # Legacy runtime copies written beside child scripts
 .__unified_runtime_*.py
@@ -21,6 +31,7 @@ AE_Transparency_Testing_Suite_Settings.json
 # Log files
 *.log
 Power_Linearity_Error.log
+logs/
 
 # IDE
 .idea/

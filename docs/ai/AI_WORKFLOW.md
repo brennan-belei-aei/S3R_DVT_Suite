@@ -25,5 +25,5 @@
 
 ## Validation gates before a commit
 - `python -m pyflakes` shows no new undefined names.
-- `python Paramount_Data_Collection_Unified_GUI.py --self-test` passes, and every script is discovered.
+- `python suite_apps/collection_gui.py --self-test` passes, and every script is discovered.
 - A hardware dry run on one bench before merging to a release branch.

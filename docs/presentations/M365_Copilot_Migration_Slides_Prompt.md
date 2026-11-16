@@ -4,7 +4,7 @@
 - `docs/reviews/2026-11-03_AI_Review_and_Quick_Wins.md`
 - `docs/roadmap/NEXT_STEPS.md`
 
-To apply the team theme, start from a deck that uses `Presentation Themes/S3RTransparencyPPTXTheme.thmx`.
+To apply the team theme, start from a deck that uses `assets/presentation_themes/S3RTransparencyPPTXTheme.thmx`.
 
 ---
 

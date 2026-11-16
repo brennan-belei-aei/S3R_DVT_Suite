@@ -1,0 +1,17 @@
+{
+  "$schema": "../../suite_sdk/plugin.schema.json",
+  "schema_version": 1,
+  "id": "harmonics_spurious",
+  "name": "Harmonics and Spurious",
+  "kind": "analysis",
+  "version": "1.0.0",
+  "paired_with": "harmonics_spurious",
+  "tests": [
+    {
+      "key": "harmonics_spurious",
+      "name": "Harmonics and Spurious",
+      "entry": "Harmonics_Spurious_Analysis.py",
+      "order": 20
+    }
+  ]
+}
