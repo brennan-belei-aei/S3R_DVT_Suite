@@ -32,7 +32,9 @@ from contextlib import contextmanager
 from tkinter import filedialog, messagebox, ttk
 
 APP_DIR = Path(__file__).resolve().parent
-SETTINGS_FILE = APP_DIR / "Arc_Management_Collection_Settings.json"
+sys.path.insert(0, str(APP_DIR.parent))
+from suite_common.config import plugin_settings_path  # noqa: E402
+SETTINGS_FILE = plugin_settings_path("arc_management", "collection")
 STOP = threading.Event()
 
 # Preserved capture defaults from capture_arc_management.py.

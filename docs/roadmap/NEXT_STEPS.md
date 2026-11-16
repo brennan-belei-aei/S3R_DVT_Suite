@@ -11,13 +11,13 @@ Goal: a stable, tagged release that test engineers can run on several benches an
 
 ## Phase 1: deployment foundation
 1. **Tagged releases.** Benches run tags, not branches. Show the version in the launcher title and write it into every run folder.
-2. **One-click bench setup.** `setup_bench.ps1` creates `.venv`, installs pinned requirements (lock file), runs `npm ci`, and copies the `*.example.json` templates.
+2. **One-click bench setup.** `setup_bench.ps1` creates `.venv`, installs pinned requirements (lock file), runs `npm ci`, and copies the `config/templates/*.example.json` templates into `runtime/`.
 3. **Bench check before RF.** Add a "Test Connections" button per profile: `*IDN?` to each VISA instrument and a ping to the generator and Lynx. A sequence won't start until every check passes.
 4. **Run manifest.** Each output folder gets `run_manifest.json` with: operator, bench profile, product/TLA, DUT serial, code version and git hash, and all parameters.
 5. **Logging.** Replace `print` with `logging` to a per-run log file for remote diagnosis.
 
 ## Phase 2: multi-TLA support
-6. **Product profiles drive tests.** Fill `AE_Product_Profiles.json` per TLA with frequencies, setpoints, rated power, and limits. Collection scripts read `PARAMOUNT_PRODUCT_RECOMMENDATIONS_JSON` instead of hardcoded lists.
+6. **Product profiles drive tests.** Fill `config/AE_Product_Profiles.json` per TLA with frequencies, setpoints, rated power, and limits. Collection scripts read `PARAMOUNT_PRODUCT_RECOMMENDATIONS_JSON` instead of hardcoded lists.
 7. **Locked operator mode.** Operators run with an approved profile and fixed limits, and cannot edit script paths. Engineering mode keeps everything editable.
 8. **Central results.** Each lab's network share is the default output parent, set per bench profile, so analysis can compare benches.
 

@@ -33,16 +33,24 @@ AESpecificDependencies/                          AE command modules, Lynx, spect
 
 - **Child processes:** the GUIs never import test scripts. Each script runs as its own process and receives `PARAMOUNT_*` environment variables.
 - **Standalone runs:** every collection script can also run on its own. It then reads addresses from the active bench profile.
-- **Address lookup order:** `bench_default()` in `suite_common/bench.py` checks the environment variable first, then the active profile in `Bench_Profiles.json`, then blank.
+- **Address lookup order:** `bench_default()` in `suite_common/bench.py` checks the environment variable first, then the active profile in `runtime/Bench_Profiles.json`, then blank.
 
-## Per-PC files (not committed)
+## Configuration
 
-| File | Purpose | Template |
+| Folder | Committed? | Contents |
+|---|---|---|
+| `config/` | yes | `AE_Product_Profiles.json` (product list for the launcher) and `templates/*.example.json` |
+| `runtime/` | no (gitignored) | Everything specific to this PC, listed below. The apps create it on first use. |
+
+| `runtime/` file | Purpose | Template in `config/templates/` |
 |---|---|---|
 | `Bench_Profiles.json` | Instrument addresses per bench | `Bench_Profiles.example.json` |
-| `Unified_Collection_GUI_Settings.json` | Test selection/order, script paths | `*.example.json` |
-| `Unified_Analysis_GUI_Settings.json` | Analysis selection, dataset/presentation defaults | `*.example.json` |
-| `AE_Transparency_Testing_Suite_Settings.json` | Launcher script paths, selected product | `*.example.json` |
+| `collection_gui_settings.json` | Test selection/order, script paths | `collection_gui_settings.example.json` |
+| `analysis_gui_settings.json` | Analysis selection, dataset/presentation defaults | `analysis_gui_settings.example.json` |
+| `launcher_settings.json` | Launcher script paths, selected product | `launcher_settings.example.json` |
+| `plugin_settings/<plugin>.<collection\|analysis>.json` | Settings saved by individual test GUIs (Arc Management, RF Tuning, RF Ramping) | none |
+
+All paths come from `suite_common/config.py`; never build a settings path by hand. Settings files from before the refactor (at the repo root or beside a test script) are moved into `runtime/` automatically the first time they are needed, and the originals are kept in `runtime/migrated_legacy/`.
 
 Script paths are stored relative to the repo. If a saved path no longer exists, the GUI finds the script again by filename.
 

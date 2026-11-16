@@ -2,7 +2,7 @@
 
 This application does not import collection scripts. It launches one child process at a
 time, waits for that process to exit, and then presents the setup stage for the next test.
-Bench addresses come from the selected bench profile (Bench_Profiles.json) and are
+Bench addresses come from the selected bench profile (runtime/Bench_Profiles.json) and are
 passed to each child script as PARAMOUNT_* environment variables.
 """
 from __future__ import annotations
@@ -18,13 +18,18 @@ from tkinter import ttk, filedialog, messagebox, simpledialog
 
 from suite_common.bench import (
     BENCH_PROFILE_ENV,
-    BENCH_PROFILES_PATH,
     EQUIPMENT_FIELDS,
     FIELD_BY_KEY,
     detect_instruments,
     empty_addresses,
     load_bench_profiles,
     save_bench_profiles,
+)
+from suite_common.config import (
+    bench_profiles_path,
+    collection_gui_settings_path,
+    display_path,
+    migrate_legacy_settings,
 )
 from suite_common.paths import (
     child_creation_flags,
@@ -38,7 +43,6 @@ from suite_common.paths import (
 
 APP_TITLE = "Paramount Unified Data Collection"
 APP_DIR = Path(__file__).resolve().parent
-CONFIG_PATH = APP_DIR / "Unified_Collection_GUI_Settings.json"
 POLL_INTERVAL_MS = 400
 COLLECTION_PARENT_FOLDER_ENV = "PARAMOUNT_COLLECTION_PARENT_FOLDER"
 RISE_FALL_TEST_KEY = "rise_fall_time_verification"
@@ -206,7 +210,7 @@ def default_config() -> dict:
 
 def load_config() -> dict:
     config = default_config()
-    saved = load_json_settings(CONFIG_PATH)
+    saved = load_json_settings(collection_gui_settings_path())
     for key, saved_path in (saved.get("scripts") or {}).items():
         if key in TEST_BY_KEY:
             config["scripts"][key] = resolve_script_setting(saved_path, TEST_BY_KEY[key].default_scripts)
@@ -245,7 +249,7 @@ def save_config(config: dict) -> None:
     portable["scripts"] = {key: to_portable_path(value) for key, value in config["scripts"].items()}
     portable["rise_fall_scripts"] = {key: to_portable_path(value) for key, value in config["rise_fall_scripts"].items()}
     portable["collection_parent_folder"] = to_portable_path(config["collection_parent_folder"])
-    save_json_settings(CONFIG_PATH, portable)
+    save_json_settings(collection_gui_settings_path(), portable)
 
 
 def build_child_environment(
@@ -472,7 +476,7 @@ class UnifiedCollectionApp:
             label.grid(row=path_row, column=3, padx=(8, 0))
             self.path_status_labels[test.key] = label
             path_row += 1
-        ttk.Label(paths, text="Script paths inside the repo are saved as repo-relative paths in Unified_Collection_GUI_Settings.json; missing paths are rediscovered automatically.", foreground="#555555").grid(row=path_row, column=0, columnspan=4, sticky="w", pady=(14, 0))
+        ttk.Label(paths, text="Script paths inside the repo are saved as repo-relative paths in runtime/collection_gui_settings.json; missing paths are rediscovered automatically.", foreground="#555555").grid(row=path_row, column=0, columnspan=4, sticky="w", pady=(14, 0))
 
         ttk.Label(progress, textvariable=self.progress_var, font=("Segoe UI", 11, "bold")).pack(anchor="w")
         ttk.Label(progress, textvariable=self.status_var, wraplength=940).pack(anchor="w", pady=(5, 12))
@@ -524,7 +528,7 @@ class UnifiedCollectionApp:
         self.bench_profile_var.set(name)
         self._refresh_profile_choices()
         self._refresh_address_choices()
-        self.status_var.set(f"Saved bench profile '{name}' to {BENCH_PROFILES_PATH.name}.")
+        self.status_var.set(f"Saved bench profile '{name}' to {display_path(bench_profiles_path())}.")
 
     def _save_bench_profile_as(self):
         name = simpledialog.askstring("New bench profile", "Bench profile name (e.g. 'Lab B - Bench 3'):", parent=self.root)
@@ -724,7 +728,7 @@ class UnifiedCollectionApp:
         save_config(self.config)
         self._save_bench_profile()
         self.status_var.set(
-            f"Saved settings to {CONFIG_PATH.name} and bench profile '{self.bench_profile_var.get()}' to {BENCH_PROFILES_PATH.name}."
+            f"Saved settings to {display_path(collection_gui_settings_path())} and bench profile '{self.bench_profile_var.get()}' to {display_path(bench_profiles_path())}."
         )
         self._refresh_script_statuses()
 
@@ -1030,6 +1034,7 @@ def self_test() -> int:
 def main() -> int:
     if "--self-test" in sys.argv:
         return self_test()
+    migrate_legacy_settings()
     root = tk.Tk()
     UnifiedCollectionApp(root)
     root.mainloop()

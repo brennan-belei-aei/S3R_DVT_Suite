@@ -26,10 +26,10 @@ from suite_common.paths import (
     save_json_settings,
     to_portable_path,
 )
+from suite_common.config import analysis_gui_settings_path, display_path, migrate_legacy_settings
 
 APP_TITLE = "Paramount Unified Data Analysis"
 APP_DIR = Path(__file__).resolve().parent
-CONFIG_PATH = APP_DIR / "Unified_Analysis_GUI_Settings.json"
 POLL_INTERVAL_MS = 400
 PRESENTATION_SCHEMA_VERSION = 1
 PRESENTATION_MANIFEST_NAME = "presentation_manifest.json"
@@ -160,7 +160,7 @@ def default_config() -> dict:
 
 def load_config() -> dict:
     config = default_config()
-    saved = load_json_settings(CONFIG_PATH)
+    saved = load_json_settings(analysis_gui_settings_path())
     defaults_by_key = {item.key: item.default_filenames for item in BUILTIN_ANALYSES}
     for key, value in (saved.get("scripts") or {}).items():
         key = str(key)
@@ -193,7 +193,7 @@ def save_config(config: dict) -> None:
     portable["presentation"].pop("builder_script", None)
     for section, key in (("dataset_defaults", "dataset_a_folder"), ("dataset_defaults", "dataset_b_folder"), ("presentation", "output_parent")):
         portable[section][key] = to_portable_path(portable[section][key])
-    save_json_settings(CONFIG_PATH, portable)
+    save_json_settings(analysis_gui_settings_path(), portable)
 
 
 class UnifiedAnalysisApp:
@@ -551,7 +551,7 @@ class UnifiedAnalysisApp:
             label = ttk.Label(self.path_rows, width=12)
             label.grid(row=row, column=3, padx=(8, 0))
             self.path_status_labels[item.key] = label
-        ttk.Label(self.path_rows, text=f"Settings are saved next to this launcher in {CONFIG_PATH.name}.", foreground="#555555").grid(row=len(self.definitions), column=0, columnspan=4, sticky="w", pady=(14, 0))
+        ttk.Label(self.path_rows, text=f"Settings are saved in {display_path(analysis_gui_settings_path())}.", foreground="#555555").grid(row=len(self.definitions), column=0, columnspan=4, sticky="w", pady=(14, 0))
 
     def _set_all(self, value: bool):
         for variable in self.selected_vars.values():
@@ -667,7 +667,7 @@ class UnifiedAnalysisApp:
         self.config = self._current_config()
         save_config(self.config)
         self._refresh_path_statuses()
-        self.status_var.set(f"Saved analysis selections and script paths to {CONFIG_PATH.name}.")
+        self.status_var.set(f"Saved analysis selections and script paths to {display_path(analysis_gui_settings_path())}.")
 
     def _set_status(self, key: str, text: str):
         self.status_by_key[key] = text
@@ -980,6 +980,7 @@ def self_test() -> int:
 def main() -> int:
     if "--self-test" in sys.argv:
         return self_test()
+    migrate_legacy_settings()
     root = tk.Tk()
     UnifiedAnalysisApp(root)
     root.mainloop()

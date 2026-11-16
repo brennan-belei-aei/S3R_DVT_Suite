@@ -1,7 +1,7 @@
 """Bench equipment addresses shared by the unified GUI and every collection script.
 
 Lookup order for each address: launcher environment variable, then the active
-profile in Bench_Profiles.json, then the caller's fallback (normally blank).
+profile in runtime/Bench_Profiles.json, then the caller's fallback (normally blank).
 """
 from __future__ import annotations
 
@@ -10,9 +10,8 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 
-from suite_common import REPO_ROOT
+from suite_common.config import bench_profiles_path
 
-BENCH_PROFILES_PATH = REPO_ROOT / "Bench_Profiles.json"
 BENCH_PROFILE_ENV = "PARAMOUNT_BENCH_PROFILE"
 DEFAULT_PROFILE_NAME = "Default Bench"
 
@@ -44,7 +43,8 @@ def empty_addresses() -> dict[str, str]:
     return {item.key: "" for item in EQUIPMENT_FIELDS}
 
 
-def load_bench_profiles(path: Path = BENCH_PROFILES_PATH) -> dict:
+def load_bench_profiles(path: Path | None = None) -> dict:
+    path = path or bench_profiles_path()
     data = {"active_profile": DEFAULT_PROFILE_NAME, "profiles": {DEFAULT_PROFILE_NAME: empty_addresses()}}
     if not path.is_file():
         return data
@@ -65,7 +65,8 @@ def load_bench_profiles(path: Path = BENCH_PROFILES_PATH) -> dict:
     return data
 
 
-def save_bench_profiles(data: dict, path: Path = BENCH_PROFILES_PATH) -> None:
+def save_bench_profiles(data: dict, path: Path | None = None) -> None:
+    path = path or bench_profiles_path()
     path.write_text(json.dumps(data, indent=2), encoding="utf-8")
 
 

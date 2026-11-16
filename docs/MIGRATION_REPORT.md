@@ -127,3 +127,44 @@ The only method whose body differed between `AE_Commands_PMNT_HF_1XX` and `AECom
 - `DLP_setpoint` (pre-existing) passes `2` as `recv_sizes`, so it sends a malformed frame. Only the broken Quasi/Split-CW collectors call it. The DLP collector uses `DLP_setpoint_csr`.
 
 Gate: **177 passed**, all three `--self-test`s pass, and RF Ramping resolves `AESpecificDependencies/AECommandsUniversal.py`.
+## Phase 2: Configuration (`config/` + `runtime/`)
+
+### Layout
+| Old location | New location | Tracked? |
+|---|---|---|
+| `AE_Product_Profiles.json` | `config/AE_Product_Profiles.json` | yes |
+| `Bench_Profiles.example.json` | `config/templates/Bench_Profiles.example.json` | yes |
+| `Unified_Collection_GUI_Settings.example.json` | `config/templates/collection_gui_settings.example.json` | yes |
+| `Unified_Analysis_GUI_Settings.example.json` | `config/templates/analysis_gui_settings.example.json` | yes |
+| `AE_Transparency_Testing_Suite_Settings.example.json` | `config/templates/launcher_settings.example.json` | yes |
+| `Bench_Profiles.json` | `runtime/Bench_Profiles.json` | no |
+| `Unified_Collection_GUI_Settings.json` | `runtime/collection_gui_settings.json` | no |
+| `Unified_Analysis_GUI_Settings.json` | `runtime/analysis_gui_settings.json` | no |
+| `AE_Transparency_Testing_Suite_Settings.json` | `runtime/launcher_settings.json` | no |
+| `Arc Management/Arc_Management_{Collection,Analysis}_Settings.json` | `runtime/plugin_settings/arc_management.{collection,analysis}.json` | no |
+| `Frequency Tuning/RF_Tuning_{Collection,Analysis}_Settings.json` | `runtime/plugin_settings/rf_tuning.{collection,analysis}.json` | no |
+| `RF Ramping/RF_Ramp_Collection_Settings.json` | `runtime/plugin_settings/rf_ramping.collection.json` | no |
+
+`Bench_Profiles.json` and `AE_Product_Profiles.json` keep the names used in the block diagram. The other runtime files use snake_case names that say which app owns them.
+
+### Code
+- **New `suite_common/config.py`** is the only place that knows these paths. It provides:
+  - `product_profiles_path()`, `bench_profiles_path()`, `collection_gui_settings_path()`, `analysis_gui_settings_path()`, `launcher_settings_path()`, and `plugin_settings_path(plugin_id, kind)`;
+  - `runtime_file()`, `migrate_legacy_settings()`, and `display_path()`.
+- **First-use adoption:** each runtime accessor adopts its own legacy file the first time it is used, so standalone test scripts migrate too. The three apps also call `migrate_legacy_settings()` at GUI startup (not during `--self-test`).
+- **Repointed:**
+  - `suite_common/bench.py`: the `BENCH_PROFILES_PATH` constant is removed; `load/save_bench_profiles(path=None)` default to the accessor;
+  - the three apps;
+  - the five per-test scripts that save their own settings (Arc Management x2, Frequency Tuning x2, RF Ramping). Those five gained the standard `sys.path` and `suite_common` import; Phase 4 replaces it with package imports.
+- **Status labels** in the GUIs now show the repo-relative runtime path.
+
+**Plan deviation:** the plan said to rename originals to `*.migrated` in place. That would have left `*.json.migrated` files at the repo root and beside scripts, which defeats the goal of a clean root. Originals are instead **moved** to `runtime/migrated_legacy/<old relative path>`. Nothing is ever deleted, and an existing runtime file is never overwritten.
+
+### Migration on this PC
+- Ran `migrate_legacy_settings()`. `Bench_Profiles.json`, `Unified_Collection_GUI_Settings.json`, `Unified_Analysis_GUI_Settings.json`, and `RF_Ramp_Collection_Settings.json` were adopted. All four are **byte-identical** to the Phase 0 backups.
+- I confirmed the collection GUI, analysis GUI, bench profiles, and launcher load them from `runtime/`.
+- The repo root now has no JSON except `package.json` and `package-lock.json`.
+- **If you switch back to `main`:** the old code looks for settings at the repo root. Copy them back from `runtime/migrated_legacy/` or `_backup_local_settings/`.
+
+### Tests
+`tests/test_config_paths.py` covers migration of a temporary legacy tree (content preserved, originals kept), idempotence, no overwrite when a legacy file reappears, first-access adoption, and a guard that only `package*.json` is tracked at the repo root. Gate: **183 passed**, all three `--self-test`s pass, and pyflakes on the core is clean.

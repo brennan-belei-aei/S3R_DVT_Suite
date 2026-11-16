@@ -22,11 +22,16 @@ from suite_common.paths import (
     save_json_settings,
     to_portable_path,
 )
+from suite_common.config import (
+    display_path,
+    launcher_settings_path,
+    migrate_legacy_settings,
+    product_profiles_path,
+)
 
 APP_TITLE = "AE Transparency Testing Suite"
 APP_DIR = Path(__file__).resolve().parent
-SETTINGS_PATH = APP_DIR / "AE_Transparency_Testing_Suite_Settings.json"
-PRODUCT_PROFILES_PATH = APP_DIR / "AE_Product_Profiles.json"
+PRODUCT_PROFILES_PATH = product_profiles_path()
 POLL_INTERVAL_MS = 500
 DEFAULT_PRODUCT_ID = "UNSPECIFIED"
 
@@ -126,7 +131,7 @@ def default_settings() -> dict:
 
 def load_settings() -> dict:
     settings = default_settings()
-    saved = load_json_settings(SETTINGS_PATH)
+    saved = load_json_settings(launcher_settings_path())
     for key in settings:
         if key in saved:
             settings[key] = saved[key]
@@ -139,7 +144,7 @@ def save_settings(settings: dict) -> None:
     portable = dict(settings)
     for key in ("collection_script", "analysis_script"):
         portable[key] = to_portable_path(settings[key])
-    save_json_settings(SETTINGS_PATH, portable)
+    save_json_settings(launcher_settings_path(), portable)
 
 
 class AETransparencyTestingSuite:
@@ -506,7 +511,7 @@ class AETransparencyTestingSuite:
     def save_current_settings(self, show_status: bool = True) -> None:
         save_settings(self.current_settings())
         if show_status:
-            self.status_var.set(f"Settings saved to {SETTINGS_PATH.name}.")
+            self.status_var.set(f"Settings saved to {display_path(launcher_settings_path())}.")
 
     def on_close(self) -> None:
         running = [self._display_name(key) for key in ("collection", "analysis") if self._is_running(key)]
@@ -538,6 +543,7 @@ def self_test() -> int:
 def main() -> int:
     if "--self-test" in sys.argv:
         return self_test()
+    migrate_legacy_settings()
     root = tk.Tk()
     AETransparencyTestingSuite(root)
     root.mainloop()

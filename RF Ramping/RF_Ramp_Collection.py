@@ -13,7 +13,9 @@ from tkinter import filedialog, messagebox, ttk
 
 APP_TITLE = "RF Ramp Verification - Data Collection"
 APP_DIR = Path(__file__).resolve().parent
-SETTINGS = APP_DIR / "RF_Ramp_Collection_Settings.json"
+sys.path.insert(0, str(APP_DIR.parent))
+from suite_common.config import plugin_settings_path  # noqa: E402
+SETTINGS = plugin_settings_path("rf_ramping", "collection")
 TEST_NAME = "RF Ramp Verification"
 GENERATOR_MODULE = "AECommandsUniversal"
 DEFAULT_POWER_LEVELS = "50, 1000, 2000, 3000"

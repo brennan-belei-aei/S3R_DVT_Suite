@@ -28,7 +28,9 @@ import matplotlib.pyplot as plt
 
 ANALYSIS_ID = "arc_management"
 APP_DIR = Path(__file__).resolve().parent
-SETTINGS_FILE = APP_DIR / "Arc_Management_Analysis_Settings.json"
+sys.path.insert(0, str(APP_DIR.parent))
+from suite_common.config import plugin_settings_path  # noqa: E402
+SETTINGS_FILE = plugin_settings_path("arc_management", "analysis")
 CSV_PATTERN = re.compile(r"arc_sample_(?P<sample>\d+)_(?P<stamp>.+)\.csv$", re.I)
 CHANNELS = ("ch1_v", "ch2_v", "ch3_v", "ch4_v")
 

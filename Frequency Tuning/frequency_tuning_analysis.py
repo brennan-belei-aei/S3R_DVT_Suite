@@ -27,7 +27,9 @@ import matplotlib.pyplot as plt
 
 ANALYSIS_ID = "rf_tuning"
 APP_DIR = Path(__file__).resolve().parent
-SETTINGS_FILE = APP_DIR / "RF_Tuning_Analysis_Settings.json"
+sys.path.insert(0, str(APP_DIR.parent))
+from suite_common.config import plugin_settings_path  # noqa: E402
+SETTINGS_FILE = plugin_settings_path("rf_tuning", "analysis")
 
 ENV_MODE = "PARAMOUNT_ANALYSIS_MODE"
 ENV_A = "PARAMOUNT_DATASET_A_FOLDER"
