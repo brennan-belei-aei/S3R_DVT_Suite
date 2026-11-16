@@ -29,6 +29,8 @@ from suite_common.paths import (  # noqa: E402
 )
 from suite_common.config import analysis_gui_settings_path, display_path, migrate_legacy_settings
 from suite_sdk.registry import describe_unavailable, load_registry
+from suite_sdk.context import SuiteContext  # noqa: E402
+from suite_apps.analysis_process_manager import AnalysisProcessManager  # noqa: E402
 
 APP_TITLE = "Paramount Unified Data Analysis"
 APP_DIR = Path(__file__).resolve().parent
@@ -168,7 +170,7 @@ class UnifiedAnalysisApp:
             except Exception:
                 continue
         self.by_key = {item.key: item for item in self.definitions}
-        self.process: subprocess.Popen | None = None
+        self.runner = AnalysisProcessManager()
         self.sequence: list[str] = []
         self.sequence_index = -1
         self.active_key: str | None = None
@@ -663,6 +665,7 @@ class UnifiedAnalysisApp:
             "run_folder": str(self.presentation_run_folder),
             "presentation": self._presentation_settings(),
             "analysis_context": self._dataset_defaults(),
+            "suite_context": SuiteContext.current().to_dict(),
             "selected_analyses": [
                 {"analysis_id": key, "display_name": self.by_key[key].name,
                  "status": self.status_by_key.get(key, "Unknown"),
@@ -811,6 +814,7 @@ class UnifiedAnalysisApp:
         output_parent = self.presentation_text_vars["output_parent"].get().strip()
         if output_parent:
             environment["PARAMOUNT_ANALYSIS_OUTPUT_FOLDER"] = output_parent
+        package_folder = None
         if self.presentation_enabled_var.get() and self.presentation_run_folder:
             package_folder = self._package_folder(item.key)
             package_folder.mkdir(parents=True, exist_ok=True)
@@ -823,23 +827,34 @@ class UnifiedAnalysisApp:
             environment["PARAMOUNT_POWERPOINT_DUT_NAME"] = self.presentation_text_vars["dut_name"].get().strip()
             environment["PARAMOUNT_POWERPOINT_PROJECT_NAME"] = self.presentation_text_vars["project_name"].get().strip()
         try:
-            self.process = subprocess.Popen([sys.executable, str(script)], cwd=str(script.parent), env=environment, creationflags=child_creation_flags(self.console_var.get()))
-            self._set_status(item.key, f"Running (PID {self.process.pid})")
+            self.runner.launch_analysis(
+                registry=REGISTRY,
+                analysis_key=item.key,
+                script=script,
+                environment=environment,
+                dataset_folders=[dataset_defaults["dataset_a_folder"], dataset_defaults["dataset_b_folder"]],
+                output_parent=output_parent,
+                package_folder=package_folder,
+                new_console=self.console_var.get(),
+            )
+            self._set_status(item.key, f"Running (PID {self.runner.pid})")
             self.status_var.set(f"Launched {item.name}. Waiting for its process to close before continuing.")
             self.root.after(POLL_INTERVAL_MS, self._poll_process)
         except Exception as error:
-            self.process = None
             self._handle_failure(item, f"Launch failed: {error}")
 
     def _poll_process(self):
-        if self.process is None or self.active_key is None:
+        if self.active_key is None:
             return
-        return_code = self.process.poll()
-        if return_code is None:
-            self.root.after(POLL_INTERVAL_MS, self._poll_process)
+        result = self.runner.poll()
+        if result is None:
+            if self.runner.busy():
+                self.root.after(POLL_INTERVAL_MS, self._poll_process)
             return
+        if result.manifest_error:
+            print(f"Warning: analysis manifest could not be written:\n{result.manifest_error}")
+        return_code = result.exit_code
         item = self.by_key[self.active_key]
-        self.process = None
         if return_code == 0:
             if self.presentation_enabled_var.get():
                 package_status = self._check_analysis_package(item.key)
@@ -879,7 +894,6 @@ class UnifiedAnalysisApp:
         self.stop_button.configure(state="disabled")
 
     def _finish_sequence(self, text: str):
-        self.process = None
         self.active_key = None
         self.start_button.configure(state="normal")
         self.stop_button.configure(state="disabled")
@@ -899,7 +913,7 @@ class UnifiedAnalysisApp:
         messagebox.showinfo("Analysis sequence", text + presentation_message, parent=self.root)
 
     def on_close(self):
-        if self.process is not None and self.process.poll() is None:
+        if self.runner.busy():
             if not messagebox.askyesno("Analysis is running", "A child analysis process is still running. Close only the unified launcher and leave that analysis running?", parent=self.root):
                 return
         self.save_current_config()

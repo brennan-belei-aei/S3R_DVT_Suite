@@ -268,3 +268,45 @@ Plugin ids now double as folder names: `aebus_command_latency`, `analog_port_tim
 - The three apps pass `--self-test`, the launcher resolves `suite_apps/*`, and the builder finds `assets/presentation_themes/S3RTransparencyPPTXTheme.thmx`.
 - The Phase 0 registry baseline still matches.
 - **Result: 314 passed;** pyflakes is clean on `suite_common`, `suite_sdk`, `suite_apps`, the launcher, and `tests`.
+## Phase 5: Suite context, process managers, packages, provenance
+
+### Process protocol (`suite_common/process_protocol.py`)
+- **`ENV_VARS`** declares, with a one-line description, all 54 `PARAMOUNT_*` names found in the code, plus the new ones: `PARAMOUNT_PROTOCOL_VERSION`, `PARAMOUNT_SUITE_CONTEXT`, `PARAMOUNT_RUN_ID`, `PARAMOUNT_FIRMWARE_VERSION`, `PARAMOUNT_DUT_ADAPTER`, and `PARAMOUNT_ADAPTER_COMPATIBILITY`. `PARAMOUNT_DATASET_` is a declared dynamic prefix (Harmonics builds the name with an f-string). `PROTOCOL_VERSION = 1`.
+- **No existing name was renamed or removed.** `tests/test_process_managers.py` greps the code and fails on any undeclared name.
+
+### Launcher (product, firmware, DUT adapter)
+- **`config/AE_Product_Profiles.json` is now schema v2.** Each product has a `firmware` list of `{version, dut_adapter, compatibility, notes, test_defaults, constraints}`. Paramount lists `7433660J00` (AECommandsUniversal, **verified**: its docstring says "Known to work") and `7434759A31` (**unverified**: "To be determined"). Other products have an empty list until the user fills it in. Schema v1 files still load (no firmware rows).
+- **Firmware dropdown:** the launcher has an editable dropdown (an unlisted version can be typed) and a live adapter compatibility label (green Verified, amber Unverified, red Unavailable), as in the diagram.
+- **At launch:** an *Unavailable* adapter (module file missing) blocks the launch, and *Unverified* asks first. The launcher writes `runtime/suite_context.json` (`SuiteContext`: product, firmware, adapter, compatibility, SHA-256 revisions of the product and bench profile files, paths) and passes `PARAMOUNT_SUITE_CONTEXT`, the firmware, adapter, compatibility, and protocol variables. Firmware selection is saved in launcher settings.
+- **Fixed a Phase 2 regression:** "Open Profiles Folder" opened the repo root; it now opens `config/`.
+
+### Process managers (`suite_apps/`)
+- **`process_manager.ChildProcessManager`:**
+  - `launch()` sets `PARAMOUNT_RUN_ID` and the protocol version.
+  - `poll()` returns nothing while running, then the result once.
+  - `cancel()` terminates the child and records it as cancelled.
+  - `busy()` and `wait()`.
+  - Manifests are written on a worker thread, so hashing a large data folder never freezes the GUI.
+- **`collection_process_manager.CollectionProcessManager.launch_test()`** watches the collection parent folder; every folder a script creates there becomes a Run Package.
+- **`analysis_process_manager.AnalysisProcessManager.launch_analysis()`** watches the analysis output folder and the dataset folders, always writes into the presentation package folder, and records dataset folders as inputs.
+- **Both GUIs** now delegate launching and polling to these managers. The sequence logic, dialogs, retry/skip/stop, and status texts are unchanged. `on_close` asks the manager whether a child is still busy.
+- **Plan deviation:** `cancel()` exists and is tested, but no new button was added. The GUIs keep their existing "stop after current" behavior, since adding a kill button to running bench tests is a UX/safety decision for the user.
+
+### Manifests (`suite_common/manifests.py`)
+- **`run_manifest.json`** (Run Package) and **`analysis_manifest.json`** (Analysis Package). Required fields: schema version, kind, run id, status (`complete`/`failed`/`cancelled`), exit code, started/finished, product, firmware, DUT adapter and compatibility, bench (profile and instrument addresses, collection only), effective `PARAMOUNT_*` settings, suite (git commit, dirty flag, protocol version, context file, profile revisions), plugin (id, version, test key/name), script (path and SHA-256), inputs, and outputs (every file with size and SHA-256).
+- **Inputs:** an analysis input that is a Run Package is referenced by its `run_id` and the SHA-256 of its `run_manifest.json`, which transitively covers every data file. Other inputs have their files hashed.
+- **No script changes:** the managers write manifests around the child. The scripts' own files (for example the presentation package `manifest.json`) are never touched, so behavior is unchanged.
+- **The presentation manifest** gains a `suite_context` block, which the builder can read. The pptx filename and content are **unchanged**.
+- **Discrepancy with the diagram:** the diagram's "Transparency_Test_Results.pptx (product- and date-stamped)" naming is not applied. Changing the output filename is a behavior change left for the user (`presentation.filename` in the analysis GUI).
+
+### Tests (`tests/test_process_managers.py`)
+- the environment contract is complete;
+- **end to end:** a fake collector (real subprocess) writes into the collection parent, and the Run Package manifest is complete, carries the context, bench, and plugin, and its hashes match the data. A fake analyzer then reads that dataset; both of its analysis manifests are complete and reference the run by `run_id` and manifest hash, and the script's own `manifest.json` is untouched;
+- a nonzero exit records `failed`;
+- a cancelled run with no output folder goes to `runtime/run_records/`;
+- a second launch while busy is refused;
+- adapter resolution: verified, unlisted (unverified), and missing module (unavailable);
+- the shipped product profiles are v2 and resolve to a verified AECommandsUniversal;
+- `SuiteContext.current()` falls back to the environment for standalone runs.
+
+Gate: **328 passed**, all three `--self-test`s pass, pyflakes is clean, and the tests write nothing into the real `runtime/`.

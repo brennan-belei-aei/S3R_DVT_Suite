@@ -39,7 +39,9 @@ tools/  archive/  docs/  tests/          standalone utilities, unused legacy cod
 ```
 
 - **Plugins:** every folder under `collection_plugins/` and `analysis_plugins/` holds a `plugin.json` describing its tests. Both GUIs build their test lists from the plugin registry (`suite_sdk/registry.py`). An invalid plugin file is skipped with a warning that gives the reason; it never stops the GUI.
-- **Child processes:** the GUIs never import test scripts. Each script runs as its own process and receives `PARAMOUNT_*` environment variables.
+- **Child processes:** the GUIs never import test scripts. Each script runs as its own process and receives `PARAMOUNT_*` environment variables. The full, versioned list is in `suite_common/process_protocol.py`; a test fails if code uses an undeclared name.
+- **Product, firmware, and DUT adapter:** the launcher's firmware list comes from `config/AE_Product_Profiles.json` (schema v2: each product's `firmware` rows name a `dut_adapter` and its `compatibility`). The launcher shows whether the adapter is *Verified*, *Unverified* (asks before launching), or *Unavailable* (blocks), writes `runtime/suite_context.json`, and passes its path in `PARAMOUNT_SUITE_CONTEXT`.
+- **Process managers and provenance:** `suite_apps/collection_process_manager.py` and `analysis_process_manager.py` launch, monitor, and cancel child scripts. When a script ends, they write `run_manifest.json` into each folder it created under the collection folder (a *Run Package*), and `analysis_manifest.json` into each analysis output/package folder. A manifest records product, firmware, adapter, bench profile and instrument addresses, effective `PARAMOUNT_*` settings, suite commit, plugin id/version, script hash, timestamps, status, and input/output file hashes. Runs with no detectable output folder are recorded in `runtime/run_records/`.
 - **Standalone runs:** every collection script can also run on its own. It then reads addresses from the active bench profile.
 - **Address lookup order:** `bench_default()` in `suite_common/bench.py` checks the environment variable first, then the active profile in `runtime/Bench_Profiles.json`, then blank.
 

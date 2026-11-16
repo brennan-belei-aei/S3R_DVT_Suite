@@ -22,12 +22,18 @@ from suite_common.paths import (
     save_json_settings,
     to_portable_path,
 )
+from suite_common.bootstrap import dependency_folder
 from suite_common.config import (
+    bench_profiles_path,
     display_path,
     launcher_settings_path,
     migrate_legacy_settings,
     product_profiles_path,
+    suite_context_path,
 )
+from suite_common.manifests import short_revision
+from suite_common.process_protocol import SUITE_CONTEXT_ENV, protocol_environment
+from suite_sdk.context import UNAVAILABLE, UNVERIFIED, VERIFIED, SuiteContext, firmware_entries, resolve_adapter
 
 APP_TITLE = "AE Transparency Testing Suite"
 APP_DIR = Path(__file__).resolve().parent
@@ -47,7 +53,7 @@ def default_product_profiles() -> dict:
     or the individual test scripts.
     """
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "products": [
             {
                 "id": "UNSPECIFIED",
@@ -64,6 +70,10 @@ def default_product_profiles() -> dict:
                 "collection_recommendations": {},
                 "analysis_recommendations": {},
                 "metadata": {},
+                "firmware": [
+                    {"version": "7433660J00", "dut_adapter": "AECommandsUniversal", "compatibility": VERIFIED,
+                     "test_defaults": {}, "constraints": {}},
+                ],
             },
         ],
     }
@@ -71,6 +81,7 @@ def default_product_profiles() -> dict:
 
 def ensure_product_profiles_file() -> None:
     if not PRODUCT_PROFILES_PATH.exists():
+        PRODUCT_PROFILES_PATH.parent.mkdir(parents=True, exist_ok=True)
         PRODUCT_PROFILES_PATH.write_text(
             json.dumps(default_product_profiles(), indent=2), encoding="utf-8"
         )
@@ -101,6 +112,18 @@ def load_product_profiles() -> dict:
                     if isinstance(raw.get("analysis_recommendations", {}), dict) else {},
                 "metadata": raw.get("metadata", {})
                     if isinstance(raw.get("metadata", {}), dict) else {},
+                "firmware": [
+                    {
+                        "version": str(entry["version"]).strip(),
+                        "dut_adapter": str(entry.get("dut_adapter", "")).strip(),
+                        "compatibility": str(entry.get("compatibility", UNVERIFIED)).strip().lower(),
+                        "notes": str(entry.get("notes", "")),
+                        "test_defaults": entry.get("test_defaults", {}) if isinstance(entry.get("test_defaults", {}), dict) else {},
+                        "constraints": entry.get("constraints", {}) if isinstance(entry.get("constraints", {}), dict) else {},
+                    }
+                    for entry in raw.get("firmware", []) if isinstance(raw.get("firmware", []), list)
+                    if isinstance(entry, dict) and str(entry.get("version", "")).strip()
+                ],
             })
             seen_ids.add(product_id)
         if not valid_products:
@@ -119,6 +142,26 @@ def product_by_id(catalog: dict, product_id: str) -> dict:
     return catalog["products"][0]
 
 
+def build_suite_context(product: dict, firmware: str, catalog_schema: int = 2) -> SuiteContext:
+    """Resolve the DUT adapter for product + firmware and describe the session."""
+    adapter, compatibility, _message = resolve_adapter(product, firmware, dependency_folder())
+    return SuiteContext(
+        product_id=product["id"],
+        product_name=product["display_name"],
+        firmware=firmware.strip(),
+        dut_adapter=adapter,
+        adapter_compatibility=compatibility,
+        product_profiles_revision=short_revision(PRODUCT_PROFILES_PATH),
+        bench_profiles_revision=short_revision(bench_profiles_path()),
+        paths={
+            "repo_root": str(APP_DIR),
+            "product_profiles": str(PRODUCT_PROFILES_PATH),
+            "adapter_dir": str(dependency_folder()),
+        },
+        environment={"product_profile_schema_version": str(catalog_schema)},
+    )
+
+
 def default_settings() -> dict:
     return {
         "collection_script": discover_script(COLLECTION_CANDIDATES),
@@ -126,6 +169,7 @@ def default_settings() -> dict:
         "open_child_console": True,
         "warn_before_parallel_launch": True,
         "selected_product_id": DEFAULT_PRODUCT_ID,
+        "selected_firmware": "",
     }
 
 
@@ -162,6 +206,8 @@ class AETransparencyTestingSuite:
         }
         self.product_var = tk.StringVar(value=selected_product["display_name"])
         self.product_description_var = tk.StringVar(value=selected_product.get("description", ""))
+        self.firmware_var = tk.StringVar(value=str(self.settings.get("selected_firmware", "")))
+        self.compatibility_var = tk.StringVar()
         self.collection_path = tk.StringVar(value=str(self.settings["collection_script"]))
         self.analysis_path = tk.StringVar(value=str(self.settings["analysis_script"]))
         self.console_var = tk.BooleanVar(value=bool(self.settings["open_child_console"]))
@@ -224,19 +270,28 @@ class AETransparencyTestingSuite:
         ttk.Button(product_frame, text="Open Profiles Folder", command=self._open_profiles_folder).grid(
             row=0, column=3, padx=(8, 0)
         )
+        ttk.Label(product_frame, text="Firmware version").grid(row=1, column=0, sticky="w", padx=(0, 10), pady=(8, 0))
+        self.firmware_combo = ttk.Combobox(product_frame, textvariable=self.firmware_var, width=34)
+        self.firmware_combo.grid(row=1, column=1, sticky="w", pady=(8, 0))
+        self.firmware_combo.bind("<<ComboboxSelected>>", lambda _event: self._refresh_compatibility())
+        self.firmware_combo.bind("<KeyRelease>", lambda _event: self._refresh_compatibility())
+        self.compatibility_label = ttk.Label(product_frame, textvariable=self.compatibility_var)
+        self.compatibility_label.grid(row=1, column=2, columnspan=2, sticky="w", padx=(10, 0), pady=(8, 0))
         ttk.Label(
             product_frame,
             textvariable=self.product_description_var,
             foreground="#555555",
             wraplength=750,
-        ).grid(row=1, column=0, columnspan=4, sticky="w", pady=(8, 0))
+        ).grid(row=2, column=0, columnspan=4, sticky="w", pady=(8, 0))
         ttk.Label(
             product_frame,
-            text=("Product selection is recorded and passed to child suites. Recommended settings are "
-                  "reserved in the profile schema but are not applied yet."),
+            text=("Product, firmware, and the DUT command adapter are written to runtime/suite_context.json "
+                  "and recorded in every run and analysis manifest. Recommended settings are reserved in the "
+                  "profile schema but are not applied yet."),
             foreground="#555555",
             wraplength=750,
-        ).grid(row=2, column=0, columnspan=4, sticky="w", pady=(4, 0))
+        ).grid(row=3, column=0, columnspan=4, sticky="w", pady=(4, 0))
+        self._refresh_firmware_choices()
 
         cards = ttk.Frame(outer)
         cards.pack(fill="both", expand=True)
@@ -349,7 +404,22 @@ class AETransparencyTestingSuite:
     def _on_product_selected(self, _event=None) -> None:
         product = self._selected_product()
         self.product_description_var.set(product.get("description", ""))
+        self._refresh_firmware_choices()
         self.status_var.set(f"Selected product line: {product['display_name']}.")
+
+    def _refresh_firmware_choices(self) -> None:
+        versions = [entry["version"] for entry in firmware_entries(self._selected_product())]
+        self.firmware_combo.configure(values=versions)
+        if versions and self.firmware_var.get().strip() not in versions:
+            self.firmware_var.set(versions[0])
+        self._refresh_compatibility()
+
+    def _refresh_compatibility(self) -> SuiteContext:
+        context = build_suite_context(self._selected_product(), self.firmware_var.get(), self.product_catalog.get("schema_version", 2))
+        colors = {VERIFIED: "#187A28", UNVERIFIED: "#B26B00", UNAVAILABLE: "#B00020"}
+        self.compatibility_var.set(f"{context.dut_adapter}: {context.adapter_compatibility.capitalize()}")
+        self.compatibility_label.configure(foreground=colors.get(context.adapter_compatibility, "#555555"))
+        return context
 
     def _reload_product_profiles(self) -> None:
         previous_id = self._selected_product().get("id", DEFAULT_PRODUCT_ID)
@@ -364,12 +434,13 @@ class AETransparencyTestingSuite:
         selected = product_by_id(self.product_catalog, previous_id)
         self.product_var.set(selected["display_name"])
         self.product_description_var.set(selected.get("description", ""))
+        self._refresh_firmware_choices()
         self.status_var.set(f"Reloaded {PRODUCT_PROFILES_PATH.name}.")
 
     def _open_profiles_folder(self) -> None:
         ensure_product_profiles_file()
         try:
-            open_path(APP_DIR)
+            open_path(PRODUCT_PROFILES_PATH.parent)
         except Exception as error:
             messagebox.showerror("Could not open folder", str(error), parent=self.root)
 
@@ -385,6 +456,7 @@ class AETransparencyTestingSuite:
             "PARAMOUNT_PRODUCT_PROFILE_SCHEMA_VERSION": str(self.product_catalog.get("schema_version", 1)),
             "PARAMOUNT_PRODUCT_PROFILE_FILE": str(PRODUCT_PROFILES_PATH),
             "PARAMOUNT_PRODUCT_RECOMMENDATIONS_JSON": json.dumps(recommendations),
+            "PARAMOUNT_FIRMWARE_VERSION": self.firmware_var.get().strip(),
         }
 
     def _browse_script(self, key: str) -> None:
@@ -449,8 +521,24 @@ class AETransparencyTestingSuite:
             if not proceed:
                 return
 
+        context = self._refresh_compatibility()
+        _adapter, _compatibility, message = resolve_adapter(self._selected_product(), self.firmware_var.get(), dependency_folder())
+        if context.adapter_compatibility == UNAVAILABLE:
+            messagebox.showerror("DUT adapter unavailable", message, parent=self.root)
+            return
+        if context.adapter_compatibility == UNVERIFIED and not messagebox.askyesno(
+            "Unverified firmware",
+            f"{message}\n\nThe DUT command adapter has not been verified with this firmware. Continue?",
+            parent=self.root,
+        ):
+            return
+
         self.save_current_settings(show_status=False)
-        environment = os.environ.copy()
+        context_file = context.save(suite_context_path())
+        environment = protocol_environment(os.environ)
+        environment[SUITE_CONTEXT_ENV] = str(context_file)
+        environment["PARAMOUNT_DUT_ADAPTER"] = context.dut_adapter
+        environment["PARAMOUNT_ADAPTER_COMPATIBILITY"] = context.adapter_compatibility
         environment["PARAMOUNT_TESTING_SUITE_LAUNCHER"] = "1"
         environment["PARAMOUNT_LAUNCHED_SUITE"] = key.upper()
         environment.update(self._product_environment(key))
@@ -506,6 +594,7 @@ class AETransparencyTestingSuite:
             "open_child_console": self.console_var.get(),
             "warn_before_parallel_launch": self.parallel_warning_var.get(),
             "selected_product_id": self._selected_product()["id"],
+            "selected_firmware": self.firmware_var.get().strip(),
         }
 
     def save_current_settings(self, show_status: bool = True) -> None:
@@ -533,7 +622,10 @@ def self_test() -> int:
     assert creation_flags(False) == 0
     assert COLLECTION_CANDIDATES and ANALYSIS_CANDIDATES
     catalog = default_product_profiles()
-    assert catalog["schema_version"] == 1
+    assert catalog["schema_version"] == 2
+    paramount = product_by_id(catalog, "PARAMOUNT")
+    assert build_suite_context(paramount, "7433660J00").adapter_compatibility == VERIFIED
+    assert build_suite_context(paramount, "UNLISTED").adapter_compatibility == UNVERIFIED
     assert product_by_id(catalog, "PARAMOUNT")["display_name"] == "Paramount"
     assert "collection_recommendations" in product_by_id(catalog, "PARAMOUNT")
     print("Transparency Testing Suite launcher self-test passed.")

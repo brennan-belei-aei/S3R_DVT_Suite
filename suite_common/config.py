@@ -75,6 +75,18 @@ def plugin_settings_path(plugin_id: str, kind: str) -> Path:
     return runtime_file(f"plugin_settings/{plugin_id}.{kind}.json")
 
 
+def suite_context_path() -> Path:
+    """The launcher's SuiteContext for the current session (see suite_sdk.context)."""
+    return runtime_file("suite_context.json")
+
+
+def run_records_dir() -> Path:
+    """Manifests of runs whose output folder could not be detected."""
+    path = runtime_dir() / "run_records"
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
 def display_path(path: Path) -> str:
     """Repo-relative text for status messages."""
     try:

@@ -8,7 +8,6 @@ passed to each child script as PARAMOUNT_* environment variables.
 from __future__ import annotations
 
 import os
-import subprocess
 import sys
 import threading
 from dataclasses import dataclass
@@ -33,7 +32,6 @@ from suite_common.config import (
     migrate_legacy_settings,
 )
 from suite_common.paths import (
-    child_creation_flags,
     load_json_settings,
     resolve_portable_path,
     resolve_saved_script,
@@ -41,6 +39,7 @@ from suite_common.paths import (
     to_portable_path,
 )
 from suite_sdk.registry import describe_unavailable, load_registry
+from suite_apps.collection_process_manager import CollectionProcessManager  # noqa: E402
 
 APP_TITLE = "Paramount Unified Data Collection"
 APP_DIR = Path(__file__).resolve().parent
@@ -173,7 +172,7 @@ class UnifiedCollectionApp:
         self.root = root
         self.config = load_config()
         self.bench_data = load_bench_profiles()
-        self.process: subprocess.Popen | None = None
+        self.runner = CollectionProcessManager()
         self.sequence: list[str] = []
         self.sequence_index = -1
         self.active_key: str | None = None
@@ -774,38 +773,43 @@ class UnifiedCollectionApp:
                 self.active_edge,
                 self.bench_profile_var.get(),
             )
-            command = [sys.executable, str(script_path)]
-            self.process = subprocess.Popen(
-                command,
-                cwd=str(script_path.parent),
-                env=environment,
-                creationflags=child_creation_flags(self.console_var.get()),
+            self.runner.launch_test(
+                registry=REGISTRY,
+                test_key=test.key,
+                script=script_path,
+                environment=environment,
+                collection_parent=self.collection_parent_folder_var.get().strip(),
+                bench_profile=self.bench_profile_var.get(),
+                addresses=self._current_addresses(),
+                new_console=self.console_var.get(),
             )
             run_label = " / ".join(
                 value for value in (self.active_mode, self.active_edge) if value
             )
             self._set_test_status(
                 test.key,
-                f"Running {run_label} (PID {self.process.pid})" if run_label
-                else f"Running (PID {self.process.pid})",
+                f"Running {run_label} (PID {self.runner.pid})" if run_label
+                else f"Running (PID {self.runner.pid})",
             )
             qualifiers = " - ".join(value for value in (self.active_mode, self.active_edge) if value)
             display_name = f"{test.name} - {qualifiers}" if qualifiers else test.name
             self.status_var.set(f"Launched {display_name} with bench profile '{self.bench_profile_var.get()}'. Waiting for the child GUI to close.")
             self.root.after(POLL_INTERVAL_MS, self._poll_process)
         except Exception as error:
-            self.process = None
             self._handle_test_failure(test, f"Launch failed: {error}")
 
     def _poll_process(self):
-        if self.process is None or self.active_key is None:
+        if self.active_key is None:
             return
-        return_code = self.process.poll()
-        if return_code is None:
-            self.root.after(POLL_INTERVAL_MS, self._poll_process)
+        result = self.runner.poll()
+        if result is None:
+            if self.runner.busy():
+                self.root.after(POLL_INTERVAL_MS, self._poll_process)
             return
+        if result.manifest_error:
+            print(f"Warning: run manifest could not be written:\n{result.manifest_error}")
+        return_code = result.exit_code
         test = TEST_BY_KEY[self.active_key]
-        self.process = None
         if return_code == 0:
             completed_label = " / ".join(
                 value for value in (self.active_mode, self.active_edge) if value
@@ -855,7 +859,6 @@ class UnifiedCollectionApp:
         self.stop_button.configure(state="disabled")
 
     def _finish_sequence(self, message: str):
-        self.process = None
         self.active_key = None
         self.active_mode = None
         self.active_edge = None
@@ -866,7 +869,7 @@ class UnifiedCollectionApp:
         messagebox.showinfo("Collection sequence", message, parent=self.root)
 
     def on_close(self):
-        if self.process is not None and self.process.poll() is None:
+        if self.runner.busy():
             if not messagebox.askyesno("Collection test is running", "A child collection script is still running. Close only the launcher and leave the test running?", parent=self.root):
                 return
         self.save_current_config()

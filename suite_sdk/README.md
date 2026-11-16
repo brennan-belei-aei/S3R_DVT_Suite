@@ -7,7 +7,7 @@ The plugin layer. Each GUI asks the registry which tests exist; nothing is hardc
 | `plugin.schema.json` | The `plugin.json` contract. Plugin files reference it in `$schema`, so editors validate and autocomplete them. |
 | `registry` | `load_registry()` finds every `plugin.json` / `plugin.<kind>.json` (skipping `.venv`, `archive/`, `runtime/`, `tests/`), validates it, and returns a `PluginRegistry`. Use `tests(kind, product=, firmware=, include_unlisted=)`, `test(kind, key)`, and `resolve_aliases(kind, saved_keys)`. Invalid files land in `registry.unavailable` with the reason; `describe_unavailable()` formats them. |
 | `schema` | A small JSON Schema validator for the keywords `plugin.schema.json` uses (no third-party dependency). |
-| `context` | `SuiteContext`: the product, firmware, DUT adapter, and bench the launcher selected. It is saved to `runtime/suite_context.json` and its path is passed in `PARAMOUNT_SUITE_CONTEXT`. |
+| `context` | `SuiteContext`: the product, firmware, DUT adapter, and profile revisions the launcher selected. Saved to `runtime/suite_context.json`; its path is passed in `PARAMOUNT_SUITE_CONTEXT`. `SuiteContext.current()` returns it, or a context built from `PARAMOUNT_*` variables for standalone runs. `resolve_adapter(product, firmware, adapter_dir)` maps firmware to the DUT adapter and its compatibility. |
 
 ## Plugin file at a glance
 
