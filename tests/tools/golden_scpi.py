@@ -66,6 +66,8 @@ class Bench:
     cex_reference: tuple[str, int] | None = None     # (wavegen resource, channel) of the CEX reference
     mode: int = 2
     host_rf: bool = False
+    trigger_model: bool = False                      # scope READY after arming, SAVE after the next stimulus
+    armed: set[str] = field(default_factory=set)
 
     def record(self, *entry: Any) -> None:
         self.log.append(repr(entry))
@@ -73,6 +75,14 @@ class Bench:
     # -- instrument state -----------------------------------------------------------------
     def wrote(self, resource: str, command: str) -> None:
         text = command.strip()
+        if self.trigger_model:
+            if text.upper() == "ACQ:STATE ON":
+                self.armed.add(resource)
+                self.settings[(resource, "TRIG:STATE")] = "READY"
+            else:
+                for scope in [s for s in self.armed if s != resource]:
+                    self.settings[(scope, "TRIG:STATE")] = "SAVE"
+                    self.armed.discard(scope)
         siglent = re.fullmatch(r"(C\d):OUTP\s+(LOAD,\w+|ON|OFF)", text, re.I)
         if siglent:
             part = siglent.group(2).upper()
@@ -123,7 +133,7 @@ class Bench:
         if upper == "*OPC?":
             return "1"
         if upper == "TRIG:STATE?":
-            return "SAVE"
+            return self.setting(resource, "TRIG:STATE", "SAVE") if self.trigger_model else "SAVE"
         siglent = re.fullmatch(r"(C\d):OUTP\?", upper)
         if siglent:
             ch = siglent.group(1)
@@ -320,6 +330,36 @@ def _rf_enable(module, bench: Bench, parent: Path):
     return module.run_collection(parent, DUT, SCOPE, WAVEGEN, 6000.0, [4000.0, 6000.0], 2, lambda message: None)[0]
 
 
+def _setpoint_transfer(module, bench: Bench, parent: Path):
+    bench.rf_enable = (_in_use(module, bench, WAVEGEN), module.TRANSFER_RF_ENABLE_WG_CHANNEL)
+    module.TRANSFER_VOLTAGES_V = [0.0, 5.0, 10.0]
+    module.TRANSFER_SAMPLES_PER_POINT = 3
+    return module.run_collection(2, parent, DUT, WAVEGEN)[0]
+
+
+def _analog_processing(module, bench: Bench, parent: Path):
+    bench.rf_enable = (_in_use(module, bench, WAVEGEN), module.ANALOG_TIMING_RF_ENABLE_WG_CHANNEL)
+    bench.trigger_model = True
+    module.input = lambda prompt="": "RUN"  # operator pre-run acknowledgement
+    module.ANALOG_TIMING_STEPS_V = list(module.ANALOG_TIMING_STEPS_V)[:2]
+    return module._run_collection(parent, 1, True, DUT, SCOPE, WAVEGEN)
+
+
+def _analog_processing_bk9141_connect(module, bench: Bench, parent: Path):
+    """The BK 9141 branch of Instruments.connect (not reachable from the GUI today)."""
+    bench.interlock_supply = _in_use(module, bench, SUPPLY)
+    module.DUT_ADDRESS, module.SCOPE_ADDRESS, module.WAVEGEN_ADDRESS = DUT, SCOPE, WAVEGEN
+    module.WAVEGEN_SOCKET_FALLBACK_ADDRESS = module.visa_socket_resource(WAVEGEN)
+    module.BK9141_ADDRESS = SUPPLY
+    module.BK9141_SOCKET_FALLBACK_ADDRESS = module.visa_socket_resource(SUPPLY)
+    inst = module.Instruments(connect_bk9141=True)
+    try:
+        inst.connect()
+        return 0
+    finally:
+        inst.close()
+
+
 @dataclass(frozen=True)
 class Scenario:
     name: str
@@ -338,6 +378,19 @@ SCENARIOS = {s.name: s for s in (
     Scenario("cex_lock_acquisition_wavegen_fallback",
              "collection_plugins/analog_port_timing/CEX_Lock_Acquisition_Collection.py", _cex, frozenset({WAVEGEN})),
     Scenario("rf_enable_timing", "collection_plugins/analog_port_timing/RF_enable_timing_collection.py", _rf_enable),
+    Scenario("setpoint_transfer_function", "collection_plugins/analog_port_timing/setpoint_transfer_function_collection.py",
+             _setpoint_transfer),
+    Scenario("setpoint_transfer_function_wavegen_fallback",
+             "collection_plugins/analog_port_timing/setpoint_transfer_function_collection.py", _setpoint_transfer,
+             frozenset({WAVEGEN})),
+    Scenario("analog_processing_timing", "collection_plugins/analog_port_timing/analog_processing_timing_collection.py",
+             _analog_processing),
+    Scenario("analog_processing_timing_wavegen_fallback",
+             "collection_plugins/analog_port_timing/analog_processing_timing_collection.py", _analog_processing,
+             frozenset({WAVEGEN})),
+    Scenario("analog_processing_timing_bk9141_socket_fallback",
+             "collection_plugins/analog_port_timing/analog_processing_timing_collection.py",
+             _analog_processing_bk9141_connect, frozenset({SUPPLY})),
     Scenario("rf_enable_timing_wavegen_fallback",
              "collection_plugins/analog_port_timing/RF_enable_timing_collection.py", _rf_enable,
              frozenset({WAVEGEN})),
