@@ -1,0 +1,23 @@
+{
+  "$schema": "../../suite_sdk/plugin.schema.json",
+  "schema_version": 1,
+  "id": "power_profile",
+  "name": "Power Profile",
+  "kind": "collection",
+  "version": "1.0.0",
+  "paired_with": "power_profile",
+  "tests": [
+    {
+      "key": "power_profile",
+      "name": "Power Profile",
+      "entry": "Power_Profile_Collection_GUI.py",
+      "order": 120,
+      "requires": [
+        "generator",
+        "lynx",
+        "navigator"
+      ],
+      "instructions": "Configure the Power Profile bench. Confirm generator, Lynx, Navigator/tuner, and tuner-map connections before continuing."
+    }
+  ]
+}

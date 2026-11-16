@@ -13,7 +13,7 @@ The plugin layer. Each GUI asks the registry which tests exist; nothing is hardc
 
 ```json
 {
-  "$schema": "../suite_sdk/plugin.schema.json",
+  "$schema": "../../suite_sdk/plugin.schema.json",
   "schema_version": 1,
   "id": "power_profile",
   "name": "Power Profile",

@@ -1,4 +1,4 @@
-"""AEBus Command Latency runs the Digital Timing collectors through patched runtime copies."""
+"""AEBus Command Latency runs the rf_on_off_timing (Digital Timing) collectors through patched runtime copies."""
 from __future__ import annotations
 
 import importlib.util
@@ -7,7 +7,7 @@ import pytest
 
 from tests.conftest import REPO_ROOT
 
-GUI_PATH = REPO_ROOT / "AESpecificDependencies" / "Command Latency" / "AEBus_Command_Latency_Collection_GUI.py"
+GUI_PATH = REPO_ROOT / "collection_plugins" / "aebus_command_latency" / "AEBus_Command_Latency_Collection_GUI.py"
 
 # The constants the GUI rewrites in each collector (see App.worker); renaming any of
 # them in a collector breaks the latency test.
@@ -29,7 +29,7 @@ def gui():
 def test_collectors_resolve_to_digital_timing(gui, mode):
     script = gui.find_script(mode)
     assert script.is_file()
-    assert script.parent.name == "Digital Timing"
+    assert script.parent.name == "rf_on_off_timing"
 
 
 @pytest.mark.parametrize("mode", sorted(PATCHED_CONSTANTS))

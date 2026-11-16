@@ -24,8 +24,7 @@ def _discovered(script: str) -> str | None:
 def current_registry() -> dict:
     if str(REPO_ROOT) not in sys.path:
         sys.path.insert(0, str(REPO_ROOT))
-    import Paramount_Data_Analysis_Unified_GUI as analysis_gui
-    import Paramount_Data_Collection_Unified_GUI as collection_gui
+    from suite_apps import analysis_gui, collection_gui
 
     collection = [
         {

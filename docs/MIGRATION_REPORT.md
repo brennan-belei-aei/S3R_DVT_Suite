@@ -218,3 +218,53 @@ Gate: **177 passed**, all three `--self-test`s pass, and RF Ramping resolves `AE
   - unlisted tests stay hidden;
   - `SuiteContext` round-trips.
 - **Result: 204 passed**, all three `--self-test`s pass, and pyflakes is clean on `suite_sdk`, `suite_common`, and the three apps.
+## Phase 4: Folder restructure
+
+### Moves (all `git mv`, so history is kept; driven by the plugin files, so the layout and the plugin files cannot drift apart)
+| From | To |
+|---|---|
+| `<Test folder>/plugin.collection.json` + its scripts | `collection_plugins/<plugin id>/plugin.json` + scripts |
+| `<Test folder>/plugin.analysis.json` + its scripts | `analysis_plugins/<plugin id>/plugin.json` + scripts |
+| `Analog Port Timing/<5 subfolders>/` | flattened into `collection_plugins/analog_port_timing/` and `analysis_plugins/analog_port_timing/` (no name clashes) |
+| `AESpecificDependencies/Command Latency/` | `collection_plugins/aebus_command_latency/`, `analysis_plugins/aebus_command_latency/` |
+| `Digital Timing/` | `collection_plugins/rf_on_off_timing/` (with `AECommandsSerialTimingAdapter.py`), `analysis_plugins/rf_on_off_timing/` (with the standalone helper `statistics_new.py`); `usage_rf_on_off.txt` became `docs/rf_on_off_timing_usage.txt` |
+| `Paramount_Data_Collection_Unified_GUI.py` | `suite_apps/collection_gui.py` |
+| `Paramount_Data_Analysis_Unified_GUI.py` | `suite_apps/analysis_gui.py` |
+| `Paramount_PowerPoint_Builder.py` | `suite_apps/Paramount_PowerPoint_Builder.py` |
+| `Presentation Themes/` | `assets/presentation_themes/` |
+
+The old test folders (12, plus `AESpecificDependencies/Command Latency/` and `Presentation Themes/`) were empty afterwards and were removed.
+
+Plugin ids now double as folder names: `aebus_command_latency`, `analog_port_timing`, `arc_management`, `dc_operating_point`, `harmonics_spurious`, `power_linearity_accuracy`, `power_profile`, `pulse_sync`, `quasi_cw_oscillations`, `rf_on_off_timing`, `rf_ramping`, `rf_tuning`, `rise_fall_time`. Script filenames are unchanged, so the operators' data-folder conventions and any external references by filename still hold.
+
+### Imports and paths
+- **Plan deviation, `sys.path`:** the plan asked to replace the `sys.path.insert` hacks with package imports "where feasible". Plugin scripts run as child processes and standalone (`python <script>`), and the AEBus latency GUI executes patched copies of them, so package imports (`python -m ...`) would change how every script is launched. Instead, the 22 fixed-depth hacks (`parents[1]`, `parents[2]`, `APP_DIR.parent`) became one **depth-independent** line:
+  ```python
+  sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
+  ```
+  `tests/test_plugin_layout.py` forbids `parents[N]` in plugin scripts and requires this line wherever `suite_common` is used. `suite_common/bootstrap.py` remains the AE-module shim until Phase 6.
+- **Same line in `suite_apps/collection_gui.py` and `analysis_gui.py`,** because the launcher starts them as scripts. `suite_apps/` is also a package, so the tests import `suite_apps.collection_gui`.
+- **Launcher:** looks for `collection_gui.py` / `analysis_gui.py`. A stale saved launcher path falls back to discovery.
+- **PowerPoint builder:** resolves `REPO_ROOT` the same way; the theme folder is `assets/presentation_themes/` and `NODE_PATH` uses `<repo>/node_modules`. The builder-local `S3RTransparencyPPTXTheme.thmx` candidate and every override (`--theme`, env, manifest) are unchanged.
+- **Cross-imports:** none between analysis and collection scripts. The only sibling imports (`AECommandsSerialTimingAdapter`, `QuasiCWDataCollection_GUI`, the `runpy` wrappers) moved together with their targets.
+
+### Pre-existing defects fixed because they block running from the new folders
+- `analog_processing_timing_collection.py` imported `suite_common` with no repo-root line, so it only worked when started with the repo root as the working directory. It now has the root line.
+- `QuasiCWOscillationsCollection_GUI.py` and Rise/Fall `QuasiCWDataCollection_GUI.py` imported `AECommandsUniversal` without any bootstrap, so the import could never resolve. They now have the root line plus `suite_common.bootstrap`. They still reference the missing `AECommands_forFastDAQ` (Phase 0 finding), so they still cannot run.
+
+### Saved settings
+`runtime/collection_gui_settings.json` and `analysis_gui_settings.json` still hold pre-move script paths. Those no longer exist, so every entry falls back to the plugin default, and the next save rewrites them. Verified: all 14 + 3 + 16 scripts resolve from the real settings. `suite_common.config.LEGACY_LOCATIONS` keeps the old per-test settings paths (`Arc Management/...`), because those are the pre-refactor locations that it migrates from.
+
+### Notes
+- `analog_processing_timing_collection.py` defaults `OUTPUT_ROOT` to `Results/` beside the script, so it is now `collection_plugins/analog_port_timing/Results/`. Behavior is otherwise unchanged; Phase 5 run packages replace this.
+- The analog processing timing collector has **no** `--self-test`. An early probe (matching `self.test_id`) briefly opened its GUI; it was closed. The layout test only runs scripts that literally handle `"--self-test"`.
+
+### Gate
+- **New `tests/test_plugin_layout.py`:**
+  - every plugin lives at `<kind>_plugins/<id>/plugin.json` with its scripts beside it;
+  - no fixed-depth repo-root code;
+  - **every plugin script's module-level imports resolve from its new folder**, each probed in a fresh interpreter started like `python <script>` (the self-locating adapter is imported for real);
+  - the 6 plugin scripts with `--self-test` (Arc Management x2, RF Tuning x2, RF Ramping x2) pass it from an unrelated working directory.
+- The three apps pass `--self-test`, the launcher resolves `suite_apps/*`, and the builder finds `assets/presentation_themes/S3RTransparencyPPTXTheme.thmx`.
+- The Phase 0 registry baseline still matches.
+- **Result: 314 passed;** pyflakes is clean on `suite_common`, `suite_sdk`, `suite_apps`, the launcher, and `tests`.

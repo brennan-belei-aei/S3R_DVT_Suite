@@ -10,8 +10,8 @@ from tests.conftest import REPO_ROOT
 
 APPS = [
     "Transparency_Test_Suite_Launcher.py",
-    "Paramount_Data_Collection_Unified_GUI.py",
-    "Paramount_Data_Analysis_Unified_GUI.py",
+    "suite_apps/collection_gui.py",
+    "suite_apps/analysis_gui.py",
 ]
 
 

@@ -26,20 +26,20 @@ FIXTURE_DIR = REPO_ROOT / "tests" / "fixtures" / "golden_frames"
 FRAME_LIMIT = 200
 
 ADAPTER_SCRIPTS = [
-    "Analog Port Timing/Analog Processing Timing/analog_processing_timing_collection.py",
-    "Analog Port Timing/CEX Lock Acquisition Timing/CEX_Lock_Acquisition_Collection.py",
-    "Analog Port Timing/Interlock Response Timing/Interlock_Response_Timing_Collection.py",
-    "Analog Port Timing/RF Enable Timing/RF_enable_timing_collection.py",
-    "Analog Port Timing/Setpoint Transfer Function/setpoint_transfer_function_collection.py",
-    "DC Operating Point/DC_Operating_Point_Collection_GUI.py",
-    "Harmonics and Spurious/Harmonics_Spurious_Collection.py",
-    "Power Linearity and Accuracy/Power_Accuracy_Collection_GUI.py",
-    "Power Linearity and Accuracy/Power_Linearity_Collection_GUI.py",
-    "Power Profile/Power_Profile_Collection_GUI.py",
-    "Rise and Fall/SLPDataCollection_GUI.py",
-    "RF Ramping/RF_Ramp_Collection.py",
+    "collection_plugins/analog_port_timing/analog_processing_timing_collection.py",
+    "collection_plugins/analog_port_timing/CEX_Lock_Acquisition_Collection.py",
+    "collection_plugins/analog_port_timing/Interlock_Response_Timing_Collection.py",
+    "collection_plugins/analog_port_timing/RF_enable_timing_collection.py",
+    "collection_plugins/analog_port_timing/setpoint_transfer_function_collection.py",
+    "collection_plugins/dc_operating_point/DC_Operating_Point_Collection_GUI.py",
+    "collection_plugins/harmonics_spurious/Harmonics_Spurious_Collection.py",
+    "collection_plugins/power_linearity_accuracy/Power_Accuracy_Collection_GUI.py",
+    "collection_plugins/power_linearity_accuracy/Power_Linearity_Collection_GUI.py",
+    "collection_plugins/power_profile/Power_Profile_Collection_GUI.py",
+    "collection_plugins/rise_fall_time/SLPDataCollection_GUI.py",
+    "collection_plugins/rf_ramping/RF_Ramp_Collection.py",
 ]
-DLP_SCRIPT = "Rise and Fall/DLPDataCollection_GUI.py"
+DLP_SCRIPT = "collection_plugins/rise_fall_time/DLPDataCollection_GUI.py"
 
 # AECommandsDLPUnits name -> AECommandsUniversal name. Names that already existed in
 # Universal with different frames got a DLP_ prefix.

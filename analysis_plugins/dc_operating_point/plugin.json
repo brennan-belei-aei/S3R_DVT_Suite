@@ -1,0 +1,17 @@
+{
+  "$schema": "../../suite_sdk/plugin.schema.json",
+  "schema_version": 1,
+  "id": "dc_operating_point",
+  "name": "DC Operating Point",
+  "kind": "analysis",
+  "version": "1.0.0",
+  "paired_with": "dc_operating_point",
+  "tests": [
+    {
+      "key": "dc_operating_point",
+      "name": "DC Operating Point",
+      "entry": "DC_Operating_Point_Analysis_GUI.py",
+      "order": 10
+    }
+  ]
+}

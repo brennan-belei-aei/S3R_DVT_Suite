@@ -23,17 +23,22 @@ Bench automation for collecting and analyzing AE RF generator transparency data.
 ## How it fits together
 
 ```
-Transparency_Test_Suite_Launcher.py              product selection; starts the two unified GUIs
-├── Paramount_Data_Collection_Unified_GUI.py     bench profile + test sequence; runs each *Collection* script as a child process
-└── Paramount_Data_Analysis_Unified_GUI.py       runs each *Analysis* script, then Paramount_PowerPoint_Builder.py
-suite_common/                                    shared helpers (config paths, bench addresses, output folders, parsing)
-suite_sdk/                                       plugin registry, plugin.json schema, suite context
-AESpecificDependencies/                          AE command modules (AECommandsUniversal = DUT adapter), Lynx, spectrum analyzer drivers
-<Test folder>/                                   collection + analysis scripts, plus plugin.collection.json / plugin.analysis.json
+Transparency_Test_Suite_Launcher.py      product selection; starts the two GUIs
+suite_apps/
+├── collection_gui.py                    bench profile + test sequence; runs each collection script as a child process
+├── analysis_gui.py                      runs each analysis script, then Paramount_PowerPoint_Builder.py
+└── Paramount_PowerPoint_Builder.py      Node.js/pptxgenjs PowerPoint generation (child process)
+collection_plugins/<plugin id>/          plugin.json + collection script(s), one folder per plugin
+analysis_plugins/<plugin id>/            plugin.json + analysis script(s), same ids as collection
+suite_sdk/                               plugin registry, plugin.json schema, suite context
+suite_common/                            shared helpers (config paths, bench addresses, output folders, parsing)
+AESpecificDependencies/                  AE command modules (AECommandsUniversal = DUT adapter), Lynx, spectrum analyzer drivers
+config/  runtime/                        committed defaults / per-PC settings (see Configuration)
+assets/presentation_themes/              PowerPoint theme (.thmx) used by the builder
+tools/  archive/  docs/  tests/          standalone utilities, unused legacy code, documentation, hardware-free tests
 ```
 
-- **Plugins:** each test folder describes its tests in `plugin.collection.json` and `plugin.analysis.json`. Both GUIs build their test lists from the plugin registry (`suite_sdk/registry.py`). An invalid plugin file is skipped with a warning that gives the reason; it never stops the GUI.
-
+- **Plugins:** every folder under `collection_plugins/` and `analysis_plugins/` holds a `plugin.json` describing its tests. Both GUIs build their test lists from the plugin registry (`suite_sdk/registry.py`). An invalid plugin file is skipped with a warning that gives the reason; it never stops the GUI.
 - **Child processes:** the GUIs never import test scripts. Each script runs as its own process and receives `PARAMOUNT_*` environment variables.
 - **Standalone runs:** every collection script can also run on its own. It then reads addresses from the active bench profile.
 - **Address lookup order:** `bench_default()` in `suite_common/bench.py` checks the environment variable first, then the active profile in `runtime/Bench_Profiles.json`, then blank.
@@ -59,15 +64,16 @@ Script paths are stored relative to the repo. If a saved path no longer exists, 
 
 ## Adding a test
 
-1. Create `<Test Name>/<Name>_Collection_GUI.py` (and an `_Analysis_GUI.py`). Start the collection script with:
+1. Create `collection_plugins/<plugin_id>/<Name>_Collection.py` (and `analysis_plugins/<plugin_id>/<Name>_Analysis.py`); `<plugin_id>` is snake_case. Start the collection script with:
    ```python
-   sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+   sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
    import suite_common.bootstrap  # noqa: F401
    from suite_common.bench import bench_default
    ```
+   That first line finds the repo root at any folder depth; do not use `parents[N]`.
 2. Get every instrument address with `bench_default("<equipment key>")`. Never hardcode IPs, serials, or COM ports.
-3. Describe the test in `plugin.collection.json` (and `plugin.analysis.json`) in the same folder. Copy an existing one; the format is defined in [suite_sdk/plugin.schema.json](suite_sdk/plugin.schema.json). Each entry under `tests` needs a unique `key`, a display `name`, the script path in `entry`, an `order`, and, for collection tests, the bench equipment in `requires` and the setup text in `instructions`. Do not edit the GUIs.
-4. Run `.venv\Scripts\python -m pytest tests/test_plugin_registry.py` to confirm the plugin is valid.
+3. Describe the test in a `plugin.json` beside each script (`"kind": "collection"` or `"analysis"`, the same `id` in both). Copy an existing one; the format is defined in [suite_sdk/plugin.schema.json](suite_sdk/plugin.schema.json). Each entry under `tests` needs a unique `key`, a display `name`, the script path in `entry`, an `order`, and, for collection tests, the bench equipment in `requires` and the setup text in `instructions`. Do not edit the GUIs.
+4. Run `.venv\Scripts\python -m pytest tests/test_plugin_registry.py tests/test_plugin_layout.py` to confirm the plugin is valid and its imports resolve.
 
 Tests that exist on disk but are not offered in the GUIs yet (Arc Management, RF Ramping, Quasi-CW / Split-CW, Digital Timing) are in the plugin files with `"listed": false`. Set it to `true` to show one.
 
@@ -76,7 +82,7 @@ Tests that exist on disk but are not offered in the GUIs yet (Arc Management, RF
 ```powershell
 .venv\Scripts\pip install -r requirements-dev.txt   # once: adds pytest and pyflakes
 .venv\Scripts\python -m pytest tests
-.venv\Scripts\python -m pyflakes suite_common suite_sdk *.py
+.venv\Scripts\python -m pyflakes suite_common suite_sdk suite_apps Transparency_Test_Suite_Launcher.py
 ```
 
 `tests/` needs no hardware. `tests/fakes/` records AE-bus frames and SCPI traffic so command sequences can be compared before and after a change. If you intentionally change a test definition, regenerate the registry baseline with `.venv\Scripts\python -m tests.tools.dump_registry --write`.

@@ -1,7 +1,7 @@
 """Plugin registry: finds plugin files, validates them, and answers "which tests exist?".
 
-A plugin file is `plugin.json` (Phase 4 layout: one per plugin folder) or
-`plugin.<kind>.json` (a folder that holds both the collection and analysis scripts).
+A plugin file is `collection_plugins/<id>/plugin.json` or `analysis_plugins/<id>/plugin.json`.
+`plugin.<kind>.json` is also accepted, for a folder that holds both kinds of script.
 Invalid plugins never crash the GUIs: they are listed in `PluginRegistry.unavailable`
 with the reason.
 """

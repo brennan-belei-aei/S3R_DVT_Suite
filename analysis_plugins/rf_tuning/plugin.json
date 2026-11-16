@@ -1,0 +1,18 @@
+{
+  "$schema": "../../suite_sdk/plugin.schema.json",
+  "schema_version": 1,
+  "id": "rf_tuning",
+  "name": "RF Tuning",
+  "kind": "analysis",
+  "version": "1.0.0",
+  "paired_with": "rf_tuning",
+  "tests": [
+    {
+      "key": "rf_tuning",
+      "name": "RF Tuning",
+      "entry": "frequency_tuning_analysis.py",
+      "order": 160,
+      "description": "Directed RF frequency tuning time, settling behavior, final-frequency error, and repeatability."
+    }
+  ]
+}

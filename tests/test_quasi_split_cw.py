@@ -9,11 +9,11 @@ import pytest
 
 from tests.conftest import REPO_ROOT
 
-COLLECTOR = REPO_ROOT / "Rise and Fall" / "QuasiCWDataCollection_GUI.py"
+COLLECTOR = REPO_ROOT / "collection_plugins" / "rise_fall_time" / "QuasiCWDataCollection_GUI.py"
 WRAPPERS = [
-    REPO_ROOT / "Rise and Fall" / "SplitCWDataAnalysis_GUI.py",
-    REPO_ROOT / "Quasi CW Oscillations" / "SplitCWOscillationsCollection_GUI.py",
-    REPO_ROOT / "Quasi CW Oscillations" / "SplitCWOscillationsAnalysis_GUI.py",
+    REPO_ROOT / "analysis_plugins" / "rise_fall_time" / "SplitCWDataAnalysis_GUI.py",
+    REPO_ROOT / "collection_plugins" / "quasi_cw_oscillations" / "SplitCWOscillationsCollection_GUI.py",
+    REPO_ROOT / "analysis_plugins" / "quasi_cw_oscillations" / "SplitCWOscillationsAnalysis_GUI.py",
 ]
 
 

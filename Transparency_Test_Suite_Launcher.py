@@ -35,8 +35,8 @@ PRODUCT_PROFILES_PATH = product_profiles_path()
 POLL_INTERVAL_MS = 500
 DEFAULT_PRODUCT_ID = "UNSPECIFIED"
 
-COLLECTION_CANDIDATES = ["Paramount_Data_Collection_Unified_GUI.py"]
-ANALYSIS_CANDIDATES = ["Paramount_Data_Analysis_Unified_GUI.py"]
+COLLECTION_CANDIDATES = ["collection_gui.py"]
+ANALYSIS_CANDIDATES = ["analysis_gui.py"]
 
 
 def default_product_profiles() -> dict:

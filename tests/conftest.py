@@ -1,6 +1,7 @@
 """Shared pytest setup: repo root and AE dependencies on sys.path, plus fake-instrument fixtures."""
 from __future__ import annotations
 
+import importlib
 import sys
 from pathlib import Path
 
@@ -10,7 +11,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-import suite_common.bootstrap  # noqa: E402,F401  (puts AE dependency modules on sys.path)
+importlib.import_module("suite_common.bootstrap")  # puts AE dependency modules on sys.path
 
 from tests.fakes.ae_bus import FakeAEBus  # noqa: E402
 from tests.fakes.visa import FakeResourceManager  # noqa: E402

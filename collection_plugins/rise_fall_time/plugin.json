@@ -1,0 +1,44 @@
+{
+  "$schema": "../../suite_sdk/plugin.schema.json",
+  "schema_version": 1,
+  "id": "rise_fall_time",
+  "name": "Rise and Fall Time",
+  "kind": "collection",
+  "version": "1.0.0",
+  "paired_with": "rise_fall_time",
+  "tests": [
+    {
+      "key": "rise_fall_time_verification",
+      "name": "Rise and Fall Time Verification",
+      "entry": "CWDataCollection_GUI.py",
+      "order": 50,
+      "requires": [
+        "generator",
+        "oscilloscope",
+        "waveform_generator"
+      ],
+      "instructions": "Configure the Rise and Fall Time Verification bench. Confirm the generator and oscilloscope connections, probes, trigger source, and waveform channels before continuing.",
+      "modes": {
+        "CW": "CWDataCollection_GUI.py",
+        "SLP": "SLPDataCollection_GUI.py",
+        "DLP": "DLPDataCollection_GUI.py"
+      }
+    },
+    {
+      "key": "rise_fall_quasi_cw",
+      "name": "Rise/Fall Time - Quasi-CW",
+      "entry": "QuasiCWDataCollection_GUI.py",
+      "order": 1040,
+      "listed": false,
+      "requires": []
+    },
+    {
+      "key": "rise_fall_split_cw",
+      "name": "Rise/Fall Time - Split-CW",
+      "entry": "SplitCWDataCollection_GUI.py",
+      "order": 1050,
+      "listed": false,
+      "requires": []
+    }
+  ]
+}
