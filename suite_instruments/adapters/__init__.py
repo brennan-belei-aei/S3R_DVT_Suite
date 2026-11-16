@@ -58,7 +58,9 @@ def _ae_7434753(address: str, role: str, options: dict) -> Any:
 
 def _ae_serial_timing(address: str, role: str, options: dict) -> Any:
     module = _ae_module("AECommandsSerialTimingAdapter")
-    return _wrapped(_connect(role, address, lambda: module.generator(0, address)), "gen", role, address)
+    # generator(0, COM port) opens serial AEBus; generator(host, None) opens Ethernet AEBus.
+    build = (lambda: module.generator(0, address)) if role == "generator_com_port" else (lambda: module.generator(address, None))
+    return _wrapped(_connect(role, address, build), "gen", role, address)
 
 
 def _ae_lynx(address: str, role: str, options: dict) -> Any:
@@ -90,7 +92,7 @@ ADAPTERS: dict[str, AdapterSpec] = {spec.name: spec for spec in (
                 frozenset({"aebus", "ethernet", "rf_on_off", "power_setpoint", "regulation_mode", "pulsing",
                            "pulse_sync", "process_status"}),
                 "AE generator over Ethernet AEBus, 7434753 firmware command set (AE_Commands_7434753).", _ae_7434753),
-    AdapterSpec("ae.serial_timing", frozenset({"generator_com_port"}),
+    AdapterSpec("ae.serial_timing", frozenset({"generator_com_port", "generator"}),
                 UNIVERSAL_GENERATOR_CAPS | {"serial", "rf_on_test"},
                 "AE generator over serial AEBus with single-frame RF ON (AECommandsSerialTimingAdapter).", _ae_serial_timing),
     AdapterSpec("ae.lynx", frozenset({"lynx"}), frozenset({"aebus", "power_measurement"}),

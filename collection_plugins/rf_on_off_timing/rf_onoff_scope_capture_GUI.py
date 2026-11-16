@@ -70,11 +70,12 @@ import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 
 import numpy as np
-import pyvisa
 
 sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
 import suite_common.bootstrap  # noqa: E402,F401
-import AECommandsSerialTimingAdapter  # noqa: E402
+from suite_instruments.errors import InstrumentError  # noqa: E402
+from suite_instruments.factory import InstrumentFactory  # noqa: E402
+from suite_instruments.transport.visa import resource_manager  # noqa: E402
 
 # ---------------------------
 # Configuration - edit these
@@ -221,7 +222,7 @@ def build_scope_resource(scope_address, interface="VXI-11"):
 
 
 def open_scope(scope_ip=None, scope_interface="VXI-11"):
-    rm = pyvisa.ResourceManager()
+    rm = resource_manager()
     scope_address = scope_ip or SCOPE_IP
     if VISA_RESOURCE:
         resource = VISA_RESOURCE
@@ -235,7 +236,7 @@ def open_scope(scope_ip=None, scope_interface="VXI-11"):
         resource = resources[0]
     print(f"Opening scope: {resource}")
     try:
-        scope = rm.open_resource(resource)
+        scope = InstrumentFactory({"oscilloscope": resource}).create("oscilloscope", resource_manager=rm, open_attempts=1)
     except Exception as e:
         try:
             backend = type(rm.visalib).__module__
@@ -315,7 +316,7 @@ def configure_trigger(scope):
         print(" OK", flush=True)
         print("Scope trigger configuration complete.", flush=True)
 
-    except pyvisa.VisaIOError as exc:
+    except InstrumentError as exc:
         try:
             scope.clear()
         except Exception:
@@ -439,7 +440,7 @@ def set_cursors(scope, t_a, t_b):
     scope.query("*OPC?")
     try:
         return float(scope.query(f"{base}:VBArs:DELTa?"))
-    except (ValueError, pyvisa.VisaIOError):
+    except (ValueError, InstrumentError):
         return None
 
 
@@ -804,8 +805,11 @@ def capture_step(scope, action_name, action, setpoint, iteration, img_dir, write
         stage = "screenshot"
         save_screenshot(scope, img_path)
     except Exception as e:
-        status = str(e) if isinstance(e, TimeoutError) else f"ERROR in {stage}: {e}"
-        if not isinstance(e, TimeoutError) and isinstance(e, pyvisa.VisaIOError):
+        # VISA errors, timeouts included, arrive as InstrumentError; a bare TimeoutError is this
+        # script's own arm/trigger timeout.
+        visa_error = isinstance(e, InstrumentError)
+        status = str(e) if isinstance(e, TimeoutError) and not visa_error else f"ERROR in {stage}: {e}"
+        if visa_error:
             scope_err = recover_scope(scope)
             if scope_err:
                 status += f" | scope says: {scope_err}"
@@ -830,8 +834,8 @@ def capture_step(scope, action_name, action, setpoint, iteration, img_dir, write
 
 def open_generator(com_port):
     if COMM_TYPE == "serial":
-        return AECommandsSerialTimingAdapter.generator(0, com_port)
-    return AECommandsSerialTimingAdapter.generator(IP_ADDRESS, None)
+        return InstrumentFactory({"generator_com_port": com_port}).create("generator_com_port")
+    return InstrumentFactory({"generator": IP_ADDRESS}, {"generator": "ae.serial_timing"}).create("generator")
 
 
 def choose_unit():

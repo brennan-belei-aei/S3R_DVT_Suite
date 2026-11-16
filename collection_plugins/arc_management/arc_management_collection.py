@@ -11,7 +11,6 @@ the selected, preconfigured function-generator output.
 from __future__ import annotations
 
 import csv
-import importlib
 import json
 import os
 import re
@@ -26,7 +25,6 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
-import pyvisa
 import tkinter as tk
 from contextlib import contextmanager
 from tkinter import filedialog, messagebox, ttk
@@ -35,6 +33,8 @@ APP_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
 from suite_common.config import plugin_settings_path  # noqa: E402
 import suite_common.bootstrap  # noqa: E402,F401  (AE command modules on sys.path)
+from suite_instruments.factory import InstrumentFactory  # noqa: E402
+from suite_instruments.transport.visa import resource_manager  # noqa: E402
 SETTINGS_FILE = plugin_settings_path("arc_management", "collection")
 STOP = threading.Event()
 
@@ -73,7 +73,7 @@ def get_resource_manager():
     global _VISA_MANAGER
     with _VISA_LOCK:
         if _VISA_MANAGER is None:
-            _VISA_MANAGER = pyvisa.ResourceManager()
+            _VISA_MANAGER = resource_manager()
         return _VISA_MANAGER
 
 
@@ -81,7 +81,8 @@ def get_resource_manager():
 def visa_session(resource: str, timeout_ms: int = 120_000):
     instrument = None
     try:
-        instrument = get_resource_manager().open_resource(resource)
+        instrument = InstrumentFactory({"oscilloscope": resource}).create(
+            "oscilloscope", resource_manager=get_resource_manager(), open_attempts=1)
         instrument.timeout = timeout_ms
         instrument.read_termination = "\n"
         instrument.write_termination = "\n"
@@ -201,7 +202,8 @@ class SDG6022X:
     """Embedded, output-state-only Siglent SDG6022X controller."""
     def __init__(self, ip_address: str, timeout_ms: int = 5000):
         self.resource = f"TCPIP0::{ip_address}::INSTR"
-        self.instrument = get_resource_manager().open_resource(self.resource)
+        self.instrument = InstrumentFactory({"waveform_generator": self.resource}).create(
+            "waveform_generator", resource_manager=get_resource_manager(), open_attempts=1)
         self.instrument.timeout = timeout_ms
         self.instrument.write_termination = "\n"
         self.instrument.read_termination = None
@@ -304,26 +306,11 @@ def request_stop(*_args) -> None:
     STOP.set()
 
 
-def load_universal_module():
-    errors = []
-    for name in ("AECommandsUniversal",):
-        try:
-            return importlib.import_module(name)
-        except Exception as exc:
-            errors.append(f"{name}: {exc}")
-    raise RuntimeError("AECommandsUniversal could not be imported. " + " | ".join(errors))
-
-
 def create_dut(address: str):
-    module = load_universal_module()
-    for class_name in ("generator", "Generator"):
-        factory = getattr(module, class_name, None)
-        if factory:
-            try:
-                return factory(address)
-            except Exception as exc:
-                raise RuntimeError(f"Could not connect using {class_name}({address!r}): {exc}") from exc
-    raise RuntimeError("AECommandsUniversal does not expose generator or Generator.")
+    try:
+        return InstrumentFactory({"generator": address}).create("generator")
+    except Exception as exc:
+        raise RuntimeError(f"Could not connect using generator({address!r}): {exc}") from exc
 
 
 def call_required(device: Any, names: tuple[str, ...], *args):

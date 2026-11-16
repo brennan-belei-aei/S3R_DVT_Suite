@@ -35,6 +35,7 @@ APP_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
 from suite_common.config import plugin_settings_path  # noqa: E402
 import suite_common.bootstrap  # noqa: E402,F401  (AE command modules on sys.path)
+from suite_instruments.factory import InstrumentFactory  # noqa: E402
 SETTINGS_PATH = plugin_settings_path("rf_tuning", "collection")
 
 # Unified-launcher environment values. Multiple counter names are accepted so the
@@ -201,50 +202,17 @@ def import_counter_driver():
 
 
 def create_generator(address: str):
-    """Prefer the suite universal dependency, with legacy fallback for transition."""
-    attempts = []
-    candidates = (
-        ("AECommandsUniversal", ("generator", "Generator")),
-        ("AE_Commands_7434753", ("generator", "Generator")),
-    )
-    for module_name, class_names in candidates:
-        try:
-            module = importlib.import_module(module_name)
-        except Exception as exc:
-            attempts.append(f"{module_name}: {exc}")
-            continue
-        for class_name in class_names:
-            factory = getattr(module, class_name, None)
-            if factory is None:
-                continue
-            try:
-                return factory(address)
-            except Exception as exc:
-                attempts.append(f"{module_name}.{class_name}: {exc}")
-    raise RuntimeError("Unable to create generator connection. " + " | ".join(attempts))
+    try:
+        return InstrumentFactory({"generator": address}).create("generator")
+    except Exception as exc:
+        raise RuntimeError(f"Unable to create generator connection. {exc}") from exc
 
 
 def create_navigator(port: str):
-    attempts = []
-    candidates = (
-        ("AECommandsUniversal", ("navigator", "Navigator")),
-        ("AECommands", ("navigator", "Navigator")),
-    )
-    for module_name, class_names in candidates:
-        try:
-            module = importlib.import_module(module_name)
-        except Exception as exc:
-            attempts.append(f"{module_name}: {exc}")
-            continue
-        for class_name in class_names:
-            factory = getattr(module, class_name, None)
-            if factory is None:
-                continue
-            try:
-                return factory(port)
-            except Exception as exc:
-                attempts.append(f"{module_name}.{class_name}: {exc}")
-    raise RuntimeError("Unable to create Navigator connection. " + " | ".join(attempts))
+    try:
+        return InstrumentFactory({"navigator": port}).create("navigator")
+    except Exception as exc:
+        raise RuntimeError(f"Unable to create Navigator connection. {exc}") from exc
 
 
 def safe_rf_off(generator) -> None:

@@ -198,19 +198,43 @@ def test_universal_generator_satisfies_generator_role():
     assert issubclass(AECommandsUniversal.generator, Generator)
 
 
-@pytest.mark.parametrize("script, probe", [
-    ("collection_plugins/arc_management/arc_management_collection.py", "module.load_universal_module().__name__"),
-    ("collection_plugins/rf_tuning/frequency_tuning_collection.py",
-     "__import__('importlib').import_module('AECommandsUniversal').__name__"),
+@pytest.mark.parametrize("script", [
+    "collection_plugins/arc_management/arc_management_collection.py",
+    "collection_plugins/rf_ramping/RF_Ramp_Collection.py",
+    "collection_plugins/rf_tuning/frequency_tuning_collection.py",
 ])
-def test_dynamic_loaders_find_the_adapter_modules(script, probe, tmp_path):
-    """These scripts load AECommandsUniversal at run time; before Phase 6 that import could not resolve."""
+def test_former_dynamic_loaders_resolve_the_dut_adapter(script, tmp_path):
+    """These scripts once located AECommandsUniversal themselves; the factory must resolve it in a fresh process."""
     code = (
         "import importlib.util, sys\n"
         f"spec = importlib.util.spec_from_file_location('probe', {str(REPO_ROOT / script)!r})\n"
         "module = importlib.util.module_from_spec(spec); sys.modules['probe'] = module; spec.loader.exec_module(module)\n"
-        f"print({probe})\n"
+        "from suite_instruments.adapters import _ae_module\n"
+        "print(module.InstrumentFactory({}).adapter_name('generator'), _ae_module('AECommandsUniversal').__name__)\n"
     )
     result = subprocess.run([sys.executable, "-W", "ignore", "-c", code], cwd=tmp_path, capture_output=True, text=True, timeout=120)
     assert result.returncode == 0, result.stderr
-    assert result.stdout.strip().splitlines()[-1] == "AECommandsUniversal"
+    assert result.stdout.strip().splitlines()[-1] == "ae.universal AECommandsUniversal"
+
+
+@pytest.mark.parametrize("role, address, direct_args", [
+    ("generator_com_port", "COM5", (0, "COM5")),        # serial AEBus
+    ("generator", "PMNTGOLDEN", ("PMNTGOLDEN", None)),  # Ethernet AEBus (Digital Timing with COMM_TYPE="ethernet")
+])
+def test_serial_timing_adapter_opens_like_the_direct_constructor(role, address, direct_args):
+    from tests.tools.golden_scpi import Bench, scripted_bench
+    from suite_instruments.factory import InstrumentFactory
+
+    logs = []
+    for build in ("factory", "direct"):
+        bench = Bench()
+        with scripted_bench(bench):
+            import AECommandsSerialTimingAdapter
+            if build == "factory":
+                gen = InstrumentFactory({role: address}, {role: "ae.serial_timing"}).create(role)
+            else:
+                gen = AECommandsSerialTimingAdapter.generator(*direct_args)
+            gen.setActiveControlMode(2)
+            gen.close()
+        logs.append(bench.log)
+    assert logs[0] == logs[1]

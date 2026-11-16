@@ -470,3 +470,51 @@ Bench checks:
 2. SLP: Both Edges, 1 acquisition. Confirm the pulse readback passes, and the RISE and FALL CSVs are saved.
 3. DLP: one rising and one falling transition. Confirm DLP mode is set, the waveforms are saved, and RF is off and DLP disabled at the end.
 4. Pulse Sync: first a dry run (no instrument contact). Then a live run with 1 sample: confirm the master/slave role readback, the 4 channel CSVs per capture, and that RF is off and pulsing disabled at the end.
+
+## Phase 6 part 2, batch 4: Arc Management, RF Ramping, RF Tuning and Digital Timing
+
+Golden logs were recorded from the unmodified scripts and committed first (`1d64157`):
+
+| Scenario | What it drives |
+|---|---|
+| `arc_management` | `execute()`: DUT, Siglent clacker, scope arm/trigger, 2 samples x CH1-CH4 |
+| `arc_management_wrong_function_generator` | A non-SDG6022X at the clacker address: error, scope recovery, cleanup |
+| `rf_ramping` | `App.collect()` on a headless App, every field set: 2 powers x rise/fall |
+| `rf_tuning_connect_and_match` | Generator and Navigator connection, fault check, verified Navigator move |
+| `rf_onoff_scope_capture` | `--no-gui --trial`: RF ON/OFF captures, 3 channels each, screenshots |
+| `rf_onoff_scope_capture_visa_timeout` | A pyvisa timeout on `CURVe?`: the scope-recovery branch (`clear`, `*ESR?`, `ALLEv?`) |
+| `rf_onoff_scope_capture_trigger_setup_timeout` | A pyvisa timeout during trigger setup: device clear, then exit 1 |
+| `command_processing` | Serial benchmark, up to a firmware-feature check the scripted DUT does not model |
+
+Harness additions:
+
+- A scope that is armed and then triggered by the next AE command.
+- Per-resource `*IDN?` replies and a Navigator model.
+- Injected pyvisa timeouts.
+- Configurable DUT frequency range, power limits and set/report values.
+- argv/cwd for `__main__` runs, and `Tk.after` that runs callbacks immediately.
+- An expected outcome per scenario.
+
+Migration:
+
+- **Arc Management, RF Ramping, RF Tuning:** their own module loaders (`load_universal_module`, `load_generator_module`, `create_generator` / `create_navigator` candidate loops) are replaced by `InstrumentFactory`. Scopes, the Siglent and the DUT open through the factory. The Navigator uses `AECommands.navigator` as before, because AECommandsUniversal has no Navigator class.
+- **RF Ramping:** `PARAMOUNT_AE_COMMANDS_FILE` and its file search are gone. The adapter location is `AE_ADAPTERS_DIR` (see suite_common).
+- **RF Tuning:** it no longer falls back to `AE_Commands_7434753` when AECommandsUniversal fails to connect. That fallback only ran after a connection failure, which the 7434753 module would hit in the same way.
+- **Digital Timing (capture GUI and CommandProcessing):** the generator opens through `ae.serial_timing`, as `generator_com_port` for serial or `generator` for Ethernet.
+  - VISA errors now arrive as `InstrumentError`, timeouts included as `InstrumentTimeout`, which is also a `TimeoutError`.
+  - The three `pyvisa.VisaIOError` handlers catch `InstrumentError`, and the capture-step branch keeps its old meaning: VISA errors are recovered, and only the script's own arm/trigger timeouts get the short status. Both injected-timeout goldens prove this.
+- All 33 golden scenarios are identical. The full suite passes (402 tests). pyflakes findings are unchanged, and the scripts' `--self-test` runs pass.
+
+Only error text differs: an instrument that cannot be opened, or a VISA I/O failure, now reports the normalized error (role, resource, operation) wrapping the original pyvisa text.
+
+Pre-existing issues found (not changed):
+
+- **RF Tuning:** needs `keysight_53220a_fast.py` (the Keysight 53220A counter driver), which has never been in the repository. Collection stops at "Could not import keysight_53220a_fast.py" until it is added; it belongs in `suite_instruments/adapters/keysight/`.
+- **Arc Management:** the default regulation mode is `0`, which AECommandsUniversal rejects ("Invalid regulation mode entered"). Operators must enter a valid mode (for example 6).
+
+Bench checks:
+
+1. Arc Management: 1 sample. Confirm the DUT, the Siglent output toggle, the scope trigger, and the CH1-CH4 CSV.
+2. RF Ramping: one power, one ramp time, rise and fall. Confirm the waveforms and `capture_index.csv`.
+3. RF Tuning: after the counter driver is supplied, run 1 sample of one transition. Confirm the Navigator move and the counter log.
+4. Digital Timing: `--check`, then a `--trial` run. Confirm RF ON/OFF captures and screenshots. Optionally run CommandProcessing on its bench unit.
