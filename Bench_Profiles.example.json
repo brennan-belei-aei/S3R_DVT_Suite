@@ -1,0 +1,16 @@
+{
+  "active_profile": "Example Bench",
+  "profiles": {
+    "Example Bench": {
+      "generator": "PMNTXXXXXX",
+      "generator_com_port": "",
+      "psync_slave_generator": "",
+      "lynx": "STNDXXXXXX",
+      "navigator": "COM5",
+      "oscilloscope": "TCPIP0::192.0.2.10::INSTR",
+      "waveform_generator": "TCPIP0::192.0.2.11::INSTR",
+      "spectrum_analyzer": "192.0.2.12",
+      "dc_supply": "TCPIP0::192.0.2.13::INSTR"
+    }
+  }
+}

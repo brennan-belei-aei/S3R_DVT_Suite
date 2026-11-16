@@ -1,0 +1,1 @@
+I have tested both Collection and Analysis and confirmed that they are both functional.

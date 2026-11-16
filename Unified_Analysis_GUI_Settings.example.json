@@ -1,0 +1,63 @@
+{
+  "scripts": {
+    "dc_operating_point": "DC Operating Point/DC_Operating_Point_Analysis_GUI.py",
+    "harmonics_spurious": "Harmonics and Spurious/Harmonics_Spurious_Analysis.py",
+    "power_accuracy": "Power Linearity and Accuracy/Power_Accuracy_Analysis_GUI.py",
+    "power_linearity": "Power Linearity and Accuracy/Power_Linearity_Analysis_GUI.py",
+    "power_profile": "Power Profile/Power_Profile_Analysis_GUI.py",
+    "rise_fall_cw": "Rise and Fall/CWDataAnalysis_GUI.py",
+    "rise_fall_slp": "Rise and Fall/SLPDataAnalysis_GUI.py",
+    "rise_fall_dlp": "Rise and Fall/DLPDataAnalysis_GUI.py",
+    "aebus_command_latency": "AESpecificDependencies/Command Latency/AEBus_Command_Latency_Analysis_GUI.py",
+    "psync": "Psync/Psync_Data_Analysis.py"
+  },
+  "selected": [
+    "dc_operating_point",
+    "harmonics_spurious",
+    "power_accuracy",
+    "power_linearity",
+    "power_profile",
+    "rise_fall_cw",
+    "rise_fall_slp",
+    "rise_fall_dlp",
+    "aebus_command_latency",
+    "psync"
+  ],
+  "order": [
+    "dc_operating_point",
+    "harmonics_spurious",
+    "power_accuracy",
+    "power_linearity",
+    "power_profile",
+    "rise_fall_cw",
+    "rise_fall_slp",
+    "rise_fall_dlp",
+    "aebus_command_latency",
+    "psync"
+  ],
+  "custom_analyses": [],
+  "open_child_console": true,
+  "show_launch_prompt": true,
+  "dataset_defaults": {
+    "preferred_mode": "INDIVIDUAL",
+    "dataset_a_folder": "",
+    "dataset_b_folder": "",
+    "dataset_a_label": "Dataset A",
+    "dataset_b_label": "Dataset B"
+  },
+  "presentation": {
+    "enabled": false,
+    "title": "Paramount Analysis Results",
+    "subtitle": "",
+    "dut_name": "",
+    "project_name": "",
+    "operator": "",
+    "output_parent": "",
+    "filename": "Paramount_Analysis_Results.pptx",
+    "include_title_slide": true,
+    "include_executive_summary": true,
+    "include_failure_tables": true,
+    "include_appendix": true,
+    "open_after_generation": true
+  }
+}

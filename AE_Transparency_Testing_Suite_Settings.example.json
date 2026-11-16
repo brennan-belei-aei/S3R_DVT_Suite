@@ -1,0 +1,7 @@
+{
+  "collection_script": "Paramount_Data_Collection_Unified_GUI.py",
+  "analysis_script": "Paramount_Data_Analysis_Unified_GUI.py",
+  "open_child_console": true,
+  "warn_before_parallel_launch": true,
+  "selected_product_id": "UNSPECIFIED"
+}

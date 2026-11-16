@@ -1,0 +1,18 @@
+This file was originally sent to me by Ivan Castenada. I am not entirely sure where he got it from. But it is possible that this 
+came from one of the Everest repositories. The "SpectrumAnalyzer" folder is a package that I got from the Everest repo.
+To make the "Harmonics_Spurious" script compatible with the Apex, I had to make slight changes to the "spectrum_analyzer" file
+(changes were relegated to the getSpectrum() function and the init function on line 6). Significant changes were made to the "Harmonics_Spurious" script. These
+changes consisted of the following points:
+
+1. Set variable HALO_Mode to 1 (because Apex does not have HALO feature)
+2. Created outPath variable and surrounding logic to simplify the filepath logic that previously existed
+3. Changed frequencies variable to consist of only 13.56MHz frequency per Apex spec
+4. Changed default setpoints variable to minimum of 50W and maximum of 5000W
+5. Changed carrierIndex logic in plot_dBc() function.
+	The logic that previously existed in this function was broken. Had to do with how carrierIndex was assigned.
+
+Other Notes:
+I have observed on at least one occasion that the Keysight N9320B changed its IP address upon power up and restart
+
+Keysight N9320B may require you to go into the device settings and enable communication over ethernet. (I believe that by default
+the device starts in GPIB0, you want to make sure it is in TCIP0).

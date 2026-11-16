@@ -1,0 +1,8 @@
+{
+  "name": "s3r-transparency-testing-suite",
+  "private": true,
+  "description": "Node dependency for Paramount_PowerPoint_Builder.py (run npm install once per PC).",
+  "dependencies": {
+    "pptxgenjs": "^4.0.1"
+  }
+}

@@ -1,0 +1,626 @@
+CW DATA ANALYSIS MAINTAINER'S GUIDE
+===================================
+
+DOCUMENT PURPOSE
+----------------
+This guide documents the current intended CW data-analysis workflow in which
+all RISE and FALL captures are analyzed using a filtered Hilbert-envelope
+signal, while retaining different filter cutoffs for different setpoint digit
+ranges. The automatic far-right "ghost pulse" or false-blip detector is NOT
+part of this stable version. A future implementation is still desired and is
+described in the Future Development section.
+
+This document is intended for engineers who need to run, maintain, tune, or
+extend the script without changing its established behavior accidentally.
+
+
+1. SCRIPT PURPOSE
+-----------------
+The CW data-analysis script:
+
+1. Reads oscilloscope CSV waveform files.
+2. Extracts RISE/FALL, RF frequency, and power setpoint from each filename.
+3. Cleans invalid waveform samples and enforces increasing time values.
+4. Converts the RF waveform into an amplitude envelope with a Hilbert
+   transform.
+5. Applies a setpoint-dependent low-pass filter to the Hilbert envelope.
+6. Calculates RISE and FALL transition times.
+7. Applies a grouped 1.5 x IQR statistical outlier filter.
+8. Retains excluded measurements in the output for traceability.
+9. Creates individual, summary, and trend plots.
+10. Creates accepted-only grouped summary tables.
+11. Produces Excel, CSV, and PowerPoint outputs.
+12. Optionally compares two hardware-configuration data folders.
+
+
+2. REQUIRED INPUT FILE FORMAT
+-----------------------------
+The expected filename formats are:
+
+    RF_Freq_RISE{frequency_kHz}_Power{setpoint_W}W_{timestamp}.csv
+    RF_Freq_FALL{frequency_kHz}_Power{setpoint_W}W_{timestamp}.csv
+
+Examples:
+
+    RF_Freq_RISE13560_Power500W_20260908_105011.csv
+    RF_Freq_FALL12882_Power60W_20260908_105011.csv
+
+The script reads:
+
+    Column A: time
+    Column B: voltage
+    First waveform data row: Excel row 15, pandas index 14
+
+Invalid or nonnumeric samples are removed. If time samples are out of order,
+the samples are sorted. Duplicate time values are removed so the final time
+array is strictly increasing.
+
+
+3. MAIN USER OPTIONS
+--------------------
+
+3.1 Analysis mode
+
+The user may select:
+
+    Single-folder analysis
+    Two-folder hardware-configuration comparison
+
+Comparison mode processes each folder independently and then produces matched
+RISE/FALL comparison tables and plots.
+
+3.2 Waveform plot mode
+
+The user may select:
+
+    Plot every CSV
+    One summary plot per frequency/power group
+    No waveform plots
+
+3.3 Summary plot count information
+
+When summary waveform plots are selected, the user can include both:
+
+    Samples used
+    Outliers excluded
+
+or include neither line.
+
+3.4 Trend range display
+
+The trend plots retain four display choices:
+
+    No additional box or whiskers
+    IQR box only
+    Accepted minimum/maximum whiskers only
+    IQR box plus accepted minimum/maximum whiskers
+
+The same selection applies to the original average trend plots and to the
+additional median-at-low-power trend plots.
+
+3.5 Manual trend vertical scales
+
+The user can retain automatic/default scaling or provide manual RISE and FALL
+vertical-axis limits in microseconds.
+
+
+4. SETPOINT-DEPENDENT HILBERT FILTERING
+---------------------------------------
+All setpoints use Hilbert-envelope timing in the current intended version.
+The power setpoint selects the low-pass cutoff applied after the Hilbert
+envelope is created.
+
+Current behavior:
+
+    Single-digit setpoints: fallback FILTER_CUTOFF_HZ, currently 2000 Hz
+    Double-digit setpoints, 10 W to below 100 W: 35000 Hz
+    Setpoints of 100 W and higher: 2000 Hz
+
+Examples:
+
+    6 W      -> 2000 Hz fallback
+    10 W     -> 35000 Hz
+    60 W     -> 35000 Hz
+    99 W     -> 35000 Hz
+    100 W    -> 2000 Hz
+    500 W    -> 2000 Hz
+    600 W    -> 2000 Hz
+    1000 W   -> 2000 Hz
+    6000 W   -> 2000 Hz
+
+Although the global name TRIPLE_DIGIT_FILTER_CUTOFF_HZ contains the words
+"triple digit," the associated condition is power >= 100 W. The setting
+therefore also applies to four-digit and higher setpoints.
+
+The script performs the envelope operation in this order:
+
+    analytic_signal = hilbert(raw_voltage)
+    envelope = abs(analytic_signal)
+    filtered_envelope = filtfilt(low_pass_filter, envelope)
+
+This is different from simply calculating abs(raw_voltage). The magnitude of
+the analytic signal estimates the RF amplitude envelope, while preserving the
+slow RISE/FALL behavior that the timing calculation is intended to measure.
+
+
+5. FALL ANALYSIS EXCLUSION REGIONS
+----------------------------------
+The FALL calculation analyzes only a retained middle portion of the filtered
+Hilbert envelope.
+
+Current left exclusion:
+
+    FALL_LEFT_EXCLUSION_FRACTION = 0.15
+
+This removes the first 15 percent of the waveform from FALL threshold and
+crossing calculations.
+
+Current right-side behavior:
+
+    Double-digit setpoints: 0.10 right exclusion
+    Setpoints of 100 W and higher: 0.0 right exclusion
+
+Therefore:
+
+    Double-digit FALL setpoint:
+        Retained region = 15 percent through 90 percent of the capture
+
+    Setpoint of 100 W or higher:
+        Retained region = 15 percent through 100 percent of the capture
+
+Fraction settings use decimal fractions. Ten percent is 0.10, not 10.0.
+
+FALL_RIGHT_EXCLUSION_FRACTION is the general fallback if a per-setpoint value
+is not passed to the calculation. In ordinary processing, the value returned
+by get_setpoint_processing_settings() is passed explicitly.
+
+
+6. FALL NOISE-FLOOR CALCULATION
+-------------------------------
+After the retained FALL region is selected, the script estimates the noise
+floor using a low percentile of the retained filtered Hilbert envelope.
+
+Conceptually:
+
+    analysis_envelope = filtered_envelope[search_start:search_end]
+
+    v_max = maximum(analysis_envelope)
+
+    noise_floor_v = percentile(
+        analysis_envelope,
+        FALL_NOISE_FLOOR_PERCENTILE
+    )
+
+The current script setting should be checked near the top of the file. Recent
+iterations have used values such as 5.0 or 10.0.
+
+Interpretation:
+
+    5.0  means the 5th percentile of retained Hilbert-envelope samples
+    10.0 means the 10th percentile of retained Hilbert-envelope samples
+
+A percentile is used instead of the absolute minimum because one unusually
+low sample could be caused by filtering behavior, noise, or a numerical
+artifact. A low percentile provides a more robust estimate of the lower
+settled envelope level.
+
+Important dependency:
+
+The retained region must be defined before the official noise floor is
+calculated. Any false pulse, late rise, or Hilbert edge artifact included in
+the retained region can change the percentile distribution and may affect the
+calculated floor.
+
+
+7. FALL V10 AND V90 CALCULATIONS
+--------------------------------
+The FALL thresholds are referenced from the calculated noise floor to the
+maximum of the retained Hilbert envelope. They are not simply 10 percent and
+90 percent of zero-to-maximum voltage.
+
+The script calculates:
+
+    signal_span_v = v_max - noise_floor_v
+
+    v10 = noise_floor_v + 0.10 * signal_span_v
+    v90 = noise_floor_v + 0.90 * signal_span_v
+
+Example:
+
+    Retained maximum = 5.0 V
+    Noise floor      = 1.0 V
+    Signal span      = 4.0 V
+
+    v10 = 1.0 + 0.10 * 4.0 = 1.4 V
+    v90 = 1.0 + 0.90 * 4.0 = 4.6 V
+
+This floor-referenced approach is important when the Hilbert envelope settles
+to a nonzero value.
+
+After v90 and v10 are calculated, the FALL routine finds a complete downward
+90-percent-to-10-percent crossing pair inside the retained region. The current
+stable pre-ghost-pulse version uses the established left-to-right crossing-pair
+selection. Avoid changing the crossing direction without testing real carrier
+and envelope behavior carefully.
+
+The FALL time is:
+
+    fall_time = t10 - t90
+
+A result is rejected if no complete downward v90-to-v10 pair is found or if
+the calculated time is invalid.
+
+
+8. RISE-TIME CALCULATION
+------------------------
+All RISE captures use the filtered Hilbert envelope in the current intended
+version.
+
+The RISE routine estimates an initial envelope level and a final envelope
+level. The exact window sizes are defined in calculate_low_power_rise_time().
+The established implementation:
+
+1. Starts the initial averaging region after a small beginning offset.
+2. Uses up to 500 samples for the initial-level average.
+3. Uses up to 500 samples at the end for the final-level average.
+4. Calculates the positive envelope span from initial to final.
+5. Defines baseline-referenced v10 and v90.
+6. Finds an upward 10-percent crossing followed by an upward 90-percent
+   crossing.
+
+Conceptually:
+
+    v_initial = mean(initial_envelope_window)
+    v_final = mean(final_envelope_window)
+
+    signal_span = v_final - v_initial
+
+    v10 = v_initial + 0.10 * signal_span
+    v90 = v_initial + 0.90 * signal_span
+
+    rise_time = t90 - t10
+
+The routine requires a positive final-minus-initial span. It rejects captures
+that do not contain a complete valid upward 10-percent-to-90-percent pair.
+
+The current RISE implementation uses discrete crossing sample locations. If
+future accuracy improvements are desired, linear crossing interpolation can
+be added, but the change should be applied consistently and regression-tested
+against known captures.
+
+
+9. SMALL_SETPOINT_THRESHOLD
+---------------------------
+In the current Hilbert-at-all-setpoints version:
+
+    SMALL_SETPOINT_THRESHOLD = 500
+
+no longer controls whether the Hilbert transform is used. All setpoints use
+Hilbert-envelope timing.
+
+The threshold still controls the additional mixed-center trend plot:
+
+    At or below 500 W: plot the accepted median
+    Above 500 W: plot the accepted average
+
+The original all-average trend graph is still generated separately.
+
+A clearer future variable name would be:
+
+    MEDIAN_TREND_SETPOINT_THRESHOLD_W = 500
+
+Renaming should only be done after updating every reference and running the
+full regression tests.
+
+
+10. IQR OUTLIER FILTERING
+-------------------------
+The IQR filter is applied separately for each complete frequency and power
+condition within RISE and FALL data.
+
+For groups with at least MIN_SAMPLES_FOR_IQR samples:
+
+    Q1 = 25th percentile
+    Q3 = 75th percentile
+    IQR = Q3 - Q1
+
+    lower_bound = Q1 - IQR_MULTIPLIER * IQR
+    upper_bound = Q3 + IQR_MULTIPLIER * IQR
+
+With IQR_MULTIPLIER = 1.5, measurements outside these bounds receive:
+
+    Use In Average = False
+
+Excluded rows are retained in the workbook with an Outlier Reason. Accepted
+rows alone feed summary averages, quartiles, min/max values, standard
+deviations, trend plots, and PowerPoint tables.
+
+
+11. AVERAGE, MEDIAN, BOX, AND WHISKER OUTPUTS
+---------------------------------------------
+The original trend graphs plot accepted averages at every setpoint.
+
+The additional trend graphs plot:
+
+    Accepted median at or below SMALL_SETPOINT_THRESHOLD
+    Accepted average above SMALL_SETPOINT_THRESHOLD
+
+IQR box:
+
+    Bottom = Q1
+    Center line = median
+    Top = Q3
+
+Whiskers:
+
+    Lower = accepted minimum
+    Upper = accepted maximum
+
+The user may display neither, either, or both.
+
+
+12. GLOBAL VARIABLES AND HOW TO TUNE THE SCRIPT
+-----------------------------------------------
+Always change one variable at a time and compare output against known-good
+captures.
+
+12.1 Core processing controls
+
+SMALL_SETPOINT_THRESHOLD
+    Controls where the mixed median/average trend plot switches center
+    statistic. It no longer controls Hilbert use.
+
+MIN_SAMPLES_FOR_IQR
+    Minimum number of samples needed before IQR filtering applies. Increasing
+    this value causes more small groups to bypass statistical filtering.
+
+IQR_MULTIPLIER
+    Controls outlier strictness. Lower values exclude more measurements.
+    Higher values retain more measurements. Do not change this merely to force
+    a lower standard deviation.
+
+12.2 Hilbert filtering controls
+
+DEFAULT_FILTER_CUTOFF_HZ
+    Fallback cutoff for setpoints not covered by the digit-range rules.
+
+DOUBLE_DIGIT_FILTER_CUTOFF_HZ
+    Used for setpoints from 10 W through less than 100 W. A higher cutoff
+    follows faster envelope changes but retains more envelope ripple. A lower
+    cutoff smooths more strongly but can shift or broaden transitions.
+
+TRIPLE_DIGIT_FILTER_CUTOFF_HZ
+    Used for every setpoint of 100 W and above, including four-digit and higher
+    values. The same smoothing tradeoff applies.
+
+Every cutoff must be below half the waveform sample rate, or the Butterworth
+filter design will fail.
+
+12.3 FALL retained-region controls
+
+FALL_LEFT_EXCLUSION_FRACTION
+    Removes a fixed fraction from the beginning of every FALL waveform.
+    Increase only if invalid left-edge behavior is contaminating the maximum
+    or floor calculation. Excessive values can remove the true FALL edge.
+
+DEFAULT_FALL_RIGHT_EXCLUSION_FRACTION
+    General fallback right exclusion. It is normally overridden by the
+    per-setpoint result.
+
+DOUBLE_DIGIT_FALL_RIGHT_EXCLUSION_FRACTION
+    Final fraction ignored for double-digit setpoints. Current value 0.10.
+
+TRIPLE_DIGIT_FALL_RIGHT_EXCLUSION_FRACTION
+    Final fraction ignored for every setpoint of 100 W and above. Current
+    value 0.0. The name is historical and also applies to four-digit values.
+
+FALL_NOISE_FLOOR_PERCENTILE
+    Low percentile used for the official retained-envelope floor. Lower values
+    move the floor toward the lowest envelope samples. Higher values move the
+    floor upward. Changing this value changes both v10 and v90.
+
+12.4 Trend and PowerPoint controls
+
+RISE_TREND_Y_MIN_US / RISE_TREND_Y_MAX_US
+    Default RISE trend limits. None permits automatic scaling.
+
+FALL_TREND_Y_MIN_US / FALL_TREND_Y_MAX_US
+    Default FALL trend limits.
+
+POWERPOINT_TABLE_DECIMAL_PLACES
+    Decimal places used for PowerPoint timing values. PowerPoint timing is
+    always shown in microseconds.
+
+POWERPOINT_FILENAME
+    Output PowerPoint filename.
+
+
+13. INDIVIDUAL AND SUMMARY PLOTS
+--------------------------------
+Individual plots can show:
+
+    Original raw RF waveform
+    Filtered Hilbert envelope used for timing
+    v10 and v90 horizontal lines
+    t10 and t90 vertical lines
+    Cursor markers
+    Calculated RISE or FALL time
+
+Summary waveform plots use accepted rows only for group statistics. The
+representative raw waveform is displayed while Hilbert-derived thresholds and
+cursor times may be annotated. Labels should clearly distinguish the displayed
+raw waveform from the Hilbert envelope used for measurement.
+
+
+14. GENERATED OUTPUTS
+---------------------
+Typical outputs include:
+
+    Rise_Fall_Time_Summary.xlsx
+    CW_Frequency_Min_Max_Rise_Fall_Times.csv
+    CW_Rise_Fall_Summary.pptx
+    Individual waveform PNGs
+    Group summary waveform PNGs
+    Original average trend PNGs
+    Median-at-low-power trend PNGs
+    Hardware comparison workbook and plots, when comparison mode is selected
+
+Typical workbook sheets include:
+
+    Setpoint Averages
+    Frequency Min Max
+    RISE Summary
+    FALL Summary
+    RISE Individual Results
+    FALL Individual Results
+    RISE Excluded Outliers
+    FALL Excluded Outliers
+    Failed Files
+
+
+15. FUTURE DESIRED FEATURE: AUTOMATIC GHOST-PULSE DETECTION
+-----------------------------------------------------------
+There is still a desire to automatically detect a false far-right "ghost
+pulse" or blip in a FALL Hilbert envelope and exclude the invalid region before
+the official noise floor, v10, and v90 are calculated.
+
+This feature is intentionally NOT active in the current stable version because
+an earlier experimental implementation caused regressions and was reverted.
+
+The key dependency order for a future implementation must be:
+
+    Complete filtered Hilbert envelope
+        -> detect stable flat noise-floor region
+        -> detect later sharp positive departure
+        -> define exact retained endpoint
+        -> calculate official noise floor
+        -> calculate v10 and v90
+        -> calculate FALL crossing pair and fall time
+
+The detector must not depend on v10, v90, idx10, idx90, or fall time because
+those values depend on the retained endpoint and noise floor.
+
+A promising future design is:
+
+1. Search the latter portion of the complete Hilbert envelope.
+2. Identify a sustained flat region using low local slope and low local
+   variation.
+3. Detect a sustained sharp positive departure from that established floor.
+4. Place the retained endpoint at the start of that departure.
+5. Require amplitude, slope, duration, location, and minimum-retained-data
+   safeguards.
+6. Initially operate in REPORT_ONLY mode.
+7. Draw the proposed boundary on individual plots and record diagnostics in
+   Excel before allowing automatic cropping.
+
+Desired operating modes:
+
+    OFF
+    REPORT_ONLY
+    AUTO_EXCLUDE
+
+Suggested future diagnostics:
+
+    Ghost Pulse Detected
+    Detection Reason
+    Stable Floor Start Time
+    Stable Floor End Time
+    Proposed Boundary Time
+    Proposed Analysis End Index
+    Floor Median
+    Floor Robust Sigma
+    Departure Peak
+    Proposed Right Exclusion Fraction
+
+For efficiency, moving slopes and variances can be calculated with cumulative
+sums so the primary detector remains close to O(n) time complexity.
+
+Validation should include labeled clean and ghost-pulse captures across every
+frequency and relevant setpoint. False-positive and false-negative rates must
+be reviewed before enabling automatic exclusion.
+
+
+16. SAFE MAINTENANCE PRACTICES
+------------------------------
+1. Preserve the current working script and save changes under a new filename.
+2. Never delete excluded rows from the individual-results output.
+3. Keep RISE and FALL calculations and outlier groups separate.
+4. Keep accepted-only behavior for summaries, plots, and PowerPoint tables.
+5. Do not change several filter or threshold settings simultaneously.
+6. Check the raw waveform and Hilbert envelope after cutoff changes.
+7. Test double-digit, triple-digit, four-digit, and threshold-boundary values.
+8. Test RISE-only, FALL-only, empty input, missing groups, and outliers.
+9. Test all four box/whisker modes after plot changes.
+10. Test automatic and manual vertical scaling.
+11. Test PowerPoint decimal formatting and missing-data N/A behavior.
+12. Test single-folder and comparison workflows.
+13. Close Excel and PowerPoint outputs before rerunning to avoid file locks.
+
+
+17. RECOMMENDED REGRESSION TEST MATRIX
+--------------------------------------
+Setpoints:
+
+    6 W
+    10 W
+    60 W
+    99 W
+    100 W
+    500 W
+    501 W
+    600 W
+    1000 W
+    6000 W
+
+Waveforms:
+
+    Clean RISE
+    Clean FALL
+    FALL with long settled floor
+    FALL with late rise or ghost pulse, for observation only
+    Incomplete transition
+    Noisy envelope
+    Duplicate timestamps
+    Invalid samples
+
+Outputs:
+
+    Original average trends
+    Median-at-low-power trends
+    No range display
+    Box only
+    Whiskers only
+    Box plus whiskers
+    Excel summaries
+    PowerPoint tables
+    Comparison workbook and plots
+
+
+18. COMMON TROUBLESHOOTING
+--------------------------
+PermissionError when writing Excel or PowerPoint:
+    Close the existing output file and any background Excel or PowerPoint
+    process. Wait for OneDrive to release the file, then rerun.
+
+Filter cutoff must be below Nyquist:
+    Verify the waveform sample interval or reduce the applicable cutoff.
+
+No positive envelope span:
+    Inspect the Hilbert envelope, input waveform, trigger orientation, and
+    selected filter cutoff.
+
+No complete FALL v90-to-v10 pair:
+    Inspect retained-region exclusions, percentile floor, filtered envelope,
+    threshold levels, and transition completeness.
+
+No valid RISE v10-to-v90 pair:
+    Inspect initial/final averaging windows, envelope polarity, transition
+    completeness, and smoothing cutoff.
+
+Unexpected average or standard deviation:
+    Inspect Use In Average, Outlier Reason, accepted counts, mean, median, Q1,
+    Q3, minimum, and maximum for the affected condition.
+
+
+END OF MAINTAINER'S GUIDE
+=========================
