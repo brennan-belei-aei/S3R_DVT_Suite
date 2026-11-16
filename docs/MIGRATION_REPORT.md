@@ -410,3 +410,25 @@ For each script, run 1 power point with 1 cycle/acquisition from the Collection 
 2. **Interlock Response Timing:** the BK 9141 programs 25 V / 0.5 A, the interlock falls, RF drops, and CH1-CH2 CSVs are written. If the supply is reachable only by socket, confirm the `::SOCKET` fallback message.
 3. **RF Enable Timing:** RF ON and RF OFF edges are captured at each power, and CH1-CH3 CSVs are written.
 4. **All three:** the run folder now also contains `run_manifest.json` (Phase 5).
+
+## Phase 6 part 2, batch 2: Setpoint Transfer Function and Analog Processing Timing
+
+Golden logs were recorded from the unmodified scripts and committed first (`f4e675c`):
+
+- `setpoint_transfer_function` and `setpoint_transfer_function_wavegen_fallback`
+- `analog_processing_timing` and `analog_processing_timing_wavegen_fallback`
+- `analog_processing_timing_bk9141_socket_fallback`: `Instruments(connect_bk9141=True)` connect and close. This path is not reachable from the GUI today but is kept working.
+
+The harness gained an opt-in scope trigger model: `TRIG:STATE?` reports READY after `ACQ:STATE ON` and SAVE after the next write to another instrument. Analog Processing Timing needs this for its arm handshake.
+
+Migration (connection code only):
+
+- `pyvisa` and `AECommandsUniversal` imports are replaced by `InstrumentFactory` and `resource_manager()`.
+- Scope, wavegen, BK 9141 and DUT are opened with `factory.create(...)`, using `open_attempts=1` inside the scripts' existing socket-fallback loops.
+- All 11 golden scenarios are byte-identical. The full suite passes (376 tests).
+- The remaining pyflakes findings (unused `suite_common.bootstrap`, which is a side-effect import, and an unused `plt`) were present before the migration.
+
+Bench checks:
+
+1. Setpoint Transfer Function: run 1 cycle. Confirm the wavegen opens (and falls back to `::SOCKET` if the INSTR address is busy) and the transfer CSV is written.
+2. Analog Processing Timing: run 1 cycle. Confirm the operator `RUN` prompt, that the scope arms (READY) and triggers, and that the waveforms and summary are saved.
