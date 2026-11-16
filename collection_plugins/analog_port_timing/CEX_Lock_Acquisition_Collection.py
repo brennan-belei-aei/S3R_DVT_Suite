@@ -13,11 +13,11 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any,Callable,Iterable,Optional
 import numpy as np
-import pyvisa
 sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
 import suite_common.bootstrap  # noqa: F401
 from suite_common.bench import bench_default,visa_socket_resource
-import AECommandsUniversal
+from suite_instruments.factory import InstrumentFactory
+from suite_instruments.transport.visa import resource_manager
 
 TEST_NAME="CEX Lock Acquisition"
 TEST_ID="CEX_LOCK_ACQUISITION"
@@ -114,16 +114,17 @@ class RunContext:
 class Instruments:
  def __init__(self,dut,scope,wg):self.dut_address=dut.strip();self.scope_address=scope.strip();self.wg_address=wg.strip();self.wg_fallback=visa_socket_resource(self.wg_address);self.rm=self.scope=self.wg=self.dut=None
  def connect(self):
-  self.rm=pyvisa.ResourceManager();self.scope=self.rm.open_resource(self.scope_address);self.scope.timeout=INSTRUMENT_TIMEOUT_MS;self.scope.read_termination="\n";self.scope.write_termination="\n";self.scope.chunk_size=WAVEFORM_TRANSFER_CHUNK_SIZE_BYTES;print("Scope:",self.scope.query("*IDN?").strip())
+  self.rm=resource_manager();factory=InstrumentFactory({"generator":self.dut_address,"oscilloscope":self.scope_address,"waveform_generator":self.wg_address})
+  self.scope=factory.create("oscilloscope",resource_manager=self.rm,open_attempts=1);self.scope.timeout=INSTRUMENT_TIMEOUT_MS;self.scope.read_termination="\n";self.scope.write_termination="\n";self.scope.chunk_size=WAVEFORM_TRANSFER_CHUNK_SIZE_BYTES;print("Scope:",self.scope.query("*IDN?").strip())
   errors=[]
   for address in dict.fromkeys((self.wg_address,self.wg_fallback)):
    try:
-    item=self.rm.open_resource(address);item.timeout=INSTRUMENT_TIMEOUT_MS
+    item=factory.create("waveform_generator",address=address,resource_manager=self.rm,open_attempts=1);item.timeout=INSTRUMENT_TIMEOUT_MS
     if str(address).endswith("::SOCKET"):item.read_termination="\n";item.write_termination="\n"
     print("Wavegen:",item.query("*IDN?").strip());self.wg=item;break
    except Exception as exc:errors.append(f"{address}: {exc}")
   if self.wg is None:raise RuntimeError("Wavegen connection failed. "+" | ".join(errors))
-  self.dut=AECommandsUniversal.generator(self.dut_address);print("DUT connected.")
+  self.dut=factory.create("generator");print("DUT connected.")
  def close(self):
   try:
    if self.wg is not None:

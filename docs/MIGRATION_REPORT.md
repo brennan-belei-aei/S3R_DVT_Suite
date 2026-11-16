@@ -310,3 +310,211 @@ Plugin ids now double as folder names: `aebus_command_latency`, `analog_port_tim
 - `SuiteContext.current()` falls back to the environment for standalone runs.
 
 Gate: **328 passed**, all three `--self-test`s pass, pyflakes is clean, and the tests write nothing into the real `runtime/`.
+## Phase 6, part 1: Instrument Abstraction Layer (branch `refactor/phase6-instruments`)
+
+All Phase 6 work is on its own branch, at the user's request. The Phase 0-5 state is preserved on `refactor/plugin-architecture` and tagged `phase5-complete`.
+
+### Moves (`git mv`)
+| From | To |
+|---|---|
+| `AESpecificDependencies/{AE_Com_Module, AECommandsUniversal, AECommands, AE_Commands_7434753, Lynx}.py` | `suite_instruments/adapters/ae/` |
+| `collection_plugins/rf_on_off_timing/AECommandsSerialTimingAdapter.py` | `suite_instruments/adapters/ae/` (as amendment A1 required) |
+| `AESpecificDependencies/SpectrumAnalyzer/{spectrum_analyzer, KeysightN9320B, __init__}.py` | `suite_instruments/adapters/keysight/` |
+| `AESpecificDependencies/SpectrumAnalyzer/*.pdf` (programmer's guides) | `docs/instruments/` |
+| `AESpecificDependencies/MISC/helperFunctions.py` | `collection_plugins/harmonics_spurious/helperFunctions.py` (its only user; `MISC/__init__.py` deleted) |
+| `AESpecificDependencies/README.md` | `suite_instruments/README.md` (rewritten) |
+
+`AESpecificDependencies/` no longer exists. No AE module's code was edited.
+
+### Rewiring
+- **`suite_common.bootstrap`** now puts `suite_instruments/adapters/ae/` on `sys.path`. `AE_ADAPTERS_DIR` overrides it, and the legacy `AE_SPECIFIC_DEPENDENCIES_DIR` still works. `suite_common.AE_DEPENDENCIES_DIR` became `AE_ADAPTERS_DIR`. AE modules stay **flat-imported**; a package-path import would create a second copy of each module.
+- **`AECommandsSerialTimingAdapter.py`:** the `rglob` dependency hunt was deleted, as A1 required. Its public API (`generator(ipAddress, comPort=None)`, `rfON_TEST`) is byte-for-byte unchanged. Its two users (`CommandProcessing.py`, `rf_onoff_scope_capture_GUI.py`) gained the repo-root line and `suite_common.bootstrap`. The AEBus latency runtime copies still work: they run beside the original, and the root line finds the repo from there.
+- **Harmonics:** imports `suite_instruments.adapters.keysight.spectrum_analyzer` and its sibling `helperFunctions`.
+- **RF Ramping** searches `suite_instruments/adapters/ae/`. **The launcher's** adapter check uses the new folder and still resolves AECommandsUniversal as verified.
+- **The example settings templates** still pointed at the Phase 3 `AESpecificDependencies/Command Latency/...` paths, a Phase 4 miss. They are fixed.
+
+### Pre-existing defect fixed
+`arc_management_collection.py` and **`frequency_tuning_collection.py` (RF Tuning, the user's selected test)** loaded the generator with `importlib.import_module("AESpecificDependencies.AECommandsUniversal")`, falling back to the flat name, without the bootstrap. Both failed: the package import breaks on the module's own `import AE_Com_Module`, and the flat name was never on the path. **Neither script could create a generator.** Both now import `suite_common.bootstrap`, and the dead package candidate is removed. `test_dynamic_loaders_find_the_adapter_modules` proves the import resolves.
+
+### New layer (`suite_instruments/`)
+- **`interfaces/`:** structural Protocols per role (`Generator`, `Oscilloscope`, `WaveformGenerator`, `DCSupply`, `SpectrumAnalyzer`, `PowerMeter`, `Tuner`) and `ROLE_INTERFACES`, which covers every bench equipment key.
+  - **`AECommandsUniversal.generator` satisfies `Generator` unmodified**, as amendment A2 required.
+  - The SCPI roles currently specify the SCPI session (`write`/`query`/`close`). Vendor-neutral methods (e.g. "arm single acquisition") are added in part 2, derived from the commands the scripts actually send, rather than invented now.
+- **`transport/visa.py` `VisaTransport`:** a drop-in for a pyvisa resource. It opens with bounded retries, applies `timeout_ms`, logs at DEBUG, and normalizes errors to `InstrumentTimeout` (also a `TimeoutError`) / `InstrumentError` with the original chained. Attributes pass through. It **never adds or resends commands**; retries apply only to opening.
+- **`transport/ae_com.py` `AeBusTransport`:** wraps an AE_Com_Module connection and logs every frame. Arguments, replies, and exceptions are unchanged, with no resends, because AE bus RF ON must never repeat implicitly.
+- **`adapters/__init__.py`:** the adapter catalog and `DEFAULT_ADAPTERS`:
+  - `ae.universal` (generator, psync slave) and `ae.serial_timing` (generator COM port);
+  - `ae.lynx` and `ae.navigator`;
+  - `keysight.n9320` (spectrum analyzer);
+  - `visa.scpi` (oscilloscope, waveform generator, DC supply).
+
+  AE adapters are built through each driver's **existing constructor**, so connection behavior is identical, and then have their connection attribute wrapped. Connect failures are normalized to `InstrumentConnectionError`.
+- **`factory.py` `InstrumentFactory`:**
+  - `from_bench()` follows the suite's address lookup order: environment, then profile. The per-profile adapter choice comes from an optional `"adapters"` section in `Bench_Profiles.json`; `suite_common.bench` now preserves that section through load and save. The Phase 5 branch ignores it and falls back to the defaults.
+  - `check()` / `require()` report every missing address, unknown or wrong-role adapter, and missing `plugin.json` capability.
+  - `create(role, **options)` also verifies the result implements the role's interface.
+- **Plan deviation, settings and limits:** "applies settings and limits" is limited to transport options (`timeout_ms`). Instrument limits are test-specific today and move with each script in part 2.
+
+### Gate (`tests/test_instruments.py`, 16 tests)
+- **All 568 recorded golden AE-bus cases** replay identically (frames, order, outcome) through a **factory-built** generator, so the logging transport is wire-transparent.
+- **AE roles:** generator, serial generator, Lynx, and Navigator are built by their own drivers and wrapped, and satisfy their role interface.
+- **Errors:** a refused connection is normalized with its cause chained.
+- **SCPI:** `visa.scpi` passes commands, attributes, and timeout through unchanged; close is idempotent and closes its resource manager. Timeout and I/O errors normalize correctly, and open retries then fail cleanly.
+- **Factory:** `check()` lists every problem kind and `require()` raises the right error. Every role required by a listed collection test can be served by its default adapter. `from_bench()` honors environment overrides and per-profile adapters, and the `adapters` section survives a bench profile save.
+- **The dynamic loaders** (Arc Management, RF Tuning) now resolve AECommandsUniversal.
+- **Result: 349 passed;** the Phase 0-5 suite (golden frames, plugin import resolution from every folder, self-tests) is unchanged and green. The three apps pass `--self-test`, and pyflakes is clean.
+
+### Not done yet (part 2)
+- **Script migration:** no collection script uses the factory yet; they still open pyvisa and AE modules directly. Part 2 migrates the 18 `pyvisa` scripts one at a time. Each migration first captures a golden SCPI log with the Phase 0 VISA fakes and must reproduce it exactly.
+- **Phase gate still open:** "no collection script imports `pyvisa` or an AE module directly" is part 2's exit criterion.
+## Phase 6, part 2, batch 1: CEX Lock Acquisition, Interlock Response Timing, RF Enable Timing
+
+### Golden SCPI/AE-bus harness (`tests/tools/golden_scpi.py`)
+- **What it runs:** each script's real collection routine (`run_collection`), against:
+  - scripted VISA instruments;
+  - a frame-level DUT model: control mode via frames 14/155, RF on/off from host frames 1/2 or from the RF Enable line in User Port mode, interlock from the BK supply output, CEX lock from the CEX reference output, fixed-frequency limits 12.88-14.24 MHz, regulation mode, and power limit;
+  - a virtual clock, so `sleep()` advances it and polling loops are deterministic and instant.
+- **What it records, in one ordered log:** the resource manager open/close, every VISA open (and refused open), attribute set (`timeout`, `read_termination`, `write_termination`, `chunk_size`), write, query with reply, binary read with options, close, and every AE-bus frame with reply.
+- **Fake instrument models:**
+  - Siglent `C<n>:OUTP?` reports output state and load;
+  - Tektronix `CH<n>:TERMINATION?` echoes what was set;
+  - BK 9141 `MEAS:VOLT?` follows `APPL` and the output state.
+- **Golden logs** were recorded from the **unmodified** scripts and committed *before* any script changed (`46bc442`). Six scenarios, every one ending `return 0` (full success path):
+  - the normal path for each of the three scripts;
+  - CEX and RF Enable with the waveform generator's VISA address refused (`::SOCKET` fallback);
+  - Interlock with the DC supply's VISA address refused.
+
+  Re-recording reproduces them byte for byte.
+
+### Migration (connection code only; no measurement code touched)
+- `import pyvisa` and `import AECommandsUniversal` were removed.
+- `pyvisa.ResourceManager()` became `suite_instruments.transport.visa.resource_manager()`; it is still one shared manager, so Interlock's `rm.visalib` print still works.
+- `rm.open_resource(addr)` became `InstrumentFactory(...).create(role, [address=fallback,] resource_manager=rm, open_attempts=1)`. The roles are `oscilloscope`, `waveform_generator`, and `dc_supply`. `open_attempts=1` keeps each script's own fallback loop authoritative (no added retries).
+- `AECommandsUniversal.generator(addr)` became `factory.create("generator")`.
+- **Factory additions:** `create(..., address=...)` for fallback addresses, and the `resource_manager()` helper.
+- **Behavior notes (failure paths only):**
+  - An open failure is now an `InstrumentConnectionError`, so the "Unable to connect" message names it instead of the raw pyvisa error. All three scripts catch `Exception`.
+  - A bare IP typed into a script's address field is now normalized to a VISA resource (`TCPIP0::<ip>::INSTR`) as the bench profile already does. Before, it was passed raw to pyvisa, which rejects it.
+- **Gate:**
+  - all 6 golden logs are **identical** after migration (`tests/test_golden_scpi.py`);
+  - a guard test fails if a migrated script imports `pyvisa` or an AE module directly;
+  - the plugin import-resolution tests pass;
+  - **369 passed** in total.
+
+### Finding: Windows path length
+Under pytest's deep temp folder, the Interlock scripts' waveform path (`<parent>\<timestamp> - Interlock Response Timing - <DUT>\INTERLOCK_RESPONSE_TIMING_<power>W_Cycle<n>_Interlock_FALL_CH<n>_<timestamp>.csv.partial`) went past the 260-character Windows path limit, and the write failed. This is pre-existing. On the bench, choose a collection parent folder with a short path, e.g. `C:\Data`, or enable Windows long paths.
+
+### Bench validation for batch 1 (run on hardware before relying on these tests)
+For each script, run 1 power point with 1 cycle/acquisition from the Collection GUI. Compare the output files and console with a pre-refactor run:
+1. **CEX Lock Acquisition:** the scope and waveform generator connect (console shows both `*IDN?`), the DUT connects, the CEX reference toggles, and the lock/unlock checks pass. CH1-CH3 CSVs and `Lock_State_Verification.csv` are written.
+2. **Interlock Response Timing:** the BK 9141 programs 25 V / 0.5 A, the interlock falls, RF drops, and CH1-CH2 CSVs are written. If the supply is reachable only by socket, confirm the `::SOCKET` fallback message.
+3. **RF Enable Timing:** RF ON and RF OFF edges are captured at each power, and CH1-CH3 CSVs are written.
+4. **All three:** the run folder now also contains `run_manifest.json` (Phase 5).
+
+## Phase 6 part 2, batch 2: Setpoint Transfer Function and Analog Processing Timing
+
+Golden logs were recorded from the unmodified scripts and committed first (`f4e675c`):
+
+- `setpoint_transfer_function` and `setpoint_transfer_function_wavegen_fallback`
+- `analog_processing_timing` and `analog_processing_timing_wavegen_fallback`
+- `analog_processing_timing_bk9141_socket_fallback`: `Instruments(connect_bk9141=True)` connect and close. This path is not reachable from the GUI today but is kept working.
+
+The harness gained an opt-in scope trigger model: `TRIG:STATE?` reports READY after `ACQ:STATE ON` and SAVE after the next write to another instrument. Analog Processing Timing needs this for its arm handshake.
+
+Migration (connection code only):
+
+- `pyvisa` and `AECommandsUniversal` imports are replaced by `InstrumentFactory` and `resource_manager()`.
+- Scope, wavegen, BK 9141 and DUT are opened with `factory.create(...)`, using `open_attempts=1` inside the scripts' existing socket-fallback loops.
+- All 11 golden scenarios are byte-identical. The full suite passes (376 tests).
+- The remaining pyflakes findings (unused `suite_common.bootstrap`, which is a side-effect import, and an unused `plt`) were present before the migration.
+
+Bench checks:
+
+1. Setpoint Transfer Function: run 1 cycle. Confirm the wavegen opens (and falls back to `::SOCKET` if the INSTR address is busy) and the transfer CSV is written.
+2. Analog Processing Timing: run 1 cycle. Confirm the operator `RUN` prompt, that the scope arms (READY) and triggers, and that the waveforms and summary are saved.
+
+## Phase 6 part 2, batch 3: Rise/Fall (CW, SLP, DLP) and Pulse Sync
+
+These four scripts are set up through a Tk window and run at module level, so the harness gained a way to run a script exactly as the operator does (`python script.py`).
+
+- `tests/tools/fake_tk.py` stands in for tkinter. It fills the labelled fields, picks the edge or transition choices, and clicks Start. Error dialogs are recorded.
+- The `time` module's clocks are virtual for the run, and `PARAMOUNT_*` variables are cleared, so only the scenario's entries apply.
+- Two new opt-in bench models:
+  - a single-sequence acquisition completes while RF is on;
+  - the DUT remembers pulse settings (CMD 26/172, 93/193, 96/196) per connection, so master and slave are independent.
+- A run counts as successful only with no error dialog and every expected `CURVE?` transfer.
+
+Golden logs were recorded from the unmodified scripts and committed first (`85e54aa`):
+
+| Scenario | Matrix | Waveforms |
+|---|---|---|
+| `rise_fall_cw_rise` / `rise_fall_cw_fall` | 2 RF frequencies x 2 setpoints x 1 | 4 each |
+| `rise_fall_slp` | Both Edges, 2 setpoints | 4 |
+| `rise_fall_dlp` | All transitions (50->100, 100->50) | 2 |
+| `pulse_sync` | Dry run off, RF on, views RISE + FULL_PULSE | 8 (4 channels x 2) |
+
+Migration (connection code only):
+
+- Scopes open through `InstrumentFactory(...).create("oscilloscope", resource_manager=..., open_attempts=1)`, and the DUT through `create("generator")`.
+- CW's three raw-frame CSR checks use the new `suite_instruments.adapters.csr_check`, which is `AECommandsUniversal.csrChecker`.
+- Pulse Sync keeps its `AE_Commands_7434753` command set. It goes through a new catalog adapter, `ae.7434753`, which is never a default and is requested explicitly via `PSYNC_ADAPTERS` for master and slave.
+- Pulse Sync's per-operation scope session (`_session`) still opens and closes a fresh manager and resource each time, exactly as before.
+- All 16 golden scenarios are identical, and the DLP frame-sequence goldens still pass. The full suite passes (386 tests).
+- pyflakes findings in these scripts are unchanged from before the migration.
+
+Only an instrument that cannot be opened behaves differently: the error is now `InstrumentConnectionError` instead of the raw pyvisa error.
+
+Bench checks:
+
+1. CW: Rising Edge, 1 acquisition, 1 frequency, 1 setpoint. Confirm Sync Out is verified (On, Track RF), the scope triggers, and the CSV is saved. Repeat with Falling Edge.
+2. SLP: Both Edges, 1 acquisition. Confirm the pulse readback passes, and the RISE and FALL CSVs are saved.
+3. DLP: one rising and one falling transition. Confirm DLP mode is set, the waveforms are saved, and RF is off and DLP disabled at the end.
+4. Pulse Sync: first a dry run (no instrument contact). Then a live run with 1 sample: confirm the master/slave role readback, the 4 channel CSVs per capture, and that RF is off and pulsing disabled at the end.
+
+## Phase 6 part 2, batch 4: Arc Management, RF Ramping, RF Tuning and Digital Timing
+
+Golden logs were recorded from the unmodified scripts and committed first (`1d64157`):
+
+| Scenario | What it drives |
+|---|---|
+| `arc_management` | `execute()`: DUT, Siglent clacker, scope arm/trigger, 2 samples x CH1-CH4 |
+| `arc_management_wrong_function_generator` | A non-SDG6022X at the clacker address: error, scope recovery, cleanup |
+| `rf_ramping` | `App.collect()` on a headless App, every field set: 2 powers x rise/fall |
+| `rf_tuning_connect_and_match` | Generator and Navigator connection, fault check, verified Navigator move |
+| `rf_onoff_scope_capture` | `--no-gui --trial`: RF ON/OFF captures, 3 channels each, screenshots |
+| `rf_onoff_scope_capture_visa_timeout` | A pyvisa timeout on `CURVe?`: the scope-recovery branch (`clear`, `*ESR?`, `ALLEv?`) |
+| `rf_onoff_scope_capture_trigger_setup_timeout` | A pyvisa timeout during trigger setup: device clear, then exit 1 |
+| `command_processing` | Serial benchmark, up to a firmware-feature check the scripted DUT does not model |
+
+Harness additions:
+
+- A scope that is armed and then triggered by the next AE command.
+- Per-resource `*IDN?` replies and a Navigator model.
+- Injected pyvisa timeouts.
+- Configurable DUT frequency range, power limits and set/report values.
+- argv/cwd for `__main__` runs, and `Tk.after` that runs callbacks immediately.
+- An expected outcome per scenario.
+
+Migration:
+
+- **Arc Management, RF Ramping, RF Tuning:** their own module loaders (`load_universal_module`, `load_generator_module`, `create_generator` / `create_navigator` candidate loops) are replaced by `InstrumentFactory`. Scopes, the Siglent and the DUT open through the factory. The Navigator uses `AECommands.navigator` as before, because AECommandsUniversal has no Navigator class.
+- **RF Ramping:** `PARAMOUNT_AE_COMMANDS_FILE` and its file search are gone. The adapter location is `AE_ADAPTERS_DIR` (see suite_common).
+- **RF Tuning:** it no longer falls back to `AE_Commands_7434753` when AECommandsUniversal fails to connect. That fallback only ran after a connection failure, which the 7434753 module would hit in the same way.
+- **Digital Timing (capture GUI and CommandProcessing):** the generator opens through `ae.serial_timing`, as `generator_com_port` for serial or `generator` for Ethernet.
+  - VISA errors now arrive as `InstrumentError`, timeouts included as `InstrumentTimeout`, which is also a `TimeoutError`.
+  - The three `pyvisa.VisaIOError` handlers catch `InstrumentError`, and the capture-step branch keeps its old meaning: VISA errors are recovered, and only the script's own arm/trigger timeouts get the short status. Both injected-timeout goldens prove this.
+- All 33 golden scenarios are identical. The full suite passes (402 tests). pyflakes findings are unchanged, and the scripts' `--self-test` runs pass.
+
+Only error text differs: an instrument that cannot be opened, or a VISA I/O failure, now reports the normalized error (role, resource, operation) wrapping the original pyvisa text.
+
+Pre-existing issues found (not changed):
+
+- **RF Tuning:** needs `keysight_53220a_fast.py` (the Keysight 53220A counter driver), which has never been in the repository. Collection stops at "Could not import keysight_53220a_fast.py" until it is added; it belongs in `suite_instruments/adapters/keysight/`.
+- **Arc Management:** the default regulation mode is `0`, which AECommandsUniversal rejects ("Invalid regulation mode entered"). Operators must enter a valid mode (for example 6).
+
+Bench checks:
+
+1. Arc Management: 1 sample. Confirm the DUT, the Siglent output toggle, the scope trigger, and the CH1-CH4 CSV.
+2. RF Ramping: one power, one ramp time, rise and fall. Confirm the waveforms and `capture_index.csv`.
+3. RF Tuning: after the counter driver is supplied, run 1 sample of one transition. Confirm the Navigator move and the counter log.
+4. Digital Timing: `--check`, then a `--trial` run. Confirm RF ON/OFF captures and screenshots. Optionally run CommandProcessing on its bench unit.

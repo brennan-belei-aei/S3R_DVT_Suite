@@ -35,13 +35,12 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional
 
-import pyvisa
-
 # Keep compatibility with the existing suite layout.
 sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
 import suite_common.bootstrap  # noqa: F401,E402
 from suite_common.bench import bench_default, visa_socket_resource  # noqa: E402
-import AECommandsUniversal  # noqa: E402
+from suite_instruments.factory import InstrumentFactory  # noqa: E402
+from suite_instruments.transport.visa import resource_manager  # noqa: E402
 
 # =============================================================================
 # TEST IDENTITY AND OUTPUT CONTRACT
@@ -299,7 +298,8 @@ class TransferFunctionInstruments:
                 "or set PARAMOUNT_GENERATOR_ADDRESS."
             )
 
-        self.rm = pyvisa.ResourceManager()
+        self.rm = resource_manager()
+        factory = InstrumentFactory({"generator": self.dut_address, "waveform_generator": self.wavegen_address})
         errors: list[str] = []
         candidates = []
         for address in (self.wavegen_address, self.wavegen_socket_fallback_address):
@@ -310,7 +310,7 @@ class TransferFunctionInstruments:
             candidate = None
             try:
                 print(f"Opening waveform generator at {address}...")
-                candidate = self.rm.open_resource(address)
+                candidate = factory.create("waveform_generator", address=address, resource_manager=self.rm, open_attempts=1)
                 candidate.timeout = INSTRUMENT_TIMEOUT_MS
                 if str(address).endswith("::SOCKET"):
                     candidate.read_termination = "\n"
@@ -334,7 +334,7 @@ class TransferFunctionInstruments:
             )
 
         print(f"Connecting to DUT at {self.dut_address}...")
-        self.dut = AECommandsUniversal.generator(self.dut_address)
+        self.dut = factory.create("generator")
         print("DUT connected.")
 
     def safe_state(self) -> None:

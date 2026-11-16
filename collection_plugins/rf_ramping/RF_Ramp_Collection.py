@@ -1,6 +1,6 @@
 """RF ramp verification data collection GUI for the Paramount transparency suite.
 
-Dependencies: pyvisa, numpy, and the local AECommandsUniversal.py library.
+Dependencies: numpy and suite_instruments (scope and AECommandsUniversal DUT via InstrumentFactory).
 The script is standalone and also consumes PARAMOUNT_* values from the unified launcher.
 """
 from __future__ import annotations
@@ -15,9 +15,10 @@ APP_TITLE = "RF Ramp Verification - Data Collection"
 APP_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
 from suite_common.config import plugin_settings_path  # noqa: E402
+from suite_instruments.factory import InstrumentFactory  # noqa: E402
+from suite_instruments.transport.visa import resource_manager  # noqa: E402
 SETTINGS = plugin_settings_path("rf_ramping", "collection")
 TEST_NAME = "RF Ramp Verification"
-GENERATOR_MODULE = "AECommandsUniversal"
 DEFAULT_POWER_LEVELS = "50, 1000, 2000, 3000"
 DEFAULT_RAMP_TIMES = "200, 500, 1000, 2000, 3000, 5000"
 
@@ -64,63 +65,6 @@ def parse_positive_list(text, label):
         if value not in vals: vals.append(value)
     if not vals: raise ValueError(f"Enter at least one {label} value.")
     return vals
-
-def load_generator_module():
-    """Import the AE command library from common test-suite locations."""
-    import importlib
-    module_filename = f"{GENERATOR_MODULE}.py"
-    candidates = []
-    env_file = os.getenv("PARAMOUNT_AE_COMMANDS_FILE", "").strip()
-    if env_file:
-        candidates.append(Path(env_file).expanduser())
-    roots = [APP_DIR, Path.cwd()]
-    suite_root = os.getenv("PARAMOUNT_SUITE_ROOT", "").strip()
-    if suite_root:
-        roots.append(Path(suite_root).expanduser())
-    for root in roots:
-        candidates.extend([
-            root / module_filename,
-            root / "AESpecificDependencies" / module_filename,
-            root / "libraries" / module_filename,
-            root / "Library" / module_filename,
-        ])
-    # Also inspect parents of the script, which supports scripts kept in test subfolders.
-    for parent in list(APP_DIR.parents)[:4]:
-        candidates.extend([parent / module_filename, parent / "AESpecificDependencies" / module_filename])
-    found = next((c.resolve() for c in candidates if c.is_file()), None)
-    # The plugin can be nested several levels below the repository. If the normal
-    # locations fail, search the repository tree and the user's Documents tree.
-    if found is None:
-        search_roots = []
-        for parent in [APP_DIR, *list(APP_DIR.parents)[:5]]:
-            if parent.is_dir() and parent not in search_roots:
-                search_roots.append(parent)
-        documents = Path.home() / "Documents"
-        if documents.is_dir() and documents not in search_roots:
-            search_roots.append(documents)
-        for root in search_roots:
-            try:
-                matches = list(root.rglob(module_filename))
-            except (OSError, PermissionError):
-                matches = []
-            if matches:
-                found = matches[0].resolve()
-                break
-    if found is None:
-        checked = "\n".join(f"  - {c}" for c in dict.fromkeys(candidates))
-        raise FileNotFoundError(
-            f"Could not locate {module_filename}. Copy that file and its sibling "
-            f"dependencies AE_Com_Module.py and fixedpoint.py into the same folder as "
-            f"this collection script, or set PARAMOUNT_AE_COMMANDS_FILE to its full path.\n"
-            f"Direct locations checked:\n{checked}\n"
-            f"A recursive search of the repository parents and Documents folder also found no match."
-        )
-    # Add the library directory so its sibling dependencies, including AE_Com_Module,
-    # can be imported by AECommandsUniversal.py.
-    library_dir = str(found.parent)
-    if library_dir not in sys.path:
-        sys.path.insert(0, library_dir)
-    return importlib.import_module(GENERATOR_MODULE)
 
 def visa_resource(address):
     address=address.strip()
@@ -225,9 +169,8 @@ def scope_seconds_per_div(ramp_s):
 
 class TekScope:
     def __init__(self, address, channel, timeout_ms=30000):
-        import pyvisa
-        self.rm=pyvisa.ResourceManager()
-        self.inst=self.rm.open_resource(visa_resource(address))
+        self.rm=resource_manager()
+        self.inst=InstrumentFactory({'oscilloscope':visa_resource(address)}).create('oscilloscope',resource_manager=self.rm,open_attempts=1)
         self.inst.timeout=timeout_ms
         self.inst.write_termination='\n'; self.inst.read_termination='\n'
         self.channel=channel.upper()
@@ -471,7 +414,6 @@ class App:
     def collect(self):
         scope=dut=None; run_dir=None
         try:
-            mod=load_generator_module()
             power_levels,ramps,reps=self.validate(); directions=[]
             if self.v['rise'].get():directions.append('RISE')
             if self.v['fall'].get():directions.append('FALL')
@@ -483,7 +425,7 @@ class App:
             self.ui('Connecting to oscilloscope...',1)
             scope=TekScope(self.v['scope'].get(),self.v['channel'].get()); meta['scope_idn']=scope.idn
             self.ui('Connecting to generator and configuring Host control...',2)
-            dut=mod.generator(self.v['generator'].get())
+            dut=InstrumentFactory({'generator':self.v['generator'].get()}).create('generator')
             call_dut_with_interlock_retry(lambda: dut.setActiveControlMode(2), "Set Host control mode")
             ensure_rf_off(dut)
             call_dut_with_interlock_retry(lambda: dut.setRegulationMode(int(self.v['reg_mode'].get())), "Set regulation mode")

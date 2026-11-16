@@ -32,7 +32,7 @@ collection_plugins/<plugin id>/          plugin.json + collection script(s), one
 analysis_plugins/<plugin id>/            plugin.json + analysis script(s), same ids as collection
 suite_sdk/                               plugin registry, plugin.json schema, suite context
 suite_common/                            shared helpers (config paths, bench addresses, output folders, parsing)
-AESpecificDependencies/                  AE command modules (AECommandsUniversal = DUT adapter), Lynx, spectrum analyzer drivers
+suite_instruments/                       instrument abstraction layer: factory, interfaces, transports, adapters (AE modules incl. AECommandsUniversal = DUT adapter, Keysight)
 config/  runtime/                        committed defaults / per-PC settings (see Configuration)
 assets/presentation_themes/              PowerPoint theme (.thmx) used by the builder
 tools/  archive/  docs/  tests/          standalone utilities, unused legacy code, documentation, hardware-free tests

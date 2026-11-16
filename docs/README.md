@@ -9,4 +9,4 @@
 | [presentations/M365_Copilot_Migration_Slides_Prompt.md](presentations/M365_Copilot_Migration_Slides_Prompt.md) | Drop-in Microsoft 365 Copilot prompt that generates the migration-tracking slide deck. |
 | [legacy/](legacy/) | Original dev notes and the draft user guide, carried over unchanged. |
 
-Folder-level READMEs: [suite_common](../suite_common/README.md) and [AESpecificDependencies](../AESpecificDependencies/README.md).
+Folder-level READMEs: [suite_common](../suite_common/README.md) and [suite_instruments](../suite_instruments/README.md).

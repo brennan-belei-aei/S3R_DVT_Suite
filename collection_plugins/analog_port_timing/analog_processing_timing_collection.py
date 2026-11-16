@@ -17,13 +17,13 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Callable, Iterable, Optional
-import pyvisa
 import numpy as np
 import matplotlib.pyplot as plt
 sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
 import suite_common.bootstrap
 from suite_common.bench import bench_default, visa_socket_resource
-import AECommandsUniversal
+from suite_instruments.factory import InstrumentFactory
+from suite_instruments.transport.visa import resource_manager
 SCOPE_ADDRESS = bench_default('oscilloscope')
 WAVEGEN_ADDRESS = bench_default('waveform_generator')
 WAVEGEN_SOCKET_FALLBACK_ADDRESS = visa_socket_resource(WAVEGEN_ADDRESS)
@@ -198,14 +198,15 @@ class Instruments:
         if not DUT_ADDRESS:
             raise RuntimeError('DUT generator address is not set. Select a bench profile in the Unified Collection GUI or set PARAMOUNT_GENERATOR_ADDRESS.')
         print('Connecting to VISA instruments...')
-        self.rm = pyvisa.ResourceManager()
+        self.rm = resource_manager()
+        factory = InstrumentFactory({'generator': DUT_ADDRESS, 'oscilloscope': SCOPE_ADDRESS, 'waveform_generator': WAVEGEN_ADDRESS, 'dc_supply': BK9141_ADDRESS})
         print(f'VISA backend: {self.rm.visalib}')
         try:
             resources = self.rm.list_resources()
             print(f'VISA resources found: {resources}')
         except Exception as exc:
             print(f'VISA resource-list warning: {exc}')
-        self.scope = self.rm.open_resource(SCOPE_ADDRESS)
+        self.scope = factory.create('oscilloscope', resource_manager=self.rm, open_attempts=1)
         self.scope.timeout = INSTRUMENT_TIMEOUT_MS
         self.scope.read_termination = '\n'
         self.scope.write_termination = '\n'
@@ -215,7 +216,7 @@ class Instruments:
         for address in (WAVEGEN_ADDRESS, WAVEGEN_SOCKET_FALLBACK_ADDRESS):
             try:
                 print(f'Opening wavegen at {address}...')
-                candidate = self.rm.open_resource(address)
+                candidate = factory.create('waveform_generator', address=address, resource_manager=self.rm, open_attempts=1)
                 candidate.timeout = INSTRUMENT_TIMEOUT_MS
                 if address.endswith('::SOCKET'):
                     candidate.read_termination = '\n'
@@ -239,7 +240,7 @@ class Instruments:
                 candidate = None
                 try:
                     print(f'Opening BK Precision 9141 at {address}...')
-                    candidate = self.rm.open_resource(address)
+                    candidate = factory.create('dc_supply', address=address, resource_manager=self.rm, open_attempts=1)
                     candidate.timeout = INSTRUMENT_TIMEOUT_MS
                     if address.endswith('::SOCKET'):
                         candidate.read_termination = '\n'
@@ -259,7 +260,7 @@ class Instruments:
                 raise RuntimeError('Could not connect to BK 9141. ' + ' | '.join(errors))
             configure_bk9141_interlock_supply(self.bk9141)
         print('Connecting to DUT...')
-        self.dut = AECommandsUniversal.generator(DUT_ADDRESS)
+        self.dut = factory.create('generator')
         print('DUT connected.')
 
     def safe_state(self) -> None:

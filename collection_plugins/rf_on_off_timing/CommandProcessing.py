@@ -1,8 +1,13 @@
 import csv
 import os
+import sys
 import time
 from datetime import datetime
-import AECommandsSerialTimingAdapter
+from pathlib import Path
+
+sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
+import suite_common.bootstrap  # noqa: E402,F401
+from suite_instruments.factory import InstrumentFactory  # noqa: E402
 
 # ---------------------------
 # Command Code Mapping (AEBus command numbers used by AECommandsUniversal)
@@ -177,9 +182,9 @@ codes = [17, 18, 21, 24, 25, 26, 27, 28, 29, 31, 32, 34, 35, 38, 39, 40]
 # ---------------------------
 if __name__ == "__main__":
     if COMM_TYPE == "serial":
-        gen = AECommandsSerialTimingAdapter.generator(0, COM_PORT)
+        gen = InstrumentFactory({"generator_com_port": COM_PORT}).create("generator_com_port")
     else:
-        gen = AECommandsSerialTimingAdapter.generator(IP_ADDRESS, None)
+        gen = InstrumentFactory({"generator": IP_ADDRESS}, {"generator": "ae.serial_timing"}).create("generator")
 
 
     # for i in range(857):

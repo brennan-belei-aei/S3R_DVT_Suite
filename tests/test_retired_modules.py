@@ -28,4 +28,4 @@ def test_not_used(name):
 
 @pytest.mark.parametrize("name", RETIRED)
 def test_module_file_absent(name):
-    assert not list(REPO_ROOT.glob(f"AESpecificDependencies/**/{name}.py"))
+    assert not list(REPO_ROOT.glob(f"suite_instruments/**/{name}.py"))

@@ -22,13 +22,13 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Iterable, Optional
 
-import pyvisa
 import numpy as np
 
 sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
 import suite_common.bootstrap  # noqa: F401
 from suite_common.bench import bench_default, visa_socket_resource
-import AECommandsUniversal
+from suite_instruments.factory import InstrumentFactory
+from suite_instruments.transport.visa import resource_manager
 
 TEST_NAME = "RF Enable Timing"
 TEST_ID = "RF_ENABLE_TIMING"
@@ -216,11 +216,13 @@ class Instruments:
         self.rm = self.scope = self.wavegen = self.dut = None
 
     def connect(self) -> None:
-        self.rm = pyvisa.ResourceManager()
+        self.rm = resource_manager()
+        factory = InstrumentFactory({"generator": self.dut_address, "oscilloscope": self.scope_address,
+                                     "waveform_generator": self.wavegen_address})
         print(f"VISA backend: {self.rm.visalib}")
         try: print(f"VISA resources found: {self.rm.list_resources()}")
         except Exception as exc: print(f"VISA resource-list warning: {exc}")
-        self.scope = self.rm.open_resource(self.scope_address); self.scope.timeout = INSTRUMENT_TIMEOUT_MS
+        self.scope = factory.create("oscilloscope", resource_manager=self.rm, open_attempts=1); self.scope.timeout = INSTRUMENT_TIMEOUT_MS
         self.scope.read_termination = "\n"; self.scope.write_termination = "\n"
         self.scope.chunk_size = WAVEFORM_TRANSFER_CHUNK_SIZE_BYTES
         print("Scope:", self.scope.query("*IDN?").strip())
@@ -228,7 +230,8 @@ class Instruments:
         for address in dict.fromkeys((self.wavegen_address, self.wavegen_fallback)):
             candidate = None
             try:
-                candidate = self.rm.open_resource(address); candidate.timeout = INSTRUMENT_TIMEOUT_MS
+                candidate = factory.create("waveform_generator", address=address, resource_manager=self.rm, open_attempts=1)
+                candidate.timeout = INSTRUMENT_TIMEOUT_MS
                 if str(address).endswith("::SOCKET"):
                     candidate.read_termination = "\n"; candidate.write_termination = "\n"
                 print(f"Waveform generator connected using {address}: {candidate.query('*IDN?').strip()}")
@@ -239,7 +242,7 @@ class Instruments:
                     if candidate is not None: candidate.close()
                 except Exception: pass
         if self.wavegen is None: raise RuntimeError("Unable to connect to waveform generator. " + " | ".join(errors))
-        self.dut = AECommandsUniversal.generator(self.dut_address); print("DUT connected.")
+        self.dut = factory.create("generator"); print("DUT connected.")
 
     def safe_state(self) -> None:
         print("Placing equipment in a best-effort safe state...")

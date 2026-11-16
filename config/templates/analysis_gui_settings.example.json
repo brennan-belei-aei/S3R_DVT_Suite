@@ -8,7 +8,7 @@
     "rise_fall_cw": "Rise and Fall/CWDataAnalysis_GUI.py",
     "rise_fall_slp": "Rise and Fall/SLPDataAnalysis_GUI.py",
     "rise_fall_dlp": "Rise and Fall/DLPDataAnalysis_GUI.py",
-    "aebus_command_latency": "AESpecificDependencies/Command Latency/AEBus_Command_Latency_Analysis_GUI.py",
+    "aebus_command_latency": "analysis_plugins/aebus_command_latency/AEBus_Command_Latency_Analysis_GUI.py",
     "psync": "Psync/Psync_Data_Analysis.py"
   },
   "selected": [
