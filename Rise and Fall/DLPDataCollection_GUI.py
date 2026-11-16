@@ -2,7 +2,7 @@
 DLP waveform data collection for AE Paramount DLP-capable RF generators.
 
 Baseline: PulsingDataCollection.py
-DUT API: AECommandsDLPUnits.py
+DUT API: AECommandsUniversal.py (DLP_* and pulse methods)
 
 Configure ordered transitions in DLP_TRANSITIONS_W. For each (start, end) pair,
 the DUT is configured with State 0 = start power and State 1 = end power.
@@ -30,7 +30,7 @@ from suite_common.bench import bench_default
 from suite_common.inputs import format_number_list, parse_number_list
 from suite_common.output_folders import create_unique_test_output_folder
 
-import AECommandsDLPUnits
+import AECommandsUniversal
 
 # ==========================================================
 # UNIFIED LAUNCHER COMPATIBILITY
@@ -673,8 +673,8 @@ def connect_generator():
     if not GEN_IP:
         raise RuntimeError("DUT generator address is not set. Select a bench profile in the Unified Collection GUI or set PARAMOUNT_GENERATOR_ADDRESS.")
     print("\nConnecting to RF generator...")
-    gen = AECommandsDLPUnits.generator(GEN_IP)
-    gen.RF_OFF()
+    gen = AECommandsUniversal.generator(GEN_IP)
+    gen.DLP_RF_OFF()
     sleep(DUT_COMMAND_DELAY_SEC)
     try:
         gen.pulseEnable(0)
@@ -690,14 +690,10 @@ def connect_generator():
 # CLOSE CONNECTIONS
 # ==========================================================
 def close_generator_socket():
-    """Close the actual AETCP object; the supplied library close() references self.gen."""
+    """Close the generator's AEBus transport."""
     if gen is None:
         return
-    device = getattr(gen, "device", None)
-    if device is not None and hasattr(device, "close"):
-        device.close()
-    else:
-        gen.close()
+    gen.close()
 
 
 def close_connections():
@@ -934,7 +930,7 @@ def configure_generator_dlp_mode(
     print(f"State 1 time          = {state_1_time_sec * 1e6:.3f} us")
     print(f"State 0 time          = {state_0_time_sec * 1e6:.3f} us")
 
-    gen.RF_OFF()
+    gen.DLP_RF_OFF()
     sleep(DUT_COMMAND_DELAY_SEC)
 
     # Pulse switching must be off while the DLP state parameters are changed.
@@ -945,17 +941,17 @@ def configure_generator_dlp_mode(
     gen.setPulseMode(3)
     sleep(DUT_COMMAND_DELAY_SEC)
 
-    gen.setRegulationMode(REGULATION_MODE)
+    gen.DLP_setRegulationMode(REGULATION_MODE)
     gen.setDLPfreqMode(DLP_FREQUENCY_MODE_STATE_1, DLP_FREQUENCY_MODE_STATE_0)
     gen.setDLPFreq_s1(int(rf_frequency_khz))
     gen.setDLPFreq_s0(int(rf_frequency_khz))
-    gen.DLP_setpoint(state_1_units, state_0_units)
+    gen.DLP_setpoint_csr(state_1_units, state_0_units)
     gen.setPulseFreq_DutyCycle(int(pulse_frequency_hz), int(duty_cycle_percent))
     gen.pulseEnable(1)
     sleep(DUT_COMMAND_DELAY_SEC)
 
     print("\nTurning RF on...")
-    gen.RF_ON()
+    gen.DLP_RF_ON()
     print("RF generator is on in DLP mode.")
     print(f"Waiting {PULSE_SETTLE_TIME_SEC} seconds for DLP output to settle...")
     sleep(PULSE_SETTLE_TIME_SEC)
@@ -967,7 +963,7 @@ def turn_rf_off_between_conditions():
         return
     print("\nTurning RF off before the next DLP condition...")
     try:
-        gen.RF_OFF()
+        gen.DLP_RF_OFF()
         sleep(DUT_COMMAND_DELAY_SEC)
         print("RF is off. DLP mode remains enabled.")
     except Exception as error:
@@ -979,7 +975,7 @@ def disable_generator_dlp_mode():
         return
     print("\nTurning RF off and disabling DLP mode...")
     try:
-        gen.RF_OFF()
+        gen.DLP_RF_OFF()
         sleep(DUT_COMMAND_DELAY_SEC)
         print("RF is off.")
     except Exception as error:

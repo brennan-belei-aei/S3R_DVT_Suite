@@ -6,7 +6,7 @@ Date last modified:     August 18, 2022
 Last Modified by:       Christopher McLean
 Revision of Python:     3.9
 Brief Description:      Sweeps power and records measured difference
-Dependancies:           AE_Commands_PMNT_HF_1XX, AE_Com_Module, datetime, time, numpy, os, csv, Lynx, sys, pandas, matplotlib
+Dependancies:           AECommandsUniversal, AE_Com_Module, datetime, time, numpy, os, csv, Lynx, sys, pandas, matplotlib
 
 """
 import sys
@@ -17,7 +17,7 @@ import suite_common.bootstrap  # noqa: F401
 from suite_common.bench import bench_default
 from suite_common.output_folders import create_unique_test_output_folder
 
-import AE_Commands_PMNT_HF_1XX
+import AECommandsUniversal
 import AE_Com_Module
 import datetime
 import time
@@ -315,7 +315,7 @@ def initialize_instruments_and_output():
     lynx = Lynx.lynx(lynxID)
     lynxSerial = lynx.reportSerialNumber()
 
-    Egen = AE_Commands_PMNT_HF_1XX.generator(genID)
+    Egen = AECommandsUniversal.generator(genID)
     brandedCheck = Egen.reportSerialNumber(1)
     if brandedCheck[0] == 'X':
         unitNumber = Egen.reportSerialNumber(2)

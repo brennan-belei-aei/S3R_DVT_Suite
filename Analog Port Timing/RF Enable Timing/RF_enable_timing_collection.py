@@ -28,7 +28,7 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import suite_common.bootstrap  # noqa: F401
 from suite_common.bench import bench_default, visa_socket_resource
-import AE_Commands_PMNT_HF_1XX
+import AECommandsUniversal
 
 TEST_NAME = "RF Enable Timing"
 TEST_ID = "RF_ENABLE_TIMING"
@@ -239,7 +239,7 @@ class Instruments:
                     if candidate is not None: candidate.close()
                 except Exception: pass
         if self.wavegen is None: raise RuntimeError("Unable to connect to waveform generator. " + " | ".join(errors))
-        self.dut = AE_Commands_PMNT_HF_1XX.generator(self.dut_address); print("DUT connected.")
+        self.dut = AECommandsUniversal.generator(self.dut_address); print("DUT connected.")
 
     def safe_state(self) -> None:
         print("Placing equipment in a best-effort safe state...")

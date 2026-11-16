@@ -9,7 +9,7 @@ from suite_common.output_folders import create_unique_test_output_folder
 
 from time import sleep, strftime, localtime
 from datetime import date, datetime
-import AE_Commands_PMNT_HF_1XX
+import AECommandsUniversal
 # EverestBusCommands import everest
 import os
 import csv
@@ -432,7 +432,7 @@ def initialize_instruments_and_output():
     global harmonics_average_writer, spurious_average_writer
     global cycle_spectra, COUPLER_DATA, copied_coupler_path
 
-    generator = AE_Commands_PMNT_HF_1XX.generator(GENERATOR_ADDRESS)
+    generator = AECommandsUniversal.generator(GENERATOR_ADDRESS)
     sa = SpectrumAnalyzer(SPECTRUM_ANALYZER_ADDRESS)
     gen_type = generator.reportPowerSupplyType()
     sa.singleSweep()

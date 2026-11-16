@@ -80,3 +80,50 @@ Branch: `refactor/plugin-architecture`. Each phase appends its section here. The
 
 ### Tests added
 `test_aebus_latency_collectors.py` (both collectors resolve to Digital Timing, and every patched constant matches exactly once), `test_quasi_split_cw.py`, and `test_retired_modules.py`. Gate: **122 passed**, all three `--self-test`s pass, and the AEBus adapter resolves `AESpecificDependencies/`.
+## Phase 1b: `AECommandsUniversal` is the single DUT command adapter
+
+### Pre-check: `reportUnlockedSubCommand`
+The only method whose body differed between `AE_Commands_PMNT_HF_1XX` and `AECommandsUniversal`. The difference is **purely additive**: Universal adds `elif` branches for 27 subcommands that PMNT_HF_1XX did not support (64, 71, 88, 89, 111, 112, 114, 116, 120-122, 128-131, 134-139, 142, 145-147, 173, 174, 183-185, 227, 302). PMNT_HF_1XX raised `Exception('Invalid subcommand!')` for those. Every existing branch is unchanged, so no previously working call behaves differently. The second, dead `elif subcommand == 183` branch in Universal is harmless.
+
+### Golden-frame harness
+- `tests/tools/golden_frames.py` recorded the retired libraries **before deletion** into `tests/fixtures/golden_frames/` (about 200 KB). `tests/test_golden_frames.py` replays every case against the current code and requires identical frames `(cmd, send_sizes, recv_sizes, args)`, order, and outcome (return value, or exception type and message).
+- **Adapter:** 568 cases, covering the 36 `generator` methods the 12 scripts plus RF Ramping call. Arguments are generic values plus every literal argument tuple found at the scripts' call sites. Each case runs under four reply profiles:
+  - `bench`: replies shaped by `recv_sizes`, with host control mode and CSR 0;
+  - `csr_ok`;
+  - `data`;
+  - `csr12_all`.
+
+  Every method reaches a normal return in at least one case (701 frames in total).
+- **DLP methods:** 210 cases for the 10 `AECommandsDLPUnits` methods, compared against their Universal names, under five profiles. The fifth, `csr12_on_cmd8`, injects a CSR error on the setpoint command.
+- **DLP script sequence:** the real `DLPDataCollection_GUI.py` functions run in collection order (`connect_generator`, two `configure_generator_dlp_mode` conditions, `turn_rf_off_between_conditions`, `disable_generator_dlp_mode`, `close_connections`) under five profiles, including the CSR-error paths and the transport close.
+- **Result:** the adapter replay passed **before** the swap (proof the swap is safe) and again after. The DLP replay passes after the Universal additions. **51/51.**
+
+### Changes
+- **12 scripts swapped** from `AE_Commands_PMNT_HF_1XX` to `AECommandsUniversal`. Only the import, constructor, and docstring lines changed:
+  - the five Analog Port Timing collectors;
+  - DC Operating Point, Harmonics and Spurious, Power Accuracy, Power Linearity, Power Profile, and SLP Rise/Fall;
+  - `RF_Ramp_Collection.py`, whose `GENERATOR_MODULE` is now `AECommandsUniversal`. This one was not in the plan's list of 12, because it loads its library dynamically.
+- **`AECommandsUniversal.py` additions** (nothing existing changed):
+  - a module-level `CSRError`, with the same codes and messages as DLPUnits;
+  - a private `_dlp_csr_cmd`, with DLPUnits `csr_cmd` semantics;
+  - a DLP command section.
+
+  `CSRError` was already referenced but undefined in `rep_cmd`/`rep_cmd_fastDAQ`. Those methods still fail first on `self.device` (`AttributeError`), so their behavior is unchanged.
+- **DLP method mapping** (old `AECommandsDLPUnits` name to new `AECommandsUniversal` name):
+
+  | Old | New | Why |
+  |---|---|---|
+  | `RF_ON` | `DLP_RF_ON` | Universal `rfON` sends a control-mode query first |
+  | `RF_OFF` | `DLP_RF_OFF` | Universal `rfOFF` adds a CSR check |
+  | `setRegulationMode` | `DLP_setRegulationMode` | Different frame (`'2:1'`, state selector 1) |
+  | `DLP_setpoint` | `DLP_setpoint_csr` | Universal's `DLP_setpoint` sends a different frame |
+  | `pulseEnable`, `setPulseMode`, `setDLPfreqMode`, `setDLPFreq_s1`, `setDLPFreq_s0`, `setPulseFreq_DutyCycle` | same names | New in Universal; copied verbatim (`self.device` became `self.gen`) |
+- **`DLPDataCollection_GUI.py`** uses `AECommandsUniversal.generator`. `close_generator_socket()` now just calls `gen.close()`. The old `device` fallback existed only because `AECommandsDLPUnits.close()` referenced a nonexistent `self.gen`.
+- **Deleted:** `AESpecificDependencies/AE_Commands_PMNT_HF_1XX.py`, `AESpecificDependencies/AECommandsDLPUnits.py`. Its unused `flackpack`, `navigator`, and `pinmatch` classes went with it; nothing imported them.
+- **`tests/test_retired_modules.py`** now guards all three retired modules (imports, constructors, and module-name strings). I verified it fails on a reintroduced `import AECommandsDLPUnits`.
+
+### Latent defects in `AECommandsUniversal` (reported, not fixed)
+- `rep_cmd` / `rep_cmd_fastDAQ` use `self.device` (the constructor sets `self.gen`) and `raise 'unexpected'` (a string raise, which is a `TypeError`). No migrated script calls them.
+- `DLP_setpoint` (pre-existing) passes `2` as `recv_sizes`, so it sends a malformed frame. Only the broken Quasi/Split-CW collectors call it. The DLP collector uses `DLP_setpoint_csr`.
+
+Gate: **177 passed**, all three `--self-test`s pass, and RF Ramping resolves `AESpecificDependencies/AECommandsUniversal.py`.

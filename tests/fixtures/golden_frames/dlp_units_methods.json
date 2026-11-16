@@ -1,0 +1,3015 @@
+[
+ {
+  "method": "DLP_setpoint",
+  "new_method": "DLP_setpoint_csr",
+  "args": [
+   0,
+   0
+  ],
+  "profile": "bench",
+  "frames": [
+   "(8, '1:1,1:4', '2:1', (2, 0))",
+   "(8, '1:1,1:4', '2:1', (3, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "DLP_setpoint",
+  "new_method": "DLP_setpoint_csr",
+  "args": [
+   0,
+   0
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(8, '1:1,1:4', '2:1', (2, 0))",
+   "(8, '1:1,1:4', '2:1', (3, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "DLP_setpoint",
+  "new_method": "DLP_setpoint_csr",
+  "args": [
+   0,
+   0
+  ],
+  "profile": "data",
+  "frames": [
+   "(8, '1:1,1:4', '2:1', (2, 0))"
+  ],
+  "outcome": "raise CSRError: Output is on"
+ },
+ {
+  "method": "DLP_setpoint",
+  "new_method": "DLP_setpoint_csr",
+  "args": [
+   0,
+   0
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(8, '1:1,1:4', '2:1', (2, 0))"
+  ],
+  "outcome": "raise CSRError: Feature not available"
+ },
+ {
+  "method": "DLP_setpoint",
+  "new_method": "DLP_setpoint_csr",
+  "args": [
+   0,
+   0
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(8, '1:1,1:4', '2:1', (2, 0))"
+  ],
+  "outcome": "raise CSRError: Feature not available"
+ },
+ {
+  "method": "DLP_setpoint",
+  "new_method": "DLP_setpoint_csr",
+  "args": [
+   1,
+   1
+  ],
+  "profile": "bench",
+  "frames": [
+   "(8, '1:1,1:4', '2:1', (2, 1))",
+   "(8, '1:1,1:4', '2:1', (3, 1))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "DLP_setpoint",
+  "new_method": "DLP_setpoint_csr",
+  "args": [
+   1,
+   1
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(8, '1:1,1:4', '2:1', (2, 1))",
+   "(8, '1:1,1:4', '2:1', (3, 1))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "DLP_setpoint",
+  "new_method": "DLP_setpoint_csr",
+  "args": [
+   1,
+   1
+  ],
+  "profile": "data",
+  "frames": [
+   "(8, '1:1,1:4', '2:1', (2, 1))"
+  ],
+  "outcome": "raise CSRError: Output is on"
+ },
+ {
+  "method": "DLP_setpoint",
+  "new_method": "DLP_setpoint_csr",
+  "args": [
+   1,
+   1
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(8, '1:1,1:4', '2:1', (2, 1))"
+  ],
+  "outcome": "raise CSRError: Feature not available"
+ },
+ {
+  "method": "DLP_setpoint",
+  "new_method": "DLP_setpoint_csr",
+  "args": [
+   1,
+   1
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(8, '1:1,1:4', '2:1', (2, 1))"
+  ],
+  "outcome": "raise CSRError: Feature not available"
+ },
+ {
+  "method": "DLP_setpoint",
+  "new_method": "DLP_setpoint_csr",
+  "args": [
+   13560,
+   13560
+  ],
+  "profile": "bench",
+  "frames": [
+   "(8, '1:1,1:4', '2:1', (2, 13560))",
+   "(8, '1:1,1:4', '2:1', (3, 13560))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "DLP_setpoint",
+  "new_method": "DLP_setpoint_csr",
+  "args": [
+   13560,
+   13560
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(8, '1:1,1:4', '2:1', (2, 13560))",
+   "(8, '1:1,1:4', '2:1', (3, 13560))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "DLP_setpoint",
+  "new_method": "DLP_setpoint_csr",
+  "args": [
+   13560,
+   13560
+  ],
+  "profile": "data",
+  "frames": [
+   "(8, '1:1,1:4', '2:1', (2, 13560))"
+  ],
+  "outcome": "raise CSRError: Output is on"
+ },
+ {
+  "method": "DLP_setpoint",
+  "new_method": "DLP_setpoint_csr",
+  "args": [
+   13560,
+   13560
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(8, '1:1,1:4', '2:1', (2, 13560))"
+  ],
+  "outcome": "raise CSRError: Feature not available"
+ },
+ {
+  "method": "DLP_setpoint",
+  "new_method": "DLP_setpoint_csr",
+  "args": [
+   13560,
+   13560
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(8, '1:1,1:4', '2:1', (2, 13560))"
+  ],
+  "outcome": "raise CSRError: Feature not available"
+ },
+ {
+  "method": "DLP_setpoint",
+  "new_method": "DLP_setpoint_csr",
+  "args": [
+   3,
+   3
+  ],
+  "profile": "bench",
+  "frames": [
+   "(8, '1:1,1:4', '2:1', (2, 3))",
+   "(8, '1:1,1:4', '2:1', (3, 3))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "DLP_setpoint",
+  "new_method": "DLP_setpoint_csr",
+  "args": [
+   3,
+   3
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(8, '1:1,1:4', '2:1', (2, 3))",
+   "(8, '1:1,1:4', '2:1', (3, 3))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "DLP_setpoint",
+  "new_method": "DLP_setpoint_csr",
+  "args": [
+   3,
+   3
+  ],
+  "profile": "data",
+  "frames": [
+   "(8, '1:1,1:4', '2:1', (2, 3))"
+  ],
+  "outcome": "raise CSRError: Output is on"
+ },
+ {
+  "method": "DLP_setpoint",
+  "new_method": "DLP_setpoint_csr",
+  "args": [
+   3,
+   3
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(8, '1:1,1:4', '2:1', (2, 3))"
+  ],
+  "outcome": "raise CSRError: Feature not available"
+ },
+ {
+  "method": "DLP_setpoint",
+  "new_method": "DLP_setpoint_csr",
+  "args": [
+   3,
+   3
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(8, '1:1,1:4', '2:1', (2, 3))"
+  ],
+  "outcome": "raise CSRError: Feature not available"
+ },
+ {
+  "method": "DLP_setpoint",
+  "new_method": "DLP_setpoint_csr",
+  "args": [
+   6,
+   6
+  ],
+  "profile": "bench",
+  "frames": [
+   "(8, '1:1,1:4', '2:1', (2, 6))",
+   "(8, '1:1,1:4', '2:1', (3, 6))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "DLP_setpoint",
+  "new_method": "DLP_setpoint_csr",
+  "args": [
+   6,
+   6
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(8, '1:1,1:4', '2:1', (2, 6))",
+   "(8, '1:1,1:4', '2:1', (3, 6))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "DLP_setpoint",
+  "new_method": "DLP_setpoint_csr",
+  "args": [
+   6,
+   6
+  ],
+  "profile": "data",
+  "frames": [
+   "(8, '1:1,1:4', '2:1', (2, 6))"
+  ],
+  "outcome": "raise CSRError: Output is on"
+ },
+ {
+  "method": "DLP_setpoint",
+  "new_method": "DLP_setpoint_csr",
+  "args": [
+   6,
+   6
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(8, '1:1,1:4', '2:1', (2, 6))"
+  ],
+  "outcome": "raise CSRError: Feature not available"
+ },
+ {
+  "method": "DLP_setpoint",
+  "new_method": "DLP_setpoint_csr",
+  "args": [
+   6,
+   6
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(8, '1:1,1:4', '2:1', (2, 6))"
+  ],
+  "outcome": "raise CSRError: Feature not available"
+ },
+ {
+  "method": "RF_OFF",
+  "new_method": "DLP_RF_OFF",
+  "args": [],
+  "profile": "bench",
+  "frames": [
+   "(1, '0:0', '1:1', ())"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "RF_OFF",
+  "new_method": "DLP_RF_OFF",
+  "args": [],
+  "profile": "csr_ok",
+  "frames": [
+   "(1, '0:0', '1:1', ())"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "RF_OFF",
+  "new_method": "DLP_RF_OFF",
+  "args": [],
+  "profile": "data",
+  "frames": [
+   "(1, '0:0', '1:1', ())"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "RF_OFF",
+  "new_method": "DLP_RF_OFF",
+  "args": [],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(1, '0:0', '1:1', ())"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "RF_OFF",
+  "new_method": "DLP_RF_OFF",
+  "args": [],
+  "profile": "csr12_all",
+  "frames": [
+   "(1, '0:0', '1:1', ())"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "RF_ON",
+  "new_method": "DLP_RF_ON",
+  "args": [],
+  "profile": "bench",
+  "frames": [
+   "(2, '0:0', '1:1', ())"
+  ],
+  "outcome": "return 0"
+ },
+ {
+  "method": "RF_ON",
+  "new_method": "DLP_RF_ON",
+  "args": [],
+  "profile": "csr_ok",
+  "frames": [
+   "(2, '0:0', '1:1', ())"
+  ],
+  "outcome": "return 0"
+ },
+ {
+  "method": "RF_ON",
+  "new_method": "DLP_RF_ON",
+  "args": [],
+  "profile": "data",
+  "frames": [
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())"
+  ],
+  "outcome": "raise FrameLimitReached: more than 200 frames"
+ },
+ {
+  "method": "RF_ON",
+  "new_method": "DLP_RF_ON",
+  "args": [],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(2, '0:0', '1:1', ())"
+  ],
+  "outcome": "return 0"
+ },
+ {
+  "method": "RF_ON",
+  "new_method": "DLP_RF_ON",
+  "args": [],
+  "profile": "csr12_all",
+  "frames": [
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())"
+  ],
+  "outcome": "raise FrameLimitReached: more than 200 frames"
+ },
+ {
+  "method": "pulseEnable",
+  "new_method": "pulseEnable",
+  "args": [
+   0
+  ],
+  "profile": "bench",
+  "frames": [
+   "(26, '3:2', '0:0', (7, 0, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "pulseEnable",
+  "new_method": "pulseEnable",
+  "args": [
+   0
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(26, '3:2', '0:0', (7, 0, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "pulseEnable",
+  "new_method": "pulseEnable",
+  "args": [
+   0
+  ],
+  "profile": "data",
+  "frames": [
+   "(26, '3:2', '0:0', (7, 0, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "pulseEnable",
+  "new_method": "pulseEnable",
+  "args": [
+   0
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(26, '3:2', '0:0', (7, 0, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "pulseEnable",
+  "new_method": "pulseEnable",
+  "args": [
+   0
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(26, '3:2', '0:0', (7, 0, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "pulseEnable",
+  "new_method": "pulseEnable",
+  "args": [
+   1
+  ],
+  "profile": "bench",
+  "frames": [
+   "(26, '3:2', '0:0', (7, 1, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "pulseEnable",
+  "new_method": "pulseEnable",
+  "args": [
+   1
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(26, '3:2', '0:0', (7, 1, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "pulseEnable",
+  "new_method": "pulseEnable",
+  "args": [
+   1
+  ],
+  "profile": "data",
+  "frames": [
+   "(26, '3:2', '0:0', (7, 1, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "pulseEnable",
+  "new_method": "pulseEnable",
+  "args": [
+   1
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(26, '3:2', '0:0', (7, 1, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "pulseEnable",
+  "new_method": "pulseEnable",
+  "args": [
+   1
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(26, '3:2', '0:0', (7, 1, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "pulseEnable",
+  "new_method": "pulseEnable",
+  "args": [
+   13560
+  ],
+  "profile": "bench",
+  "frames": [
+   "(26, '3:2', '0:0', (7, 13560, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "pulseEnable",
+  "new_method": "pulseEnable",
+  "args": [
+   13560
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(26, '3:2', '0:0', (7, 13560, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "pulseEnable",
+  "new_method": "pulseEnable",
+  "args": [
+   13560
+  ],
+  "profile": "data",
+  "frames": [
+   "(26, '3:2', '0:0', (7, 13560, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "pulseEnable",
+  "new_method": "pulseEnable",
+  "args": [
+   13560
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(26, '3:2', '0:0', (7, 13560, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "pulseEnable",
+  "new_method": "pulseEnable",
+  "args": [
+   13560
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(26, '3:2', '0:0', (7, 13560, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "pulseEnable",
+  "new_method": "pulseEnable",
+  "args": [
+   3
+  ],
+  "profile": "bench",
+  "frames": [
+   "(26, '3:2', '0:0', (7, 3, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "pulseEnable",
+  "new_method": "pulseEnable",
+  "args": [
+   3
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(26, '3:2', '0:0', (7, 3, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "pulseEnable",
+  "new_method": "pulseEnable",
+  "args": [
+   3
+  ],
+  "profile": "data",
+  "frames": [
+   "(26, '3:2', '0:0', (7, 3, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "pulseEnable",
+  "new_method": "pulseEnable",
+  "args": [
+   3
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(26, '3:2', '0:0', (7, 3, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "pulseEnable",
+  "new_method": "pulseEnable",
+  "args": [
+   3
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(26, '3:2', '0:0', (7, 3, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "pulseEnable",
+  "new_method": "pulseEnable",
+  "args": [
+   6
+  ],
+  "profile": "bench",
+  "frames": [
+   "(26, '3:2', '0:0', (7, 6, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "pulseEnable",
+  "new_method": "pulseEnable",
+  "args": [
+   6
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(26, '3:2', '0:0', (7, 6, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "pulseEnable",
+  "new_method": "pulseEnable",
+  "args": [
+   6
+  ],
+  "profile": "data",
+  "frames": [
+   "(26, '3:2', '0:0', (7, 6, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "pulseEnable",
+  "new_method": "pulseEnable",
+  "args": [
+   6
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(26, '3:2', '0:0', (7, 6, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "pulseEnable",
+  "new_method": "pulseEnable",
+  "args": [
+   6
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(26, '3:2', '0:0', (7, 6, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s0",
+  "new_method": "setDLPFreq_s0",
+  "args": [
+   0
+  ],
+  "profile": "bench",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (2, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s0",
+  "new_method": "setDLPFreq_s0",
+  "args": [
+   0
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (2, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s0",
+  "new_method": "setDLPFreq_s0",
+  "args": [
+   0
+  ],
+  "profile": "data",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (2, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s0",
+  "new_method": "setDLPFreq_s0",
+  "args": [
+   0
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (2, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s0",
+  "new_method": "setDLPFreq_s0",
+  "args": [
+   0
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (2, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s0",
+  "new_method": "setDLPFreq_s0",
+  "args": [
+   1
+  ],
+  "profile": "bench",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (2, 1))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s0",
+  "new_method": "setDLPFreq_s0",
+  "args": [
+   1
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (2, 1))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s0",
+  "new_method": "setDLPFreq_s0",
+  "args": [
+   1
+  ],
+  "profile": "data",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (2, 1))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s0",
+  "new_method": "setDLPFreq_s0",
+  "args": [
+   1
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (2, 1))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s0",
+  "new_method": "setDLPFreq_s0",
+  "args": [
+   1
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (2, 1))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s0",
+  "new_method": "setDLPFreq_s0",
+  "args": [
+   13560
+  ],
+  "profile": "bench",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (2, 13560))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s0",
+  "new_method": "setDLPFreq_s0",
+  "args": [
+   13560
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (2, 13560))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s0",
+  "new_method": "setDLPFreq_s0",
+  "args": [
+   13560
+  ],
+  "profile": "data",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (2, 13560))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s0",
+  "new_method": "setDLPFreq_s0",
+  "args": [
+   13560
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (2, 13560))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s0",
+  "new_method": "setDLPFreq_s0",
+  "args": [
+   13560
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (2, 13560))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s0",
+  "new_method": "setDLPFreq_s0",
+  "args": [
+   3
+  ],
+  "profile": "bench",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (2, 3))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s0",
+  "new_method": "setDLPFreq_s0",
+  "args": [
+   3
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (2, 3))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s0",
+  "new_method": "setDLPFreq_s0",
+  "args": [
+   3
+  ],
+  "profile": "data",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (2, 3))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s0",
+  "new_method": "setDLPFreq_s0",
+  "args": [
+   3
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (2, 3))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s0",
+  "new_method": "setDLPFreq_s0",
+  "args": [
+   3
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (2, 3))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s0",
+  "new_method": "setDLPFreq_s0",
+  "args": [
+   6
+  ],
+  "profile": "bench",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (2, 6))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s0",
+  "new_method": "setDLPFreq_s0",
+  "args": [
+   6
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (2, 6))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s0",
+  "new_method": "setDLPFreq_s0",
+  "args": [
+   6
+  ],
+  "profile": "data",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (2, 6))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s0",
+  "new_method": "setDLPFreq_s0",
+  "args": [
+   6
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (2, 6))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s0",
+  "new_method": "setDLPFreq_s0",
+  "args": [
+   6
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (2, 6))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s1",
+  "new_method": "setDLPFreq_s1",
+  "args": [
+   0
+  ],
+  "profile": "bench",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (1, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s1",
+  "new_method": "setDLPFreq_s1",
+  "args": [
+   0
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (1, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s1",
+  "new_method": "setDLPFreq_s1",
+  "args": [
+   0
+  ],
+  "profile": "data",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (1, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s1",
+  "new_method": "setDLPFreq_s1",
+  "args": [
+   0
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (1, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s1",
+  "new_method": "setDLPFreq_s1",
+  "args": [
+   0
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (1, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s1",
+  "new_method": "setDLPFreq_s1",
+  "args": [
+   1
+  ],
+  "profile": "bench",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (1, 1))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s1",
+  "new_method": "setDLPFreq_s1",
+  "args": [
+   1
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (1, 1))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s1",
+  "new_method": "setDLPFreq_s1",
+  "args": [
+   1
+  ],
+  "profile": "data",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (1, 1))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s1",
+  "new_method": "setDLPFreq_s1",
+  "args": [
+   1
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (1, 1))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s1",
+  "new_method": "setDLPFreq_s1",
+  "args": [
+   1
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (1, 1))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s1",
+  "new_method": "setDLPFreq_s1",
+  "args": [
+   13560
+  ],
+  "profile": "bench",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (1, 13560))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s1",
+  "new_method": "setDLPFreq_s1",
+  "args": [
+   13560
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (1, 13560))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s1",
+  "new_method": "setDLPFreq_s1",
+  "args": [
+   13560
+  ],
+  "profile": "data",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (1, 13560))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s1",
+  "new_method": "setDLPFreq_s1",
+  "args": [
+   13560
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (1, 13560))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s1",
+  "new_method": "setDLPFreq_s1",
+  "args": [
+   13560
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (1, 13560))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s1",
+  "new_method": "setDLPFreq_s1",
+  "args": [
+   3
+  ],
+  "profile": "bench",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (1, 3))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s1",
+  "new_method": "setDLPFreq_s1",
+  "args": [
+   3
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (1, 3))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s1",
+  "new_method": "setDLPFreq_s1",
+  "args": [
+   3
+  ],
+  "profile": "data",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (1, 3))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s1",
+  "new_method": "setDLPFreq_s1",
+  "args": [
+   3
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (1, 3))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s1",
+  "new_method": "setDLPFreq_s1",
+  "args": [
+   3
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (1, 3))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s1",
+  "new_method": "setDLPFreq_s1",
+  "args": [
+   6
+  ],
+  "profile": "bench",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (1, 6))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s1",
+  "new_method": "setDLPFreq_s1",
+  "args": [
+   6
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (1, 6))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s1",
+  "new_method": "setDLPFreq_s1",
+  "args": [
+   6
+  ],
+  "profile": "data",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (1, 6))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s1",
+  "new_method": "setDLPFreq_s1",
+  "args": [
+   6
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (1, 6))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPFreq_s1",
+  "new_method": "setDLPFreq_s1",
+  "args": [
+   6
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(61, '1:1, 1:4', '0:0', (1, 6))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPfreqMode",
+  "new_method": "setDLPfreqMode",
+  "args": [
+   0,
+   0
+  ],
+  "profile": "bench",
+  "frames": [
+   "(48, '1:1, 1:1', '2:1', (1, 0))",
+   "(48, '1:1, 1:1', '2:1', (2, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPfreqMode",
+  "new_method": "setDLPfreqMode",
+  "args": [
+   0,
+   0
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(48, '1:1, 1:1', '2:1', (1, 0))",
+   "(48, '1:1, 1:1', '2:1', (2, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPfreqMode",
+  "new_method": "setDLPfreqMode",
+  "args": [
+   0,
+   0
+  ],
+  "profile": "data",
+  "frames": [
+   "(48, '1:1, 1:1', '2:1', (1, 0))"
+  ],
+  "outcome": "raise CSRError: Output is on"
+ },
+ {
+  "method": "setDLPfreqMode",
+  "new_method": "setDLPfreqMode",
+  "args": [
+   0,
+   0
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(48, '1:1, 1:1', '2:1', (1, 0))",
+   "(48, '1:1, 1:1', '2:1', (2, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPfreqMode",
+  "new_method": "setDLPfreqMode",
+  "args": [
+   0,
+   0
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(48, '1:1, 1:1', '2:1', (1, 0))"
+  ],
+  "outcome": "raise CSRError: Feature not available"
+ },
+ {
+  "method": "setDLPfreqMode",
+  "new_method": "setDLPfreqMode",
+  "args": [
+   1,
+   1
+  ],
+  "profile": "bench",
+  "frames": [
+   "(48, '1:1, 1:1', '2:1', (1, 1))",
+   "(48, '1:1, 1:1', '2:1', (2, 1))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPfreqMode",
+  "new_method": "setDLPfreqMode",
+  "args": [
+   1,
+   1
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(48, '1:1, 1:1', '2:1', (1, 1))",
+   "(48, '1:1, 1:1', '2:1', (2, 1))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPfreqMode",
+  "new_method": "setDLPfreqMode",
+  "args": [
+   1,
+   1
+  ],
+  "profile": "data",
+  "frames": [
+   "(48, '1:1, 1:1', '2:1', (1, 1))"
+  ],
+  "outcome": "raise CSRError: Output is on"
+ },
+ {
+  "method": "setDLPfreqMode",
+  "new_method": "setDLPfreqMode",
+  "args": [
+   1,
+   1
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(48, '1:1, 1:1', '2:1', (1, 1))",
+   "(48, '1:1, 1:1', '2:1', (2, 1))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPfreqMode",
+  "new_method": "setDLPfreqMode",
+  "args": [
+   1,
+   1
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(48, '1:1, 1:1', '2:1', (1, 1))"
+  ],
+  "outcome": "raise CSRError: Feature not available"
+ },
+ {
+  "method": "setDLPfreqMode",
+  "new_method": "setDLPfreqMode",
+  "args": [
+   13560,
+   13560
+  ],
+  "profile": "bench",
+  "frames": [
+   "(48, '1:1, 1:1', '2:1', (1, 13560))",
+   "(48, '1:1, 1:1', '2:1', (2, 13560))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPfreqMode",
+  "new_method": "setDLPfreqMode",
+  "args": [
+   13560,
+   13560
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(48, '1:1, 1:1', '2:1', (1, 13560))",
+   "(48, '1:1, 1:1', '2:1', (2, 13560))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPfreqMode",
+  "new_method": "setDLPfreqMode",
+  "args": [
+   13560,
+   13560
+  ],
+  "profile": "data",
+  "frames": [
+   "(48, '1:1, 1:1', '2:1', (1, 13560))"
+  ],
+  "outcome": "raise CSRError: Output is on"
+ },
+ {
+  "method": "setDLPfreqMode",
+  "new_method": "setDLPfreqMode",
+  "args": [
+   13560,
+   13560
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(48, '1:1, 1:1', '2:1', (1, 13560))",
+   "(48, '1:1, 1:1', '2:1', (2, 13560))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPfreqMode",
+  "new_method": "setDLPfreqMode",
+  "args": [
+   13560,
+   13560
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(48, '1:1, 1:1', '2:1', (1, 13560))"
+  ],
+  "outcome": "raise CSRError: Feature not available"
+ },
+ {
+  "method": "setDLPfreqMode",
+  "new_method": "setDLPfreqMode",
+  "args": [
+   3,
+   3
+  ],
+  "profile": "bench",
+  "frames": [
+   "(48, '1:1, 1:1', '2:1', (1, 3))",
+   "(48, '1:1, 1:1', '2:1', (2, 3))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPfreqMode",
+  "new_method": "setDLPfreqMode",
+  "args": [
+   3,
+   3
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(48, '1:1, 1:1', '2:1', (1, 3))",
+   "(48, '1:1, 1:1', '2:1', (2, 3))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPfreqMode",
+  "new_method": "setDLPfreqMode",
+  "args": [
+   3,
+   3
+  ],
+  "profile": "data",
+  "frames": [
+   "(48, '1:1, 1:1', '2:1', (1, 3))"
+  ],
+  "outcome": "raise CSRError: Output is on"
+ },
+ {
+  "method": "setDLPfreqMode",
+  "new_method": "setDLPfreqMode",
+  "args": [
+   3,
+   3
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(48, '1:1, 1:1', '2:1', (1, 3))",
+   "(48, '1:1, 1:1', '2:1', (2, 3))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPfreqMode",
+  "new_method": "setDLPfreqMode",
+  "args": [
+   3,
+   3
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(48, '1:1, 1:1', '2:1', (1, 3))"
+  ],
+  "outcome": "raise CSRError: Feature not available"
+ },
+ {
+  "method": "setDLPfreqMode",
+  "new_method": "setDLPfreqMode",
+  "args": [
+   6,
+   6
+  ],
+  "profile": "bench",
+  "frames": [
+   "(48, '1:1, 1:1', '2:1', (1, 6))",
+   "(48, '1:1, 1:1', '2:1', (2, 6))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPfreqMode",
+  "new_method": "setDLPfreqMode",
+  "args": [
+   6,
+   6
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(48, '1:1, 1:1', '2:1', (1, 6))",
+   "(48, '1:1, 1:1', '2:1', (2, 6))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPfreqMode",
+  "new_method": "setDLPfreqMode",
+  "args": [
+   6,
+   6
+  ],
+  "profile": "data",
+  "frames": [
+   "(48, '1:1, 1:1', '2:1', (1, 6))"
+  ],
+  "outcome": "raise CSRError: Output is on"
+ },
+ {
+  "method": "setDLPfreqMode",
+  "new_method": "setDLPfreqMode",
+  "args": [
+   6,
+   6
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(48, '1:1, 1:1', '2:1', (1, 6))",
+   "(48, '1:1, 1:1', '2:1', (2, 6))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setDLPfreqMode",
+  "new_method": "setDLPfreqMode",
+  "args": [
+   6,
+   6
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(48, '1:1, 1:1', '2:1', (1, 6))"
+  ],
+  "outcome": "raise CSRError: Feature not available"
+ },
+ {
+  "method": "setPulseFreq_DutyCycle",
+  "new_method": "setPulseFreq_DutyCycle",
+  "args": [
+   0,
+   0
+  ],
+  "profile": "bench",
+  "frames": [
+   "(93, '1:4', '2:1', (0,))",
+   "(96, '1:2', '2:1', (0,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulseFreq_DutyCycle",
+  "new_method": "setPulseFreq_DutyCycle",
+  "args": [
+   0,
+   0
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(93, '1:4', '2:1', (0,))",
+   "(96, '1:2', '2:1', (0,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulseFreq_DutyCycle",
+  "new_method": "setPulseFreq_DutyCycle",
+  "args": [
+   0,
+   0
+  ],
+  "profile": "data",
+  "frames": [
+   "(93, '1:4', '2:1', (0,))"
+  ],
+  "outcome": "raise CSRError: Output is on"
+ },
+ {
+  "method": "setPulseFreq_DutyCycle",
+  "new_method": "setPulseFreq_DutyCycle",
+  "args": [
+   0,
+   0
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(93, '1:4', '2:1', (0,))",
+   "(96, '1:2', '2:1', (0,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulseFreq_DutyCycle",
+  "new_method": "setPulseFreq_DutyCycle",
+  "args": [
+   0,
+   0
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(93, '1:4', '2:1', (0,))"
+  ],
+  "outcome": "raise CSRError: Feature not available"
+ },
+ {
+  "method": "setPulseFreq_DutyCycle",
+  "new_method": "setPulseFreq_DutyCycle",
+  "args": [
+   1,
+   1
+  ],
+  "profile": "bench",
+  "frames": [
+   "(93, '1:4', '2:1', (1,))",
+   "(96, '1:2', '2:1', (1,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulseFreq_DutyCycle",
+  "new_method": "setPulseFreq_DutyCycle",
+  "args": [
+   1,
+   1
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(93, '1:4', '2:1', (1,))",
+   "(96, '1:2', '2:1', (1,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulseFreq_DutyCycle",
+  "new_method": "setPulseFreq_DutyCycle",
+  "args": [
+   1,
+   1
+  ],
+  "profile": "data",
+  "frames": [
+   "(93, '1:4', '2:1', (1,))"
+  ],
+  "outcome": "raise CSRError: Output is on"
+ },
+ {
+  "method": "setPulseFreq_DutyCycle",
+  "new_method": "setPulseFreq_DutyCycle",
+  "args": [
+   1,
+   1
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(93, '1:4', '2:1', (1,))",
+   "(96, '1:2', '2:1', (1,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulseFreq_DutyCycle",
+  "new_method": "setPulseFreq_DutyCycle",
+  "args": [
+   1,
+   1
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(93, '1:4', '2:1', (1,))"
+  ],
+  "outcome": "raise CSRError: Feature not available"
+ },
+ {
+  "method": "setPulseFreq_DutyCycle",
+  "new_method": "setPulseFreq_DutyCycle",
+  "args": [
+   13560,
+   13560
+  ],
+  "profile": "bench",
+  "frames": [
+   "(93, '1:4', '2:1', (13560,))",
+   "(96, '1:2', '2:1', (13560,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulseFreq_DutyCycle",
+  "new_method": "setPulseFreq_DutyCycle",
+  "args": [
+   13560,
+   13560
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(93, '1:4', '2:1', (13560,))",
+   "(96, '1:2', '2:1', (13560,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulseFreq_DutyCycle",
+  "new_method": "setPulseFreq_DutyCycle",
+  "args": [
+   13560,
+   13560
+  ],
+  "profile": "data",
+  "frames": [
+   "(93, '1:4', '2:1', (13560,))"
+  ],
+  "outcome": "raise CSRError: Output is on"
+ },
+ {
+  "method": "setPulseFreq_DutyCycle",
+  "new_method": "setPulseFreq_DutyCycle",
+  "args": [
+   13560,
+   13560
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(93, '1:4', '2:1', (13560,))",
+   "(96, '1:2', '2:1', (13560,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulseFreq_DutyCycle",
+  "new_method": "setPulseFreq_DutyCycle",
+  "args": [
+   13560,
+   13560
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(93, '1:4', '2:1', (13560,))"
+  ],
+  "outcome": "raise CSRError: Feature not available"
+ },
+ {
+  "method": "setPulseFreq_DutyCycle",
+  "new_method": "setPulseFreq_DutyCycle",
+  "args": [
+   3,
+   3
+  ],
+  "profile": "bench",
+  "frames": [
+   "(93, '1:4', '2:1', (3,))",
+   "(96, '1:2', '2:1', (3,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulseFreq_DutyCycle",
+  "new_method": "setPulseFreq_DutyCycle",
+  "args": [
+   3,
+   3
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(93, '1:4', '2:1', (3,))",
+   "(96, '1:2', '2:1', (3,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulseFreq_DutyCycle",
+  "new_method": "setPulseFreq_DutyCycle",
+  "args": [
+   3,
+   3
+  ],
+  "profile": "data",
+  "frames": [
+   "(93, '1:4', '2:1', (3,))"
+  ],
+  "outcome": "raise CSRError: Output is on"
+ },
+ {
+  "method": "setPulseFreq_DutyCycle",
+  "new_method": "setPulseFreq_DutyCycle",
+  "args": [
+   3,
+   3
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(93, '1:4', '2:1', (3,))",
+   "(96, '1:2', '2:1', (3,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulseFreq_DutyCycle",
+  "new_method": "setPulseFreq_DutyCycle",
+  "args": [
+   3,
+   3
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(93, '1:4', '2:1', (3,))"
+  ],
+  "outcome": "raise CSRError: Feature not available"
+ },
+ {
+  "method": "setPulseFreq_DutyCycle",
+  "new_method": "setPulseFreq_DutyCycle",
+  "args": [
+   6,
+   6
+  ],
+  "profile": "bench",
+  "frames": [
+   "(93, '1:4', '2:1', (6,))",
+   "(96, '1:2', '2:1', (6,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulseFreq_DutyCycle",
+  "new_method": "setPulseFreq_DutyCycle",
+  "args": [
+   6,
+   6
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(93, '1:4', '2:1', (6,))",
+   "(96, '1:2', '2:1', (6,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulseFreq_DutyCycle",
+  "new_method": "setPulseFreq_DutyCycle",
+  "args": [
+   6,
+   6
+  ],
+  "profile": "data",
+  "frames": [
+   "(93, '1:4', '2:1', (6,))"
+  ],
+  "outcome": "raise CSRError: Output is on"
+ },
+ {
+  "method": "setPulseFreq_DutyCycle",
+  "new_method": "setPulseFreq_DutyCycle",
+  "args": [
+   6,
+   6
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(93, '1:4', '2:1', (6,))",
+   "(96, '1:2', '2:1', (6,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulseFreq_DutyCycle",
+  "new_method": "setPulseFreq_DutyCycle",
+  "args": [
+   6,
+   6
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(93, '1:4', '2:1', (6,))"
+  ],
+  "outcome": "raise CSRError: Feature not available"
+ },
+ {
+  "method": "setPulseMode",
+  "new_method": "setPulseMode",
+  "args": [
+   0
+  ],
+  "profile": "bench",
+  "frames": [
+   "(26, '3:2', '0:0', (8, 0, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulseMode",
+  "new_method": "setPulseMode",
+  "args": [
+   0
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(26, '3:2', '0:0', (8, 0, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulseMode",
+  "new_method": "setPulseMode",
+  "args": [
+   0
+  ],
+  "profile": "data",
+  "frames": [
+   "(26, '3:2', '0:0', (8, 0, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulseMode",
+  "new_method": "setPulseMode",
+  "args": [
+   0
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(26, '3:2', '0:0', (8, 0, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulseMode",
+  "new_method": "setPulseMode",
+  "args": [
+   0
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(26, '3:2', '0:0', (8, 0, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulseMode",
+  "new_method": "setPulseMode",
+  "args": [
+   1
+  ],
+  "profile": "bench",
+  "frames": [
+   "(26, '3:2', '0:0', (8, 1, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulseMode",
+  "new_method": "setPulseMode",
+  "args": [
+   1
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(26, '3:2', '0:0', (8, 1, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulseMode",
+  "new_method": "setPulseMode",
+  "args": [
+   1
+  ],
+  "profile": "data",
+  "frames": [
+   "(26, '3:2', '0:0', (8, 1, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulseMode",
+  "new_method": "setPulseMode",
+  "args": [
+   1
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(26, '3:2', '0:0', (8, 1, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulseMode",
+  "new_method": "setPulseMode",
+  "args": [
+   1
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(26, '3:2', '0:0', (8, 1, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulseMode",
+  "new_method": "setPulseMode",
+  "args": [
+   13560
+  ],
+  "profile": "bench",
+  "frames": [
+   "(26, '3:2', '0:0', (8, 13560, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulseMode",
+  "new_method": "setPulseMode",
+  "args": [
+   13560
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(26, '3:2', '0:0', (8, 13560, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulseMode",
+  "new_method": "setPulseMode",
+  "args": [
+   13560
+  ],
+  "profile": "data",
+  "frames": [
+   "(26, '3:2', '0:0', (8, 13560, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulseMode",
+  "new_method": "setPulseMode",
+  "args": [
+   13560
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(26, '3:2', '0:0', (8, 13560, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulseMode",
+  "new_method": "setPulseMode",
+  "args": [
+   13560
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(26, '3:2', '0:0', (8, 13560, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulseMode",
+  "new_method": "setPulseMode",
+  "args": [
+   3
+  ],
+  "profile": "bench",
+  "frames": [
+   "(26, '3:2', '0:0', (8, 3, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulseMode",
+  "new_method": "setPulseMode",
+  "args": [
+   3
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(26, '3:2', '0:0', (8, 3, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulseMode",
+  "new_method": "setPulseMode",
+  "args": [
+   3
+  ],
+  "profile": "data",
+  "frames": [
+   "(26, '3:2', '0:0', (8, 3, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulseMode",
+  "new_method": "setPulseMode",
+  "args": [
+   3
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(26, '3:2', '0:0', (8, 3, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulseMode",
+  "new_method": "setPulseMode",
+  "args": [
+   3
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(26, '3:2', '0:0', (8, 3, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulseMode",
+  "new_method": "setPulseMode",
+  "args": [
+   6
+  ],
+  "profile": "bench",
+  "frames": [
+   "(26, '3:2', '0:0', (8, 6, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulseMode",
+  "new_method": "setPulseMode",
+  "args": [
+   6
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(26, '3:2', '0:0', (8, 6, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulseMode",
+  "new_method": "setPulseMode",
+  "args": [
+   6
+  ],
+  "profile": "data",
+  "frames": [
+   "(26, '3:2', '0:0', (8, 6, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulseMode",
+  "new_method": "setPulseMode",
+  "args": [
+   6
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(26, '3:2', '0:0', (8, 6, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulseMode",
+  "new_method": "setPulseMode",
+  "args": [
+   6
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(26, '3:2', '0:0', (8, 6, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setRegulationMode",
+  "new_method": "DLP_setRegulationMode",
+  "args": [
+   0
+  ],
+  "profile": "bench",
+  "frames": [
+   "(3, '2:1', '0:0', (1, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setRegulationMode",
+  "new_method": "DLP_setRegulationMode",
+  "args": [
+   0
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(3, '2:1', '0:0', (1, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setRegulationMode",
+  "new_method": "DLP_setRegulationMode",
+  "args": [
+   0
+  ],
+  "profile": "data",
+  "frames": [
+   "(3, '2:1', '0:0', (1, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setRegulationMode",
+  "new_method": "DLP_setRegulationMode",
+  "args": [
+   0
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(3, '2:1', '0:0', (1, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setRegulationMode",
+  "new_method": "DLP_setRegulationMode",
+  "args": [
+   0
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(3, '2:1', '0:0', (1, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setRegulationMode",
+  "new_method": "DLP_setRegulationMode",
+  "args": [
+   1
+  ],
+  "profile": "bench",
+  "frames": [
+   "(3, '2:1', '0:0', (1, 1))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setRegulationMode",
+  "new_method": "DLP_setRegulationMode",
+  "args": [
+   1
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(3, '2:1', '0:0', (1, 1))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setRegulationMode",
+  "new_method": "DLP_setRegulationMode",
+  "args": [
+   1
+  ],
+  "profile": "data",
+  "frames": [
+   "(3, '2:1', '0:0', (1, 1))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setRegulationMode",
+  "new_method": "DLP_setRegulationMode",
+  "args": [
+   1
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(3, '2:1', '0:0', (1, 1))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setRegulationMode",
+  "new_method": "DLP_setRegulationMode",
+  "args": [
+   1
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(3, '2:1', '0:0', (1, 1))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setRegulationMode",
+  "new_method": "DLP_setRegulationMode",
+  "args": [
+   13560
+  ],
+  "profile": "bench",
+  "frames": [
+   "(3, '2:1', '0:0', (1, 13560))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setRegulationMode",
+  "new_method": "DLP_setRegulationMode",
+  "args": [
+   13560
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(3, '2:1', '0:0', (1, 13560))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setRegulationMode",
+  "new_method": "DLP_setRegulationMode",
+  "args": [
+   13560
+  ],
+  "profile": "data",
+  "frames": [
+   "(3, '2:1', '0:0', (1, 13560))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setRegulationMode",
+  "new_method": "DLP_setRegulationMode",
+  "args": [
+   13560
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(3, '2:1', '0:0', (1, 13560))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setRegulationMode",
+  "new_method": "DLP_setRegulationMode",
+  "args": [
+   13560
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(3, '2:1', '0:0', (1, 13560))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setRegulationMode",
+  "new_method": "DLP_setRegulationMode",
+  "args": [
+   3
+  ],
+  "profile": "bench",
+  "frames": [
+   "(3, '2:1', '0:0', (1, 3))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setRegulationMode",
+  "new_method": "DLP_setRegulationMode",
+  "args": [
+   3
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(3, '2:1', '0:0', (1, 3))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setRegulationMode",
+  "new_method": "DLP_setRegulationMode",
+  "args": [
+   3
+  ],
+  "profile": "data",
+  "frames": [
+   "(3, '2:1', '0:0', (1, 3))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setRegulationMode",
+  "new_method": "DLP_setRegulationMode",
+  "args": [
+   3
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(3, '2:1', '0:0', (1, 3))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setRegulationMode",
+  "new_method": "DLP_setRegulationMode",
+  "args": [
+   3
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(3, '2:1', '0:0', (1, 3))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setRegulationMode",
+  "new_method": "DLP_setRegulationMode",
+  "args": [
+   6
+  ],
+  "profile": "bench",
+  "frames": [
+   "(3, '2:1', '0:0', (1, 6))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setRegulationMode",
+  "new_method": "DLP_setRegulationMode",
+  "args": [
+   6
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(3, '2:1', '0:0', (1, 6))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setRegulationMode",
+  "new_method": "DLP_setRegulationMode",
+  "args": [
+   6
+  ],
+  "profile": "data",
+  "frames": [
+   "(3, '2:1', '0:0', (1, 6))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setRegulationMode",
+  "new_method": "DLP_setRegulationMode",
+  "args": [
+   6
+  ],
+  "profile": "csr12_on_cmd8",
+  "frames": [
+   "(3, '2:1', '0:0', (1, 6))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setRegulationMode",
+  "new_method": "DLP_setRegulationMode",
+  "args": [
+   6
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(3, '2:1', '0:0', (1, 6))"
+  ],
+  "outcome": "return None"
+ }
+]

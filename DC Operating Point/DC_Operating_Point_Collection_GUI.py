@@ -8,7 +8,7 @@ from suite_common.inputs import format_number_list, parse_number_list
 from suite_common.output_folders import create_unique_test_output_folder
 
 import Lynx
-import AE_Commands_PMNT_HF_1XX
+import AECommandsUniversal
 import csv
 import os
 from time import sleep, time
@@ -363,7 +363,7 @@ def initialize_instruments_and_output():
     lynx = Lynx.lynx(lynxPort)
     lynxSerial = lynx.reportSerialNumber()
 
-    Egen = AE_Commands_PMNT_HF_1XX.generator(genIP)
+    Egen = AECommandsUniversal.generator(genIP)
     unitSerial = Egen.reportSerialNumber()
     Egen.rfOFF()
 

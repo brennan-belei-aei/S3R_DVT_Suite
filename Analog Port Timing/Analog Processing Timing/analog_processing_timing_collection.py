@@ -22,7 +22,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import suite_common.bootstrap
 from suite_common.bench import bench_default, visa_socket_resource
-import AE_Commands_PMNT_HF_1XX
+import AECommandsUniversal
 SCOPE_ADDRESS = bench_default('oscilloscope')
 WAVEGEN_ADDRESS = bench_default('waveform_generator')
 WAVEGEN_SOCKET_FALLBACK_ADDRESS = visa_socket_resource(WAVEGEN_ADDRESS)
@@ -258,7 +258,7 @@ class Instruments:
                 raise RuntimeError('Could not connect to BK 9141. ' + ' | '.join(errors))
             configure_bk9141_interlock_supply(self.bk9141)
         print('Connecting to DUT...')
-        self.dut = AE_Commands_PMNT_HF_1XX.generator(DUT_ADDRESS)
+        self.dut = AECommandsUniversal.generator(DUT_ADDRESS)
         print('DUT connected.')
 
     def safe_state(self) -> None:

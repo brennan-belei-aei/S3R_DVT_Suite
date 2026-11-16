@@ -1,0 +1,6311 @@
+[
+ {
+  "method": "isHaloEnabled",
+  "args": [],
+  "profile": "bench",
+  "frames": [
+   "(221, '0:0', '32:1', ())"
+  ],
+  "outcome": "return False"
+ },
+ {
+  "method": "isHaloEnabled",
+  "args": [],
+  "profile": "csr_ok",
+  "frames": [
+   "(221, '0:0', '32:1', ())"
+  ],
+  "outcome": "raise IndexError: string index out of range"
+ },
+ {
+  "method": "isHaloEnabled",
+  "args": [],
+  "profile": "data",
+  "frames": [
+   "(221, '0:0', '32:1', ())"
+  ],
+  "outcome": "raise IndexError: string index out of range"
+ },
+ {
+  "method": "isHaloEnabled",
+  "args": [],
+  "profile": "csr12_all",
+  "frames": [
+   "(221, '0:0', '32:1', ())"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "isRFon",
+  "args": [],
+  "profile": "bench",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "return True"
+ },
+ {
+  "method": "isRFon",
+  "args": [],
+  "profile": "csr_ok",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise IndexError: list index out of range"
+ },
+ {
+  "method": "isRFon",
+  "args": [],
+  "profile": "data",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "return False"
+ },
+ {
+  "method": "isRFon",
+  "args": [],
+  "profile": "csr12_all",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "readIDC",
+  "args": [],
+  "profile": "bench",
+  "frames": [
+   "(207, '2:2', '1:2', (67, 0))"
+  ],
+  "outcome": "return 1362.1"
+ },
+ {
+  "method": "readIDC",
+  "args": [],
+  "profile": "csr_ok",
+  "frames": [
+   "(207, '2:2', '1:2', (67, 0))"
+  ],
+  "outcome": "return 0.0"
+ },
+ {
+  "method": "readIDC",
+  "args": [],
+  "profile": "data",
+  "frames": [
+   "(207, '2:2', '1:2', (67, 0))"
+  ],
+  "outcome": "return 0.2"
+ },
+ {
+  "method": "readIDC",
+  "args": [],
+  "profile": "csr12_all",
+  "frames": [
+   "(207, '2:2', '1:2', (67, 0))"
+  ],
+  "outcome": "return 1.2"
+ },
+ {
+  "method": "readVDC",
+  "args": [],
+  "profile": "bench",
+  "frames": [
+   "(207, '2:2', '1:2', (66, 0))"
+  ],
+  "outcome": "return 1362.1"
+ },
+ {
+  "method": "readVDC",
+  "args": [],
+  "profile": "csr_ok",
+  "frames": [
+   "(207, '2:2', '1:2', (66, 0))"
+  ],
+  "outcome": "return 0.0"
+ },
+ {
+  "method": "readVDC",
+  "args": [],
+  "profile": "data",
+  "frames": [
+   "(207, '2:2', '1:2', (66, 0))"
+  ],
+  "outcome": "return 0.2"
+ },
+ {
+  "method": "readVDC",
+  "args": [],
+  "profile": "csr12_all",
+  "frames": [
+   "(207, '2:2', '1:2', (66, 0))"
+  ],
+  "outcome": "return 1.2"
+ },
+ {
+  "method": "reportActiveControlMode",
+  "args": [],
+  "profile": "bench",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "return 2"
+ },
+ {
+  "method": "reportActiveControlMode",
+  "args": [],
+  "profile": "csr_ok",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "return 0"
+ },
+ {
+  "method": "reportActiveControlMode",
+  "args": [],
+  "profile": "data",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "return 2"
+ },
+ {
+  "method": "reportActiveControlMode",
+  "args": [],
+  "profile": "csr12_all",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportColdPlateTemperature",
+  "args": [
+   0
+  ],
+  "profile": "bench",
+  "frames": [
+   "(161, '0:0', '1:4', ())",
+   "(228, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "return 1362.1"
+ },
+ {
+  "method": "reportColdPlateTemperature",
+  "args": [
+   0
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(161, '0:0', '1:4', ())",
+   "(228, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "return 0.0"
+ },
+ {
+  "method": "reportColdPlateTemperature",
+  "args": [
+   0
+  ],
+  "profile": "data",
+  "frames": [
+   "(161, '0:0', '1:4', ())",
+   "(228, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "return 0.2"
+ },
+ {
+  "method": "reportColdPlateTemperature",
+  "args": [
+   0
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(161, '0:0', '1:4', ())"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportColdPlateTemperature",
+  "args": [
+   1
+  ],
+  "profile": "bench",
+  "frames": [
+   "(161, '0:0', '1:4', ())",
+   "(228, '1:1', '1:2', (1,))"
+  ],
+  "outcome": "return 1362.1"
+ },
+ {
+  "method": "reportColdPlateTemperature",
+  "args": [
+   1
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(161, '0:0', '1:4', ())",
+   "(228, '1:1', '1:2', (1,))"
+  ],
+  "outcome": "return 0.0"
+ },
+ {
+  "method": "reportColdPlateTemperature",
+  "args": [
+   1
+  ],
+  "profile": "data",
+  "frames": [
+   "(161, '0:0', '1:4', ())",
+   "(228, '1:1', '1:2', (1,))"
+  ],
+  "outcome": "return 0.2"
+ },
+ {
+  "method": "reportColdPlateTemperature",
+  "args": [
+   1
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(161, '0:0', '1:4', ())"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportColdPlateTemperature",
+  "args": [
+   13560
+  ],
+  "profile": "bench",
+  "frames": [
+   "(161, '0:0', '1:4', ())"
+  ],
+  "outcome": "raise Exception: Invalid temperature selection!"
+ },
+ {
+  "method": "reportColdPlateTemperature",
+  "args": [
+   13560
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(161, '0:0', '1:4', ())"
+  ],
+  "outcome": "raise Exception: Invalid temperature selection!"
+ },
+ {
+  "method": "reportColdPlateTemperature",
+  "args": [
+   13560
+  ],
+  "profile": "data",
+  "frames": [
+   "(161, '0:0', '1:4', ())"
+  ],
+  "outcome": "raise Exception: Invalid temperature selection!"
+ },
+ {
+  "method": "reportColdPlateTemperature",
+  "args": [
+   13560
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(161, '0:0', '1:4', ())"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportColdPlateTemperature",
+  "args": [
+   2
+  ],
+  "profile": "bench",
+  "frames": [
+   "(161, '0:0', '1:4', ())",
+   "(228, '1:1', '1:2', (2,))"
+  ],
+  "outcome": "return 1362.1"
+ },
+ {
+  "method": "reportColdPlateTemperature",
+  "args": [
+   2
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(161, '0:0', '1:4', ())",
+   "(228, '1:1', '1:2', (2,))"
+  ],
+  "outcome": "return 0.0"
+ },
+ {
+  "method": "reportColdPlateTemperature",
+  "args": [
+   2
+  ],
+  "profile": "data",
+  "frames": [
+   "(161, '0:0', '1:4', ())",
+   "(228, '1:1', '1:2', (2,))"
+  ],
+  "outcome": "return 0.2"
+ },
+ {
+  "method": "reportColdPlateTemperature",
+  "args": [
+   2
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(161, '0:0', '1:4', ())"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportColdPlateTemperature",
+  "args": [
+   3
+  ],
+  "profile": "bench",
+  "frames": [
+   "(161, '0:0', '1:4', ())",
+   "(228, '1:1', '1:2', (3,))"
+  ],
+  "outcome": "return 1362.1"
+ },
+ {
+  "method": "reportColdPlateTemperature",
+  "args": [
+   3
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(161, '0:0', '1:4', ())",
+   "(228, '1:1', '1:2', (3,))"
+  ],
+  "outcome": "return 0.0"
+ },
+ {
+  "method": "reportColdPlateTemperature",
+  "args": [
+   3
+  ],
+  "profile": "data",
+  "frames": [
+   "(161, '0:0', '1:4', ())",
+   "(228, '1:1', '1:2', (3,))"
+  ],
+  "outcome": "return 0.2"
+ },
+ {
+  "method": "reportColdPlateTemperature",
+  "args": [
+   3
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(161, '0:0', '1:4', ())"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportColdPlateTemperature",
+  "args": [
+   6
+  ],
+  "profile": "bench",
+  "frames": [
+   "(161, '0:0', '1:4', ())",
+   "(228, '1:1', '1:2', (6,))"
+  ],
+  "outcome": "return 1362.1"
+ },
+ {
+  "method": "reportColdPlateTemperature",
+  "args": [
+   6
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(161, '0:0', '1:4', ())",
+   "(228, '1:1', '1:2', (6,))"
+  ],
+  "outcome": "return 0.0"
+ },
+ {
+  "method": "reportColdPlateTemperature",
+  "args": [
+   6
+  ],
+  "profile": "data",
+  "frames": [
+   "(161, '0:0', '1:4', ())",
+   "(228, '1:1', '1:2', (6,))"
+  ],
+  "outcome": "return 0.01"
+ },
+ {
+  "method": "reportColdPlateTemperature",
+  "args": [
+   6
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(161, '0:0', '1:4', ())"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportDeliveredPower",
+  "args": [],
+  "profile": "bench",
+  "frames": [
+   "(167, '0:0', '1:2', ())",
+   "(221, '0:0', '32:1', ())"
+  ],
+  "outcome": "return 13621"
+ },
+ {
+  "method": "reportDeliveredPower",
+  "args": [],
+  "profile": "csr_ok",
+  "frames": [
+   "(167, '0:0', '1:2', ())",
+   "(221, '0:0', '32:1', ())"
+  ],
+  "outcome": "raise IndexError: string index out of range"
+ },
+ {
+  "method": "reportDeliveredPower",
+  "args": [],
+  "profile": "data",
+  "frames": [
+   "(167, '0:0', '1:2', ())",
+   "(221, '0:0', '32:1', ())"
+  ],
+  "outcome": "raise IndexError: string index out of range"
+ },
+ {
+  "method": "reportDeliveredPower",
+  "args": [],
+  "profile": "csr12_all",
+  "frames": [
+   "(167, '0:0', '1:2', ())"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportFaultOrWarningCodeList",
+  "args": [
+   0
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Type Selected: 1-4"
+ },
+ {
+  "method": "reportFaultOrWarningCodeList",
+  "args": [
+   0
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Type Selected: 1-4"
+ },
+ {
+  "method": "reportFaultOrWarningCodeList",
+  "args": [
+   0
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Type Selected: 1-4"
+ },
+ {
+  "method": "reportFaultOrWarningCodeList",
+  "args": [
+   0
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Type Selected: 1-4"
+ },
+ {
+  "method": "reportFaultOrWarningCodeList",
+  "args": [
+   1
+  ],
+  "profile": "bench",
+  "frames": [
+   "(223, '1:1', '20:2', (1,))"
+  ],
+  "outcome": "return [13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621]"
+ },
+ {
+  "method": "reportFaultOrWarningCodeList",
+  "args": [
+   1
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(223, '1:1', '20:2', (1,))"
+  ],
+  "outcome": "return 'No active faults'"
+ },
+ {
+  "method": "reportFaultOrWarningCodeList",
+  "args": [
+   1
+  ],
+  "profile": "data",
+  "frames": [
+   "(223, '1:1', '20:2', (1,))"
+  ],
+  "outcome": "return [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]"
+ },
+ {
+  "method": "reportFaultOrWarningCodeList",
+  "args": [
+   1
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(223, '1:1', '20:2', (1,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportFaultOrWarningCodeList",
+  "args": [
+   13560
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Type Selected: 1-4"
+ },
+ {
+  "method": "reportFaultOrWarningCodeList",
+  "args": [
+   13560
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Type Selected: 1-4"
+ },
+ {
+  "method": "reportFaultOrWarningCodeList",
+  "args": [
+   13560
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Type Selected: 1-4"
+ },
+ {
+  "method": "reportFaultOrWarningCodeList",
+  "args": [
+   13560
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Type Selected: 1-4"
+ },
+ {
+  "method": "reportFaultOrWarningCodeList",
+  "args": [
+   3
+  ],
+  "profile": "bench",
+  "frames": [
+   "(223, '1:1', '20:2', (3,))"
+  ],
+  "outcome": "return [13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621]"
+ },
+ {
+  "method": "reportFaultOrWarningCodeList",
+  "args": [
+   3
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(223, '1:1', '20:2', (3,))"
+  ],
+  "outcome": "return [0]"
+ },
+ {
+  "method": "reportFaultOrWarningCodeList",
+  "args": [
+   3
+  ],
+  "profile": "data",
+  "frames": [
+   "(223, '1:1', '20:2', (3,))"
+  ],
+  "outcome": "return [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]"
+ },
+ {
+  "method": "reportFaultOrWarningCodeList",
+  "args": [
+   3
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(223, '1:1', '20:2', (3,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportFaultOrWarningCodeList",
+  "args": [
+   6
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Type Selected: 1-4"
+ },
+ {
+  "method": "reportFaultOrWarningCodeList",
+  "args": [
+   6
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Type Selected: 1-4"
+ },
+ {
+  "method": "reportFaultOrWarningCodeList",
+  "args": [
+   6
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Type Selected: 1-4"
+ },
+ {
+  "method": "reportFaultOrWarningCodeList",
+  "args": [
+   6
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Type Selected: 1-4"
+ },
+ {
+  "method": "reportFixedFrequency",
+  "args": [],
+  "profile": "bench",
+  "frames": [
+   "(161, '0:0', '1:4', ())"
+  ],
+  "outcome": "return 892679477"
+ },
+ {
+  "method": "reportFixedFrequency",
+  "args": [],
+  "profile": "csr_ok",
+  "frames": [
+   "(161, '0:0', '1:4', ())"
+  ],
+  "outcome": "return 0"
+ },
+ {
+  "method": "reportFixedFrequency",
+  "args": [],
+  "profile": "data",
+  "frames": [
+   "(161, '0:0', '1:4', ())"
+  ],
+  "outcome": "return 2"
+ },
+ {
+  "method": "reportFixedFrequency",
+  "args": [],
+  "profile": "csr12_all",
+  "frames": [
+   "(161, '0:0', '1:4', ())"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportFixedFrequency",
+  "args": [
+   0
+  ],
+  "profile": "bench",
+  "frames": [
+   "(161, '1:1', '1:4', (0,))"
+  ],
+  "outcome": "return 892679477"
+ },
+ {
+  "method": "reportFixedFrequency",
+  "args": [
+   0
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(161, '1:1', '1:4', (0,))"
+  ],
+  "outcome": "return 0"
+ },
+ {
+  "method": "reportFixedFrequency",
+  "args": [
+   0
+  ],
+  "profile": "data",
+  "frames": [
+   "(161, '1:1', '1:4', (0,))"
+  ],
+  "outcome": "return 2"
+ },
+ {
+  "method": "reportFixedFrequency",
+  "args": [
+   0
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(161, '1:1', '1:4', (0,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportFixedFrequency",
+  "args": [
+   1
+  ],
+  "profile": "bench",
+  "frames": [
+   "(161, '1:1', '1:4', (1,))"
+  ],
+  "outcome": "return 892679477"
+ },
+ {
+  "method": "reportFixedFrequency",
+  "args": [
+   1
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(161, '1:1', '1:4', (1,))"
+  ],
+  "outcome": "return 0"
+ },
+ {
+  "method": "reportFixedFrequency",
+  "args": [
+   1
+  ],
+  "profile": "data",
+  "frames": [
+   "(161, '1:1', '1:4', (1,))"
+  ],
+  "outcome": "return 2"
+ },
+ {
+  "method": "reportFixedFrequency",
+  "args": [
+   1
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(161, '1:1', '1:4', (1,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportFixedFrequency",
+  "args": [
+   13560
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Report Mode Chosen:'\n                     0 = Generator Frequency [kHz]\n                     1 = Generator Frequency [Hz]\n                     2 = Generator Max Frequency [Hz]\n                     3 = Generator Min Frequency [Hz]\n                     8 = Generator Center Frequency [Hz]"
+ },
+ {
+  "method": "reportFixedFrequency",
+  "args": [
+   13560
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Report Mode Chosen:'\n                     0 = Generator Frequency [kHz]\n                     1 = Generator Frequency [Hz]\n                     2 = Generator Max Frequency [Hz]\n                     3 = Generator Min Frequency [Hz]\n                     8 = Generator Center Frequency [Hz]"
+ },
+ {
+  "method": "reportFixedFrequency",
+  "args": [
+   13560
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Report Mode Chosen:'\n                     0 = Generator Frequency [kHz]\n                     1 = Generator Frequency [Hz]\n                     2 = Generator Max Frequency [Hz]\n                     3 = Generator Min Frequency [Hz]\n                     8 = Generator Center Frequency [Hz]"
+ },
+ {
+  "method": "reportFixedFrequency",
+  "args": [
+   13560
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Report Mode Chosen:'\n                     0 = Generator Frequency [kHz]\n                     1 = Generator Frequency [Hz]\n                     2 = Generator Max Frequency [Hz]\n                     3 = Generator Min Frequency [Hz]\n                     8 = Generator Center Frequency [Hz]"
+ },
+ {
+  "method": "reportFixedFrequency",
+  "args": [
+   3
+  ],
+  "profile": "bench",
+  "frames": [
+   "(161, '1:1', '1:4', (3,))"
+  ],
+  "outcome": "return 892679477"
+ },
+ {
+  "method": "reportFixedFrequency",
+  "args": [
+   3
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(161, '1:1', '1:4', (3,))"
+  ],
+  "outcome": "return 0"
+ },
+ {
+  "method": "reportFixedFrequency",
+  "args": [
+   3
+  ],
+  "profile": "data",
+  "frames": [
+   "(161, '1:1', '1:4', (3,))"
+  ],
+  "outcome": "return 2"
+ },
+ {
+  "method": "reportFixedFrequency",
+  "args": [
+   3
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(161, '1:1', '1:4', (3,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportFixedFrequency",
+  "args": [
+   6
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Report Mode Chosen:'\n                     0 = Generator Frequency [kHz]\n                     1 = Generator Frequency [Hz]\n                     2 = Generator Max Frequency [Hz]\n                     3 = Generator Min Frequency [Hz]\n                     8 = Generator Center Frequency [Hz]"
+ },
+ {
+  "method": "reportFixedFrequency",
+  "args": [
+   6
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Report Mode Chosen:'\n                     0 = Generator Frequency [kHz]\n                     1 = Generator Frequency [Hz]\n                     2 = Generator Max Frequency [Hz]\n                     3 = Generator Min Frequency [Hz]\n                     8 = Generator Center Frequency [Hz]"
+ },
+ {
+  "method": "reportFixedFrequency",
+  "args": [
+   6
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Report Mode Chosen:'\n                     0 = Generator Frequency [kHz]\n                     1 = Generator Frequency [Hz]\n                     2 = Generator Max Frequency [Hz]\n                     3 = Generator Min Frequency [Hz]\n                     8 = Generator Center Frequency [Hz]"
+ },
+ {
+  "method": "reportFixedFrequency",
+  "args": [
+   6
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Report Mode Chosen:'\n                     0 = Generator Frequency [kHz]\n                     1 = Generator Frequency [Hz]\n                     2 = Generator Max Frequency [Hz]\n                     3 = Generator Min Frequency [Hz]\n                     8 = Generator Center Frequency [Hz]"
+ },
+ {
+  "method": "reportFixedFrequency",
+  "args": [
+   8
+  ],
+  "profile": "bench",
+  "frames": [
+   "(161, '1:1', '1:4', (8,))"
+  ],
+  "outcome": "return 892679477"
+ },
+ {
+  "method": "reportFixedFrequency",
+  "args": [
+   8
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(161, '1:1', '1:4', (8,))"
+  ],
+  "outcome": "return 0"
+ },
+ {
+  "method": "reportFixedFrequency",
+  "args": [
+   8
+  ],
+  "profile": "data",
+  "frames": [
+   "(161, '1:1', '1:4', (8,))"
+  ],
+  "outcome": "return 2"
+ },
+ {
+  "method": "reportFixedFrequency",
+  "args": [
+   8
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(161, '1:1', '1:4', (8,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportForwardPower",
+  "args": [],
+  "profile": "bench",
+  "frames": [
+   "(165, '0:0', '1:2', ())",
+   "(221, '0:0', '32:1', ())"
+  ],
+  "outcome": "return 13621"
+ },
+ {
+  "method": "reportForwardPower",
+  "args": [],
+  "profile": "csr_ok",
+  "frames": [
+   "(165, '0:0', '1:2', ())",
+   "(221, '0:0', '32:1', ())"
+  ],
+  "outcome": "raise IndexError: string index out of range"
+ },
+ {
+  "method": "reportForwardPower",
+  "args": [],
+  "profile": "data",
+  "frames": [
+   "(165, '0:0', '1:2', ())",
+   "(221, '0:0', '32:1', ())"
+  ],
+  "outcome": "raise IndexError: string index out of range"
+ },
+ {
+  "method": "reportForwardPower",
+  "args": [],
+  "profile": "csr12_all",
+  "frames": [
+   "(165, '0:0', '1:2', ())"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportGeneratorSnapshotData",
+  "args": [],
+  "profile": "bench",
+  "frames": [
+   "(222, '0:0', '4:2,2:4,2:4,2:2,4:1,38:2,4:4', ())",
+   "(221, '0:0', '32:1', ())"
+  ],
+  "outcome": "return [13621, 13621, 13621, 13621, 8926794.77, 8926794.77, 892679477, '00110101001101010011010100110101', 13621, '0011010100110101', 53, 53, '00110101', '00110101', 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 892679477, 892679477, 892679477, 892679477]"
+ },
+ {
+  "method": "reportGeneratorSnapshotData",
+  "args": [],
+  "profile": "csr_ok",
+  "frames": [
+   "(222, '0:0', '4:2,2:4,2:4,2:2,4:1,38:2,4:4', ())",
+   "(221, '0:0', '32:1', ())"
+  ],
+  "outcome": "raise IndexError: string index out of range"
+ },
+ {
+  "method": "reportGeneratorSnapshotData",
+  "args": [],
+  "profile": "data",
+  "frames": [
+   "(222, '0:0', '4:2,2:4,2:4,2:2,4:1,38:2,4:4', ())",
+   "(221, '0:0', '32:1', ())"
+  ],
+  "outcome": "raise IndexError: string index out of range"
+ },
+ {
+  "method": "reportGeneratorSnapshotData",
+  "args": [],
+  "profile": "csr12_all",
+  "frames": [
+   "(222, '0:0', '4:2,2:4,2:4,2:2,4:1,38:2,4:4', ())"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportPINNumber",
+  "args": [],
+  "profile": "bench",
+  "frames": [
+   "(221, '0:0', '32:1', ())"
+  ],
+  "outcome": "return '55555555555555555555555555555555'"
+ },
+ {
+  "method": "reportPINNumber",
+  "args": [],
+  "profile": "csr_ok",
+  "frames": [
+   "(221, '0:0', '32:1', ())"
+  ],
+  "outcome": "return '\\x00'"
+ },
+ {
+  "method": "reportPINNumber",
+  "args": [],
+  "profile": "data",
+  "frames": [
+   "(221, '0:0', '32:1', ())"
+  ],
+  "outcome": "return '\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02'"
+ },
+ {
+  "method": "reportPINNumber",
+  "args": [],
+  "profile": "csr12_all",
+  "frames": [
+   "(221, '0:0', '32:1', ())"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportPowerDisspiation",
+  "args": [],
+  "profile": "bench",
+  "frames": [
+   "(173, '0:0', '1:2', ())"
+  ],
+  "outcome": "return 13621"
+ },
+ {
+  "method": "reportPowerDisspiation",
+  "args": [],
+  "profile": "csr_ok",
+  "frames": [
+   "(173, '0:0', '1:2', ())"
+  ],
+  "outcome": "return 0"
+ },
+ {
+  "method": "reportPowerDisspiation",
+  "args": [],
+  "profile": "data",
+  "frames": [
+   "(173, '0:0', '1:2', ())"
+  ],
+  "outcome": "return 2"
+ },
+ {
+  "method": "reportPowerDisspiation",
+  "args": [],
+  "profile": "csr12_all",
+  "frames": [
+   "(173, '0:0', '1:2', ())"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportPowerSupplySize",
+  "args": [],
+  "profile": "bench",
+  "frames": [
+   "(129, '1:1', '6:1', (0,))"
+  ],
+  "outcome": "return 555555"
+ },
+ {
+  "method": "reportPowerSupplySize",
+  "args": [],
+  "profile": "csr_ok",
+  "frames": [
+   "(129, '1:1', '6:1', (0,))"
+  ],
+  "outcome": "raise ValueError: invalid literal for int() with base 10: '\\x00'"
+ },
+ {
+  "method": "reportPowerSupplySize",
+  "args": [],
+  "profile": "data",
+  "frames": [
+   "(129, '1:1', '6:1', (0,))"
+  ],
+  "outcome": "raise ValueError: invalid literal for int() with base 10: '\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02'"
+ },
+ {
+  "method": "reportPowerSupplySize",
+  "args": [],
+  "profile": "csr12_all",
+  "frames": [
+   "(129, '1:1', '6:1', (0,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportPowerSupplySize",
+  "args": [
+   0
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Report Mode Chosen: 1 or None"
+ },
+ {
+  "method": "reportPowerSupplySize",
+  "args": [
+   0
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Report Mode Chosen: 1 or None"
+ },
+ {
+  "method": "reportPowerSupplySize",
+  "args": [
+   0
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Report Mode Chosen: 1 or None"
+ },
+ {
+  "method": "reportPowerSupplySize",
+  "args": [
+   0
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Report Mode Chosen: 1 or None"
+ },
+ {
+  "method": "reportPowerSupplySize",
+  "args": [
+   1
+  ],
+  "profile": "bench",
+  "frames": [
+   "(129, '1:1', '6:1', (1,))"
+  ],
+  "outcome": "return 555555"
+ },
+ {
+  "method": "reportPowerSupplySize",
+  "args": [
+   1
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(129, '1:1', '6:1', (1,))"
+  ],
+  "outcome": "raise ValueError: invalid literal for int() with base 10: '\\x00'"
+ },
+ {
+  "method": "reportPowerSupplySize",
+  "args": [
+   1
+  ],
+  "profile": "data",
+  "frames": [
+   "(129, '1:1', '6:1', (1,))"
+  ],
+  "outcome": "raise ValueError: invalid literal for int() with base 10: '\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02'"
+ },
+ {
+  "method": "reportPowerSupplySize",
+  "args": [
+   1
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(129, '1:1', '6:1', (1,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportPowerSupplySize",
+  "args": [
+   13560
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Report Mode Chosen: 1 or None"
+ },
+ {
+  "method": "reportPowerSupplySize",
+  "args": [
+   13560
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Report Mode Chosen: 1 or None"
+ },
+ {
+  "method": "reportPowerSupplySize",
+  "args": [
+   13560
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Report Mode Chosen: 1 or None"
+ },
+ {
+  "method": "reportPowerSupplySize",
+  "args": [
+   13560
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Report Mode Chosen: 1 or None"
+ },
+ {
+  "method": "reportPowerSupplySize",
+  "args": [
+   3
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Report Mode Chosen: 1 or None"
+ },
+ {
+  "method": "reportPowerSupplySize",
+  "args": [
+   3
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Report Mode Chosen: 1 or None"
+ },
+ {
+  "method": "reportPowerSupplySize",
+  "args": [
+   3
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Report Mode Chosen: 1 or None"
+ },
+ {
+  "method": "reportPowerSupplySize",
+  "args": [
+   3
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Report Mode Chosen: 1 or None"
+ },
+ {
+  "method": "reportPowerSupplySize",
+  "args": [
+   6
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Report Mode Chosen: 1 or None"
+ },
+ {
+  "method": "reportPowerSupplySize",
+  "args": [
+   6
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Report Mode Chosen: 1 or None"
+ },
+ {
+  "method": "reportPowerSupplySize",
+  "args": [
+   6
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Report Mode Chosen: 1 or None"
+ },
+ {
+  "method": "reportPowerSupplySize",
+  "args": [
+   6
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Report Mode Chosen: 1 or None"
+ },
+ {
+  "method": "reportPowerSupplyType",
+  "args": [],
+  "profile": "bench",
+  "frames": [
+   "(128, '0:0', '9:1', ())"
+  ],
+  "outcome": "return '555555555'"
+ },
+ {
+  "method": "reportPowerSupplyType",
+  "args": [],
+  "profile": "csr_ok",
+  "frames": [
+   "(128, '0:0', '9:1', ())"
+  ],
+  "outcome": "return '\\x00'"
+ },
+ {
+  "method": "reportPowerSupplyType",
+  "args": [],
+  "profile": "data",
+  "frames": [
+   "(128, '0:0', '9:1', ())"
+  ],
+  "outcome": "return '\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02'"
+ },
+ {
+  "method": "reportPowerSupplyType",
+  "args": [],
+  "profile": "csr12_all",
+  "frames": [
+   "(128, '0:0', '9:1', ())"
+  ],
+  "outcome": "return '\\x0c'"
+ },
+ {
+  "method": "reportPowerSupplyType",
+  "args": [
+   0
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise Exception: Invalid option, must be blank for 9 byte response or 1 for 10 byte response."
+ },
+ {
+  "method": "reportPowerSupplyType",
+  "args": [
+   0
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise Exception: Invalid option, must be blank for 9 byte response or 1 for 10 byte response."
+ },
+ {
+  "method": "reportPowerSupplyType",
+  "args": [
+   0
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise Exception: Invalid option, must be blank for 9 byte response or 1 for 10 byte response."
+ },
+ {
+  "method": "reportPowerSupplyType",
+  "args": [
+   0
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise Exception: Invalid option, must be blank for 9 byte response or 1 for 10 byte response."
+ },
+ {
+  "method": "reportPowerSupplyType",
+  "args": [
+   1
+  ],
+  "profile": "bench",
+  "frames": [
+   "(128, '0:0', '10:1', (3,))"
+  ],
+  "outcome": "return '5555555555'"
+ },
+ {
+  "method": "reportPowerSupplyType",
+  "args": [
+   1
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(128, '0:0', '10:1', (3,))"
+  ],
+  "outcome": "return '\\x00'"
+ },
+ {
+  "method": "reportPowerSupplyType",
+  "args": [
+   1
+  ],
+  "profile": "data",
+  "frames": [
+   "(128, '0:0', '10:1', (3,))"
+  ],
+  "outcome": "return '\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02'"
+ },
+ {
+  "method": "reportPowerSupplyType",
+  "args": [
+   1
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(128, '0:0', '10:1', (3,))"
+  ],
+  "outcome": "return '\\x0c'"
+ },
+ {
+  "method": "reportPowerSupplyType",
+  "args": [
+   13560
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise Exception: Invalid option, must be blank for 9 byte response or 1 for 10 byte response."
+ },
+ {
+  "method": "reportPowerSupplyType",
+  "args": [
+   13560
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise Exception: Invalid option, must be blank for 9 byte response or 1 for 10 byte response."
+ },
+ {
+  "method": "reportPowerSupplyType",
+  "args": [
+   13560
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise Exception: Invalid option, must be blank for 9 byte response or 1 for 10 byte response."
+ },
+ {
+  "method": "reportPowerSupplyType",
+  "args": [
+   13560
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise Exception: Invalid option, must be blank for 9 byte response or 1 for 10 byte response."
+ },
+ {
+  "method": "reportPowerSupplyType",
+  "args": [
+   3
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise Exception: Invalid option, must be blank for 9 byte response or 1 for 10 byte response."
+ },
+ {
+  "method": "reportPowerSupplyType",
+  "args": [
+   3
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise Exception: Invalid option, must be blank for 9 byte response or 1 for 10 byte response."
+ },
+ {
+  "method": "reportPowerSupplyType",
+  "args": [
+   3
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise Exception: Invalid option, must be blank for 9 byte response or 1 for 10 byte response."
+ },
+ {
+  "method": "reportPowerSupplyType",
+  "args": [
+   3
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise Exception: Invalid option, must be blank for 9 byte response or 1 for 10 byte response."
+ },
+ {
+  "method": "reportPowerSupplyType",
+  "args": [
+   6
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise Exception: Invalid option, must be blank for 9 byte response or 1 for 10 byte response."
+ },
+ {
+  "method": "reportPowerSupplyType",
+  "args": [
+   6
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise Exception: Invalid option, must be blank for 9 byte response or 1 for 10 byte response."
+ },
+ {
+  "method": "reportPowerSupplyType",
+  "args": [
+   6
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise Exception: Invalid option, must be blank for 9 byte response or 1 for 10 byte response."
+ },
+ {
+  "method": "reportPowerSupplyType",
+  "args": [
+   6
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise Exception: Invalid option, must be blank for 9 byte response or 1 for 10 byte response."
+ },
+ {
+  "method": "reportProcessStatus",
+  "args": [],
+  "profile": "bench",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "return ['00110101', '00110101', '00110101', '00110101']"
+ },
+ {
+  "method": "reportProcessStatus",
+  "args": [],
+  "profile": "csr_ok",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise IndexError: list index out of range"
+ },
+ {
+  "method": "reportProcessStatus",
+  "args": [],
+  "profile": "data",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "return ['00000010', '00000010', '00000010', '00000010']"
+ },
+ {
+  "method": "reportProcessStatus",
+  "args": [],
+  "profile": "csr12_all",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportPulsingConfiguration",
+  "args": [
+   0
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Pulsing Configuration Option Selected:\n                     1 = Report Pulsing Mode\n                     2 = Report Pulse Sync Output\n                     3 = Report Pulsing Enable\n                     4 = Report Sync Input Delay\n                     5 = Report Memory Mode\n                     6 = Report Explicit Enable Mode\n                     7 = Report Pulsing Enable State\n                     8 = Report Pulsing/Arc Management Mode\n                     9 = Report Pulse Maximum On Time\n                     10 = Report Pulse Sync Output Mode\n                     11 = Report SLave Duty Cycle\n                     12 = Reserved\n                     13 = Reserved\n                     14 = Report Minimum Pulsing Frequency\n                     15 = Report Maximum Pulsing Frequency\n                     16 = Report Minimum Pulsing Duty Cycle\n                     17 = Report Maximum Pulsing Duty Cycle"
+ },
+ {
+  "method": "reportPulsingConfiguration",
+  "args": [
+   0
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Pulsing Configuration Option Selected:\n                     1 = Report Pulsing Mode\n                     2 = Report Pulse Sync Output\n                     3 = Report Pulsing Enable\n                     4 = Report Sync Input Delay\n                     5 = Report Memory Mode\n                     6 = Report Explicit Enable Mode\n                     7 = Report Pulsing Enable State\n                     8 = Report Pulsing/Arc Management Mode\n                     9 = Report Pulse Maximum On Time\n                     10 = Report Pulse Sync Output Mode\n                     11 = Report SLave Duty Cycle\n                     12 = Reserved\n                     13 = Reserved\n                     14 = Report Minimum Pulsing Frequency\n                     15 = Report Maximum Pulsing Frequency\n                     16 = Report Minimum Pulsing Duty Cycle\n                     17 = Report Maximum Pulsing Duty Cycle"
+ },
+ {
+  "method": "reportPulsingConfiguration",
+  "args": [
+   0
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Pulsing Configuration Option Selected:\n                     1 = Report Pulsing Mode\n                     2 = Report Pulse Sync Output\n                     3 = Report Pulsing Enable\n                     4 = Report Sync Input Delay\n                     5 = Report Memory Mode\n                     6 = Report Explicit Enable Mode\n                     7 = Report Pulsing Enable State\n                     8 = Report Pulsing/Arc Management Mode\n                     9 = Report Pulse Maximum On Time\n                     10 = Report Pulse Sync Output Mode\n                     11 = Report SLave Duty Cycle\n                     12 = Reserved\n                     13 = Reserved\n                     14 = Report Minimum Pulsing Frequency\n                     15 = Report Maximum Pulsing Frequency\n                     16 = Report Minimum Pulsing Duty Cycle\n                     17 = Report Maximum Pulsing Duty Cycle"
+ },
+ {
+  "method": "reportPulsingConfiguration",
+  "args": [
+   0
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Pulsing Configuration Option Selected:\n                     1 = Report Pulsing Mode\n                     2 = Report Pulse Sync Output\n                     3 = Report Pulsing Enable\n                     4 = Report Sync Input Delay\n                     5 = Report Memory Mode\n                     6 = Report Explicit Enable Mode\n                     7 = Report Pulsing Enable State\n                     8 = Report Pulsing/Arc Management Mode\n                     9 = Report Pulse Maximum On Time\n                     10 = Report Pulse Sync Output Mode\n                     11 = Report SLave Duty Cycle\n                     12 = Reserved\n                     13 = Reserved\n                     14 = Report Minimum Pulsing Frequency\n                     15 = Report Maximum Pulsing Frequency\n                     16 = Report Minimum Pulsing Duty Cycle\n                     17 = Report Maximum Pulsing Duty Cycle"
+ },
+ {
+  "method": "reportPulsingConfiguration",
+  "args": [
+   1
+  ],
+  "profile": "bench",
+  "frames": [
+   "(172, '1:2', '1:4', (1,))"
+  ],
+  "outcome": "return 892679477"
+ },
+ {
+  "method": "reportPulsingConfiguration",
+  "args": [
+   1
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(172, '1:2', '1:4', (1,))"
+  ],
+  "outcome": "return 0"
+ },
+ {
+  "method": "reportPulsingConfiguration",
+  "args": [
+   1
+  ],
+  "profile": "data",
+  "frames": [
+   "(172, '1:2', '1:4', (1,))"
+  ],
+  "outcome": "return 2"
+ },
+ {
+  "method": "reportPulsingConfiguration",
+  "args": [
+   1
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(172, '1:2', '1:4', (1,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportPulsingConfiguration",
+  "args": [
+   13560
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Pulsing Configuration Option Selected:\n                     1 = Report Pulsing Mode\n                     2 = Report Pulse Sync Output\n                     3 = Report Pulsing Enable\n                     4 = Report Sync Input Delay\n                     5 = Report Memory Mode\n                     6 = Report Explicit Enable Mode\n                     7 = Report Pulsing Enable State\n                     8 = Report Pulsing/Arc Management Mode\n                     9 = Report Pulse Maximum On Time\n                     10 = Report Pulse Sync Output Mode\n                     11 = Report SLave Duty Cycle\n                     12 = Reserved\n                     13 = Reserved\n                     14 = Report Minimum Pulsing Frequency\n                     15 = Report Maximum Pulsing Frequency\n                     16 = Report Minimum Pulsing Duty Cycle\n                     17 = Report Maximum Pulsing Duty Cycle"
+ },
+ {
+  "method": "reportPulsingConfiguration",
+  "args": [
+   13560
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Pulsing Configuration Option Selected:\n                     1 = Report Pulsing Mode\n                     2 = Report Pulse Sync Output\n                     3 = Report Pulsing Enable\n                     4 = Report Sync Input Delay\n                     5 = Report Memory Mode\n                     6 = Report Explicit Enable Mode\n                     7 = Report Pulsing Enable State\n                     8 = Report Pulsing/Arc Management Mode\n                     9 = Report Pulse Maximum On Time\n                     10 = Report Pulse Sync Output Mode\n                     11 = Report SLave Duty Cycle\n                     12 = Reserved\n                     13 = Reserved\n                     14 = Report Minimum Pulsing Frequency\n                     15 = Report Maximum Pulsing Frequency\n                     16 = Report Minimum Pulsing Duty Cycle\n                     17 = Report Maximum Pulsing Duty Cycle"
+ },
+ {
+  "method": "reportPulsingConfiguration",
+  "args": [
+   13560
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Pulsing Configuration Option Selected:\n                     1 = Report Pulsing Mode\n                     2 = Report Pulse Sync Output\n                     3 = Report Pulsing Enable\n                     4 = Report Sync Input Delay\n                     5 = Report Memory Mode\n                     6 = Report Explicit Enable Mode\n                     7 = Report Pulsing Enable State\n                     8 = Report Pulsing/Arc Management Mode\n                     9 = Report Pulse Maximum On Time\n                     10 = Report Pulse Sync Output Mode\n                     11 = Report SLave Duty Cycle\n                     12 = Reserved\n                     13 = Reserved\n                     14 = Report Minimum Pulsing Frequency\n                     15 = Report Maximum Pulsing Frequency\n                     16 = Report Minimum Pulsing Duty Cycle\n                     17 = Report Maximum Pulsing Duty Cycle"
+ },
+ {
+  "method": "reportPulsingConfiguration",
+  "args": [
+   13560
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Pulsing Configuration Option Selected:\n                     1 = Report Pulsing Mode\n                     2 = Report Pulse Sync Output\n                     3 = Report Pulsing Enable\n                     4 = Report Sync Input Delay\n                     5 = Report Memory Mode\n                     6 = Report Explicit Enable Mode\n                     7 = Report Pulsing Enable State\n                     8 = Report Pulsing/Arc Management Mode\n                     9 = Report Pulse Maximum On Time\n                     10 = Report Pulse Sync Output Mode\n                     11 = Report SLave Duty Cycle\n                     12 = Reserved\n                     13 = Reserved\n                     14 = Report Minimum Pulsing Frequency\n                     15 = Report Maximum Pulsing Frequency\n                     16 = Report Minimum Pulsing Duty Cycle\n                     17 = Report Maximum Pulsing Duty Cycle"
+ },
+ {
+  "method": "reportPulsingConfiguration",
+  "args": [
+   3
+  ],
+  "profile": "bench",
+  "frames": [
+   "(172, '1:2', '1:4', (3,))"
+  ],
+  "outcome": "return 892679477"
+ },
+ {
+  "method": "reportPulsingConfiguration",
+  "args": [
+   3
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(172, '1:2', '1:4', (3,))"
+  ],
+  "outcome": "return 0"
+ },
+ {
+  "method": "reportPulsingConfiguration",
+  "args": [
+   3
+  ],
+  "profile": "data",
+  "frames": [
+   "(172, '1:2', '1:4', (3,))"
+  ],
+  "outcome": "return 2"
+ },
+ {
+  "method": "reportPulsingConfiguration",
+  "args": [
+   3
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(172, '1:2', '1:4', (3,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportPulsingConfiguration",
+  "args": [
+   6
+  ],
+  "profile": "bench",
+  "frames": [
+   "(172, '1:2', '1:4', (6,))"
+  ],
+  "outcome": "return 892679477"
+ },
+ {
+  "method": "reportPulsingConfiguration",
+  "args": [
+   6
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(172, '1:2', '1:4', (6,))"
+  ],
+  "outcome": "return 0"
+ },
+ {
+  "method": "reportPulsingConfiguration",
+  "args": [
+   6
+  ],
+  "profile": "data",
+  "frames": [
+   "(172, '1:2', '1:4', (6,))"
+  ],
+  "outcome": "return 2"
+ },
+ {
+  "method": "reportPulsingConfiguration",
+  "args": [
+   6
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(172, '1:2', '1:4', (6,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportPulsingConfiguration",
+  "args": [
+   8
+  ],
+  "profile": "bench",
+  "frames": [
+   "(172, '1:2', '1:4', (8,))"
+  ],
+  "outcome": "return 892679477"
+ },
+ {
+  "method": "reportPulsingConfiguration",
+  "args": [
+   8
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(172, '1:2', '1:4', (8,))"
+  ],
+  "outcome": "return 0"
+ },
+ {
+  "method": "reportPulsingConfiguration",
+  "args": [
+   8
+  ],
+  "profile": "data",
+  "frames": [
+   "(172, '1:2', '1:4', (8,))"
+  ],
+  "outcome": "return 2"
+ },
+ {
+  "method": "reportPulsingConfiguration",
+  "args": [
+   8
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(172, '1:2', '1:4', (8,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportPulsingDutyCycle",
+  "args": [],
+  "profile": "bench",
+  "frames": [
+   "(196, '0:0', '1:2', ())"
+  ],
+  "outcome": "return 13621"
+ },
+ {
+  "method": "reportPulsingDutyCycle",
+  "args": [],
+  "profile": "csr_ok",
+  "frames": [
+   "(196, '0:0', '1:2', ())"
+  ],
+  "outcome": "return 0"
+ },
+ {
+  "method": "reportPulsingDutyCycle",
+  "args": [],
+  "profile": "data",
+  "frames": [
+   "(196, '0:0', '1:2', ())"
+  ],
+  "outcome": "return 2"
+ },
+ {
+  "method": "reportPulsingDutyCycle",
+  "args": [],
+  "profile": "csr12_all",
+  "frames": [
+   "(196, '0:0', '1:2', ())"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportPulsingFrequency",
+  "args": [],
+  "profile": "bench",
+  "frames": [
+   "(193, '0:0', '1:4', ())"
+  ],
+  "outcome": "return 892679477"
+ },
+ {
+  "method": "reportPulsingFrequency",
+  "args": [],
+  "profile": "csr_ok",
+  "frames": [
+   "(193, '0:0', '1:4', ())"
+  ],
+  "outcome": "return 0"
+ },
+ {
+  "method": "reportPulsingFrequency",
+  "args": [],
+  "profile": "data",
+  "frames": [
+   "(193, '0:0', '1:4', ())"
+  ],
+  "outcome": "return 2"
+ },
+ {
+  "method": "reportPulsingFrequency",
+  "args": [],
+  "profile": "csr12_all",
+  "frames": [
+   "(193, '0:0', '1:4', ())"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportReflectedPower",
+  "args": [],
+  "profile": "bench",
+  "frames": [
+   "(166, '0:0', '1:2', ())",
+   "(221, '0:0', '32:1', ())"
+  ],
+  "outcome": "return 13621"
+ },
+ {
+  "method": "reportReflectedPower",
+  "args": [],
+  "profile": "csr_ok",
+  "frames": [
+   "(166, '0:0', '1:2', ())",
+   "(221, '0:0', '32:1', ())"
+  ],
+  "outcome": "raise IndexError: string index out of range"
+ },
+ {
+  "method": "reportReflectedPower",
+  "args": [],
+  "profile": "data",
+  "frames": [
+   "(166, '0:0', '1:2', ())",
+   "(221, '0:0', '32:1', ())"
+  ],
+  "outcome": "raise IndexError: string index out of range"
+ },
+ {
+  "method": "reportReflectedPower",
+  "args": [],
+  "profile": "csr12_all",
+  "frames": [
+   "(166, '0:0', '1:2', ())"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportSPIBusADCData",
+  "args": [
+   0
+  ],
+  "profile": "bench",
+  "frames": [
+   "(181, '1:1', '8:2', (0,))"
+  ],
+  "outcome": "return (13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621)"
+ },
+ {
+  "method": "reportSPIBusADCData",
+  "args": [
+   0
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(181, '1:1', '8:2', (0,))"
+  ],
+  "outcome": "raise IndexError: list index out of range"
+ },
+ {
+  "method": "reportSPIBusADCData",
+  "args": [
+   0
+  ],
+  "profile": "data",
+  "frames": [
+   "(181, '1:1', '8:2', (0,))"
+  ],
+  "outcome": "return (2, 2, 2, 2, 2, 2, 2, 2)"
+ },
+ {
+  "method": "reportSPIBusADCData",
+  "args": [
+   0
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(181, '1:1', '8:2', (0,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportSPIBusADCData",
+  "args": [
+   1
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Device Selected\n                     0 = Motherbaord Onboard ADC (Returns 16 bytes)\n                     1 = Reserved\n                     2 = User Card ADC (Returns 8 bytes)\n                     3 = DC Section ADC2 (Returns 32 bytes)\n                     4 = DC Section ADC1 (Returns 16 bytes)\n                     5 = RFC Board ADC (Returns 4 bytes)"
+ },
+ {
+  "method": "reportSPIBusADCData",
+  "args": [
+   1
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Device Selected\n                     0 = Motherbaord Onboard ADC (Returns 16 bytes)\n                     1 = Reserved\n                     2 = User Card ADC (Returns 8 bytes)\n                     3 = DC Section ADC2 (Returns 32 bytes)\n                     4 = DC Section ADC1 (Returns 16 bytes)\n                     5 = RFC Board ADC (Returns 4 bytes)"
+ },
+ {
+  "method": "reportSPIBusADCData",
+  "args": [
+   1
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Device Selected\n                     0 = Motherbaord Onboard ADC (Returns 16 bytes)\n                     1 = Reserved\n                     2 = User Card ADC (Returns 8 bytes)\n                     3 = DC Section ADC2 (Returns 32 bytes)\n                     4 = DC Section ADC1 (Returns 16 bytes)\n                     5 = RFC Board ADC (Returns 4 bytes)"
+ },
+ {
+  "method": "reportSPIBusADCData",
+  "args": [
+   1
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Device Selected\n                     0 = Motherbaord Onboard ADC (Returns 16 bytes)\n                     1 = Reserved\n                     2 = User Card ADC (Returns 8 bytes)\n                     3 = DC Section ADC2 (Returns 32 bytes)\n                     4 = DC Section ADC1 (Returns 16 bytes)\n                     5 = RFC Board ADC (Returns 4 bytes)"
+ },
+ {
+  "method": "reportSPIBusADCData",
+  "args": [
+   13560
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Device Selected\n                     0 = Motherbaord Onboard ADC (Returns 16 bytes)\n                     1 = Reserved\n                     2 = User Card ADC (Returns 8 bytes)\n                     3 = DC Section ADC2 (Returns 32 bytes)\n                     4 = DC Section ADC1 (Returns 16 bytes)\n                     5 = RFC Board ADC (Returns 4 bytes)"
+ },
+ {
+  "method": "reportSPIBusADCData",
+  "args": [
+   13560
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Device Selected\n                     0 = Motherbaord Onboard ADC (Returns 16 bytes)\n                     1 = Reserved\n                     2 = User Card ADC (Returns 8 bytes)\n                     3 = DC Section ADC2 (Returns 32 bytes)\n                     4 = DC Section ADC1 (Returns 16 bytes)\n                     5 = RFC Board ADC (Returns 4 bytes)"
+ },
+ {
+  "method": "reportSPIBusADCData",
+  "args": [
+   13560
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Device Selected\n                     0 = Motherbaord Onboard ADC (Returns 16 bytes)\n                     1 = Reserved\n                     2 = User Card ADC (Returns 8 bytes)\n                     3 = DC Section ADC2 (Returns 32 bytes)\n                     4 = DC Section ADC1 (Returns 16 bytes)\n                     5 = RFC Board ADC (Returns 4 bytes)"
+ },
+ {
+  "method": "reportSPIBusADCData",
+  "args": [
+   13560
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Device Selected\n                     0 = Motherbaord Onboard ADC (Returns 16 bytes)\n                     1 = Reserved\n                     2 = User Card ADC (Returns 8 bytes)\n                     3 = DC Section ADC2 (Returns 32 bytes)\n                     4 = DC Section ADC1 (Returns 16 bytes)\n                     5 = RFC Board ADC (Returns 4 bytes)"
+ },
+ {
+  "method": "reportSPIBusADCData",
+  "args": [
+   3
+  ],
+  "profile": "bench",
+  "frames": [
+   "(181, '1:1', '16:2', (3,))"
+  ],
+  "outcome": "return (13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621)"
+ },
+ {
+  "method": "reportSPIBusADCData",
+  "args": [
+   3
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(181, '1:1', '16:2', (3,))"
+  ],
+  "outcome": "raise IndexError: list index out of range"
+ },
+ {
+  "method": "reportSPIBusADCData",
+  "args": [
+   3
+  ],
+  "profile": "data",
+  "frames": [
+   "(181, '1:1', '16:2', (3,))"
+  ],
+  "outcome": "return (2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2)"
+ },
+ {
+  "method": "reportSPIBusADCData",
+  "args": [
+   3
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(181, '1:1', '16:2', (3,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportSPIBusADCData",
+  "args": [
+   4
+  ],
+  "profile": "bench",
+  "frames": [
+   "(181, '1:1', '8:2', (4,))"
+  ],
+  "outcome": "return (13621, 13621, 13621, 13621, 13621, 13621, 13621, 13621)"
+ },
+ {
+  "method": "reportSPIBusADCData",
+  "args": [
+   4
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(181, '1:1', '8:2', (4,))"
+  ],
+  "outcome": "raise IndexError: list index out of range"
+ },
+ {
+  "method": "reportSPIBusADCData",
+  "args": [
+   4
+  ],
+  "profile": "data",
+  "frames": [
+   "(181, '1:1', '8:2', (4,))"
+  ],
+  "outcome": "return (2, 2, 2, 2, 2, 2, 2, 2)"
+ },
+ {
+  "method": "reportSPIBusADCData",
+  "args": [
+   4
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(181, '1:1', '8:2', (4,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportSPIBusADCData",
+  "args": [
+   6
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Device Selected\n                     0 = Motherbaord Onboard ADC (Returns 16 bytes)\n                     1 = Reserved\n                     2 = User Card ADC (Returns 8 bytes)\n                     3 = DC Section ADC2 (Returns 32 bytes)\n                     4 = DC Section ADC1 (Returns 16 bytes)\n                     5 = RFC Board ADC (Returns 4 bytes)"
+ },
+ {
+  "method": "reportSPIBusADCData",
+  "args": [
+   6
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Device Selected\n                     0 = Motherbaord Onboard ADC (Returns 16 bytes)\n                     1 = Reserved\n                     2 = User Card ADC (Returns 8 bytes)\n                     3 = DC Section ADC2 (Returns 32 bytes)\n                     4 = DC Section ADC1 (Returns 16 bytes)\n                     5 = RFC Board ADC (Returns 4 bytes)"
+ },
+ {
+  "method": "reportSPIBusADCData",
+  "args": [
+   6
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Device Selected\n                     0 = Motherbaord Onboard ADC (Returns 16 bytes)\n                     1 = Reserved\n                     2 = User Card ADC (Returns 8 bytes)\n                     3 = DC Section ADC2 (Returns 32 bytes)\n                     4 = DC Section ADC1 (Returns 16 bytes)\n                     5 = RFC Board ADC (Returns 4 bytes)"
+ },
+ {
+  "method": "reportSPIBusADCData",
+  "args": [
+   6
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Device Selected\n                     0 = Motherbaord Onboard ADC (Returns 16 bytes)\n                     1 = Reserved\n                     2 = User Card ADC (Returns 8 bytes)\n                     3 = DC Section ADC2 (Returns 32 bytes)\n                     4 = DC Section ADC1 (Returns 16 bytes)\n                     5 = RFC Board ADC (Returns 4 bytes)"
+ },
+ {
+  "method": "reportSerialNumber",
+  "args": [],
+  "profile": "bench",
+  "frames": [
+   "(231, '0:0', '1:4', ())"
+  ],
+  "outcome": "return 892679477"
+ },
+ {
+  "method": "reportSerialNumber",
+  "args": [],
+  "profile": "csr_ok",
+  "frames": [
+   "(231, '0:0', '1:4', ())"
+  ],
+  "outcome": "return 0"
+ },
+ {
+  "method": "reportSerialNumber",
+  "args": [],
+  "profile": "data",
+  "frames": [
+   "(231, '0:0', '1:4', ())"
+  ],
+  "outcome": "return 2"
+ },
+ {
+  "method": "reportSerialNumber",
+  "args": [],
+  "profile": "csr12_all",
+  "frames": [
+   "(231, '0:0', '1:4', ())"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportSerialNumber",
+  "args": [
+   0
+  ],
+  "profile": "bench",
+  "frames": [
+   "(231, '0:0', '1:4', ())"
+  ],
+  "outcome": "return 892679477"
+ },
+ {
+  "method": "reportSerialNumber",
+  "args": [
+   0
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(231, '0:0', '1:4', ())"
+  ],
+  "outcome": "return 0"
+ },
+ {
+  "method": "reportSerialNumber",
+  "args": [
+   0
+  ],
+  "profile": "data",
+  "frames": [
+   "(231, '0:0', '1:4', ())"
+  ],
+  "outcome": "return 2"
+ },
+ {
+  "method": "reportSerialNumber",
+  "args": [
+   0
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(231, '0:0', '1:4', ())"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportSerialNumber",
+  "args": [
+   1
+  ],
+  "profile": "bench",
+  "frames": [
+   "(231, '1:1', '12:1', (1,))"
+  ],
+  "outcome": "return '555555555555'"
+ },
+ {
+  "method": "reportSerialNumber",
+  "args": [
+   1
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(231, '1:1', '12:1', (1,))"
+  ],
+  "outcome": "return ''"
+ },
+ {
+  "method": "reportSerialNumber",
+  "args": [
+   1
+  ],
+  "profile": "data",
+  "frames": [
+   "(231, '1:1', '12:1', (1,))"
+  ],
+  "outcome": "return '\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02'"
+ },
+ {
+  "method": "reportSerialNumber",
+  "args": [
+   1
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(231, '1:1', '12:1', (1,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportSerialNumber",
+  "args": [
+   13560
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Part Selected:\n                         0 = Unit Serial Number\n                         1 = Unit Final Assembly Part Number\n                         7 = Customer Part Number Revision"
+ },
+ {
+  "method": "reportSerialNumber",
+  "args": [
+   13560
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Part Selected:\n                         0 = Unit Serial Number\n                         1 = Unit Final Assembly Part Number\n                         7 = Customer Part Number Revision"
+ },
+ {
+  "method": "reportSerialNumber",
+  "args": [
+   13560
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Part Selected:\n                         0 = Unit Serial Number\n                         1 = Unit Final Assembly Part Number\n                         7 = Customer Part Number Revision"
+ },
+ {
+  "method": "reportSerialNumber",
+  "args": [
+   13560
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Part Selected:\n                         0 = Unit Serial Number\n                         1 = Unit Final Assembly Part Number\n                         7 = Customer Part Number Revision"
+ },
+ {
+  "method": "reportSerialNumber",
+  "args": [
+   2
+  ],
+  "profile": "bench",
+  "frames": [
+   "(231, '1:1', '16:1', (2,))"
+  ],
+  "outcome": "return '5555555555555555'"
+ },
+ {
+  "method": "reportSerialNumber",
+  "args": [
+   2
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(231, '1:1', '16:1', (2,))"
+  ],
+  "outcome": "return ''"
+ },
+ {
+  "method": "reportSerialNumber",
+  "args": [
+   2
+  ],
+  "profile": "data",
+  "frames": [
+   "(231, '1:1', '16:1', (2,))"
+  ],
+  "outcome": "return '\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02'"
+ },
+ {
+  "method": "reportSerialNumber",
+  "args": [
+   2
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(231, '1:1', '16:1', (2,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportSerialNumber",
+  "args": [
+   3
+  ],
+  "profile": "bench",
+  "frames": [
+   "(231, '1:1', '16:1', (3,))"
+  ],
+  "outcome": "return '5555555555555555'"
+ },
+ {
+  "method": "reportSerialNumber",
+  "args": [
+   3
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(231, '1:1', '16:1', (3,))"
+  ],
+  "outcome": "return ''"
+ },
+ {
+  "method": "reportSerialNumber",
+  "args": [
+   3
+  ],
+  "profile": "data",
+  "frames": [
+   "(231, '1:1', '16:1', (3,))"
+  ],
+  "outcome": "return '\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02'"
+ },
+ {
+  "method": "reportSerialNumber",
+  "args": [
+   3
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(231, '1:1', '16:1', (3,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportSerialNumber",
+  "args": [
+   6
+  ],
+  "profile": "bench",
+  "frames": [
+   "(231, '1:1', '3:1', (6,))"
+  ],
+  "outcome": "return '555'"
+ },
+ {
+  "method": "reportSerialNumber",
+  "args": [
+   6
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(231, '1:1', '3:1', (6,))"
+  ],
+  "outcome": "return ''"
+ },
+ {
+  "method": "reportSerialNumber",
+  "args": [
+   6
+  ],
+  "profile": "data",
+  "frames": [
+   "(231, '1:1', '3:1', (6,))"
+  ],
+  "outcome": "return '\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02'"
+ },
+ {
+  "method": "reportSerialNumber",
+  "args": [
+   6
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(231, '1:1', '3:1', (6,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportSetpointRampingConfiguration",
+  "args": [
+   0,
+   0
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "return None"
+ },
+ {
+  "method": "reportSetpointRampingConfiguration",
+  "args": [
+   0,
+   0
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "return None"
+ },
+ {
+  "method": "reportSetpointRampingConfiguration",
+  "args": [
+   0,
+   0
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "return None"
+ },
+ {
+  "method": "reportSetpointRampingConfiguration",
+  "args": [
+   0,
+   0
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "return None"
+ },
+ {
+  "method": "reportSetpointRampingConfiguration",
+  "args": [
+   1,
+   1
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "return None"
+ },
+ {
+  "method": "reportSetpointRampingConfiguration",
+  "args": [
+   1,
+   1
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "return None"
+ },
+ {
+  "method": "reportSetpointRampingConfiguration",
+  "args": [
+   1,
+   1
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "return None"
+ },
+ {
+  "method": "reportSetpointRampingConfiguration",
+  "args": [
+   1,
+   1
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "return None"
+ },
+ {
+  "method": "reportSetpointRampingConfiguration",
+  "args": [
+   13560,
+   13560
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "return None"
+ },
+ {
+  "method": "reportSetpointRampingConfiguration",
+  "args": [
+   13560,
+   13560
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "return None"
+ },
+ {
+  "method": "reportSetpointRampingConfiguration",
+  "args": [
+   13560,
+   13560
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "return None"
+ },
+ {
+  "method": "reportSetpointRampingConfiguration",
+  "args": [
+   13560,
+   13560
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "return None"
+ },
+ {
+  "method": "reportSetpointRampingConfiguration",
+  "args": [
+   3,
+   3
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "return None"
+ },
+ {
+  "method": "reportSetpointRampingConfiguration",
+  "args": [
+   3,
+   3
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "return None"
+ },
+ {
+  "method": "reportSetpointRampingConfiguration",
+  "args": [
+   3,
+   3
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "return None"
+ },
+ {
+  "method": "reportSetpointRampingConfiguration",
+  "args": [
+   3,
+   3
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "return None"
+ },
+ {
+  "method": "reportSetpointRampingConfiguration",
+  "args": [
+   6,
+   0
+  ],
+  "profile": "bench",
+  "frames": [
+   "(151, '0:0', '3:2', ())"
+  ],
+  "outcome": "return (13621, 13621, 13621)"
+ },
+ {
+  "method": "reportSetpointRampingConfiguration",
+  "args": [
+   6,
+   0
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(151, '0:0', '3:2', ())"
+  ],
+  "outcome": "raise IndexError: list index out of range"
+ },
+ {
+  "method": "reportSetpointRampingConfiguration",
+  "args": [
+   6,
+   0
+  ],
+  "profile": "data",
+  "frames": [
+   "(151, '0:0', '3:2', ())"
+  ],
+  "outcome": "return (2, 2, 2)"
+ },
+ {
+  "method": "reportSetpointRampingConfiguration",
+  "args": [
+   6,
+   0
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(151, '0:0', '3:2', ())"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportSetpointRampingConfiguration",
+  "args": [
+   6,
+   6
+  ],
+  "profile": "bench",
+  "frames": [
+   "(151, '0:0', '3:2', ())"
+  ],
+  "outcome": "return (13621, 13621, 13621)"
+ },
+ {
+  "method": "reportSetpointRampingConfiguration",
+  "args": [
+   6,
+   6
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(151, '0:0', '3:2', ())"
+  ],
+  "outcome": "raise IndexError: list index out of range"
+ },
+ {
+  "method": "reportSetpointRampingConfiguration",
+  "args": [
+   6,
+   6
+  ],
+  "profile": "data",
+  "frames": [
+   "(151, '0:0', '3:2', ())"
+  ],
+  "outcome": "return (2, 2, 2)"
+ },
+ {
+  "method": "reportSetpointRampingConfiguration",
+  "args": [
+   6,
+   6
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(151, '0:0', '3:2', ())"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportUserReflectedLimit",
+  "args": [],
+  "profile": "bench",
+  "frames": [
+   "(170, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "return 13621"
+ },
+ {
+  "method": "reportUserReflectedLimit",
+  "args": [],
+  "profile": "csr_ok",
+  "frames": [
+   "(170, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "return 0"
+ },
+ {
+  "method": "reportUserReflectedLimit",
+  "args": [],
+  "profile": "data",
+  "frames": [
+   "(170, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "return 2"
+ },
+ {
+  "method": "reportUserReflectedLimit",
+  "args": [],
+  "profile": "csr12_all",
+  "frames": [
+   "(170, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportUserReflectedLimit",
+  "args": [
+   0
+  ],
+  "profile": "bench",
+  "frames": [
+   "(170, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "return 13621"
+ },
+ {
+  "method": "reportUserReflectedLimit",
+  "args": [
+   0
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(170, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "return 0"
+ },
+ {
+  "method": "reportUserReflectedLimit",
+  "args": [
+   0
+  ],
+  "profile": "data",
+  "frames": [
+   "(170, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "return 2"
+ },
+ {
+  "method": "reportUserReflectedLimit",
+  "args": [
+   0
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(170, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportUserReflectedLimit",
+  "args": [
+   1
+  ],
+  "profile": "bench",
+  "frames": [
+   "(170, '1:1', '1:2', (1,))"
+  ],
+  "outcome": "return 13621"
+ },
+ {
+  "method": "reportUserReflectedLimit",
+  "args": [
+   1
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(170, '1:1', '1:2', (1,))"
+  ],
+  "outcome": "return 0"
+ },
+ {
+  "method": "reportUserReflectedLimit",
+  "args": [
+   1
+  ],
+  "profile": "data",
+  "frames": [
+   "(170, '1:1', '1:2', (1,))"
+  ],
+  "outcome": "return 2"
+ },
+ {
+  "method": "reportUserReflectedLimit",
+  "args": [
+   1
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(170, '1:1', '1:2', (1,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "reportUserReflectedLimit",
+  "args": [
+   13560
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise Exception: Invalid mode selection!"
+ },
+ {
+  "method": "reportUserReflectedLimit",
+  "args": [
+   13560
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise Exception: Invalid mode selection!"
+ },
+ {
+  "method": "reportUserReflectedLimit",
+  "args": [
+   13560
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise Exception: Invalid mode selection!"
+ },
+ {
+  "method": "reportUserReflectedLimit",
+  "args": [
+   13560
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise Exception: Invalid mode selection!"
+ },
+ {
+  "method": "reportUserReflectedLimit",
+  "args": [
+   3
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise Exception: Invalid mode selection!"
+ },
+ {
+  "method": "reportUserReflectedLimit",
+  "args": [
+   3
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise Exception: Invalid mode selection!"
+ },
+ {
+  "method": "reportUserReflectedLimit",
+  "args": [
+   3
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise Exception: Invalid mode selection!"
+ },
+ {
+  "method": "reportUserReflectedLimit",
+  "args": [
+   3
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise Exception: Invalid mode selection!"
+ },
+ {
+  "method": "reportUserReflectedLimit",
+  "args": [
+   6
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise Exception: Invalid mode selection!"
+ },
+ {
+  "method": "reportUserReflectedLimit",
+  "args": [
+   6
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise Exception: Invalid mode selection!"
+ },
+ {
+  "method": "reportUserReflectedLimit",
+  "args": [
+   6
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise Exception: Invalid mode selection!"
+ },
+ {
+  "method": "reportUserReflectedLimit",
+  "args": [
+   6
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise Exception: Invalid mode selection!"
+ },
+ {
+  "method": "rfOFF",
+  "args": [],
+  "profile": "bench",
+  "frames": [
+   "(1, '0:0', '1:1', ())"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "rfOFF",
+  "args": [],
+  "profile": "csr_ok",
+  "frames": [
+   "(1, '0:0', '1:1', ())"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "rfOFF",
+  "args": [],
+  "profile": "data",
+  "frames": [
+   "(1, '0:0', '1:1', ())"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "rfOFF",
+  "args": [],
+  "profile": "csr12_all",
+  "frames": [
+   "(1, '0:0', '1:1', ())"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "rfON",
+  "args": [],
+  "profile": "bench",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))",
+   "(2, '0:0', '1:1', ())"
+  ],
+  "outcome": "return 0"
+ },
+ {
+  "method": "rfON",
+  "args": [],
+  "profile": "csr_ok",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "raise Exception: Unit not in host control mode!"
+ },
+ {
+  "method": "rfON",
+  "args": [],
+  "profile": "data",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())",
+   "(2, '0:0', '1:1', ())"
+  ],
+  "outcome": "raise FrameLimitReached: more than 200 frames"
+ },
+ {
+  "method": "rfON",
+  "args": [],
+  "profile": "csr12_all",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setActiveControlMode",
+  "args": [
+   0
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise Exception: Invalid control mode number entered! (Must be 2,4,8,16 or 32)"
+ },
+ {
+  "method": "setActiveControlMode",
+  "args": [
+   0
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise Exception: Invalid control mode number entered! (Must be 2,4,8,16 or 32)"
+ },
+ {
+  "method": "setActiveControlMode",
+  "args": [
+   0
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise Exception: Invalid control mode number entered! (Must be 2,4,8,16 or 32)"
+ },
+ {
+  "method": "setActiveControlMode",
+  "args": [
+   0
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise Exception: Invalid control mode number entered! (Must be 2,4,8,16 or 32)"
+ },
+ {
+  "method": "setActiveControlMode",
+  "args": [
+   1
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise Exception: Invalid control mode number entered! (Must be 2,4,8,16 or 32)"
+ },
+ {
+  "method": "setActiveControlMode",
+  "args": [
+   1
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise Exception: Invalid control mode number entered! (Must be 2,4,8,16 or 32)"
+ },
+ {
+  "method": "setActiveControlMode",
+  "args": [
+   1
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise Exception: Invalid control mode number entered! (Must be 2,4,8,16 or 32)"
+ },
+ {
+  "method": "setActiveControlMode",
+  "args": [
+   1
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise Exception: Invalid control mode number entered! (Must be 2,4,8,16 or 32)"
+ },
+ {
+  "method": "setActiveControlMode",
+  "args": [
+   13560
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise Exception: Invalid control mode number entered! (Must be 2,4,8,16 or 32)"
+ },
+ {
+  "method": "setActiveControlMode",
+  "args": [
+   13560
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise Exception: Invalid control mode number entered! (Must be 2,4,8,16 or 32)"
+ },
+ {
+  "method": "setActiveControlMode",
+  "args": [
+   13560
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise Exception: Invalid control mode number entered! (Must be 2,4,8,16 or 32)"
+ },
+ {
+  "method": "setActiveControlMode",
+  "args": [
+   13560
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise Exception: Invalid control mode number entered! (Must be 2,4,8,16 or 32)"
+ },
+ {
+  "method": "setActiveControlMode",
+  "args": [
+   2
+  ],
+  "profile": "bench",
+  "frames": [
+   "(14, '1:1', '1:1', (2,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setActiveControlMode",
+  "args": [
+   2
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(14, '1:1', '1:1', (2,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setActiveControlMode",
+  "args": [
+   2
+  ],
+  "profile": "data",
+  "frames": [
+   "(14, '1:1', '1:1', (2,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setActiveControlMode",
+  "args": [
+   2
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(14, '1:1', '1:1', (2,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setActiveControlMode",
+  "args": [
+   3
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise Exception: Invalid control mode number entered! (Must be 2,4,8,16 or 32)"
+ },
+ {
+  "method": "setActiveControlMode",
+  "args": [
+   3
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise Exception: Invalid control mode number entered! (Must be 2,4,8,16 or 32)"
+ },
+ {
+  "method": "setActiveControlMode",
+  "args": [
+   3
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise Exception: Invalid control mode number entered! (Must be 2,4,8,16 or 32)"
+ },
+ {
+  "method": "setActiveControlMode",
+  "args": [
+   3
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise Exception: Invalid control mode number entered! (Must be 2,4,8,16 or 32)"
+ },
+ {
+  "method": "setActiveControlMode",
+  "args": [
+   6
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise Exception: Invalid control mode number entered! (Must be 2,4,8,16 or 32)"
+ },
+ {
+  "method": "setActiveControlMode",
+  "args": [
+   6
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise Exception: Invalid control mode number entered! (Must be 2,4,8,16 or 32)"
+ },
+ {
+  "method": "setActiveControlMode",
+  "args": [
+   6
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise Exception: Invalid control mode number entered! (Must be 2,4,8,16 or 32)"
+ },
+ {
+  "method": "setActiveControlMode",
+  "args": [
+   6
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise Exception: Invalid control mode number entered! (Must be 2,4,8,16 or 32)"
+ },
+ {
+  "method": "setFixedFrequency",
+  "args": [
+   0
+  ],
+  "profile": "bench",
+  "frames": [
+   "(161, '1:1', '1:4', (3,))",
+   "(161, '1:1', '1:4', (2,))",
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Cannot change frequency mode while recipe is active!"
+ },
+ {
+  "method": "setFixedFrequency",
+  "args": [
+   0
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(161, '1:1', '1:4', (3,))",
+   "(161, '1:1', '1:4', (2,))",
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise IndexError: list index out of range"
+ },
+ {
+  "method": "setFixedFrequency",
+  "args": [
+   0
+  ],
+  "profile": "data",
+  "frames": [
+   "(161, '1:1', '1:4', (3,))",
+   "(161, '1:1', '1:4', (2,))",
+   "(162, '0:0', '4:1', ())",
+   "(61, '1:4', '1:1', (0,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setFixedFrequency",
+  "args": [
+   0
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(161, '1:1', '1:4', (3,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setFixedFrequency",
+  "args": [
+   1
+  ],
+  "profile": "bench",
+  "frames": [
+   "(161, '1:1', '1:4', (3,))",
+   "(161, '1:1', '1:4', (2,))",
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Cannot change frequency mode while recipe is active!"
+ },
+ {
+  "method": "setFixedFrequency",
+  "args": [
+   1
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(161, '1:1', '1:4', (3,))",
+   "(161, '1:1', '1:4', (2,))",
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise IndexError: list index out of range"
+ },
+ {
+  "method": "setFixedFrequency",
+  "args": [
+   1
+  ],
+  "profile": "data",
+  "frames": [
+   "(161, '1:1', '1:4', (3,))",
+   "(161, '1:1', '1:4', (2,))",
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Invalid frequency"
+ },
+ {
+  "method": "setFixedFrequency",
+  "args": [
+   1
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(161, '1:1', '1:4', (3,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setFixedFrequency",
+  "args": [
+   13560
+  ],
+  "profile": "bench",
+  "frames": [
+   "(161, '1:1', '1:4', (3,))",
+   "(161, '1:1', '1:4', (2,))",
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Cannot change frequency mode while recipe is active!"
+ },
+ {
+  "method": "setFixedFrequency",
+  "args": [
+   13560
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(161, '1:1', '1:4', (3,))",
+   "(161, '1:1', '1:4', (2,))",
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise IndexError: list index out of range"
+ },
+ {
+  "method": "setFixedFrequency",
+  "args": [
+   13560
+  ],
+  "profile": "data",
+  "frames": [
+   "(161, '1:1', '1:4', (3,))",
+   "(161, '1:1', '1:4', (2,))",
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Invalid frequency"
+ },
+ {
+  "method": "setFixedFrequency",
+  "args": [
+   13560
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(161, '1:1', '1:4', (3,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setFixedFrequency",
+  "args": [
+   3
+  ],
+  "profile": "bench",
+  "frames": [
+   "(161, '1:1', '1:4', (3,))",
+   "(161, '1:1', '1:4', (2,))",
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Cannot change frequency mode while recipe is active!"
+ },
+ {
+  "method": "setFixedFrequency",
+  "args": [
+   3
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(161, '1:1', '1:4', (3,))",
+   "(161, '1:1', '1:4', (2,))",
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise IndexError: list index out of range"
+ },
+ {
+  "method": "setFixedFrequency",
+  "args": [
+   3
+  ],
+  "profile": "data",
+  "frames": [
+   "(161, '1:1', '1:4', (3,))",
+   "(161, '1:1', '1:4', (2,))",
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Invalid frequency"
+ },
+ {
+  "method": "setFixedFrequency",
+  "args": [
+   3
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(161, '1:1', '1:4', (3,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setFixedFrequency",
+  "args": [
+   6
+  ],
+  "profile": "bench",
+  "frames": [
+   "(161, '1:1', '1:4', (3,))",
+   "(161, '1:1', '1:4', (2,))",
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Cannot change frequency mode while recipe is active!"
+ },
+ {
+  "method": "setFixedFrequency",
+  "args": [
+   6
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(161, '1:1', '1:4', (3,))",
+   "(161, '1:1', '1:4', (2,))",
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise IndexError: list index out of range"
+ },
+ {
+  "method": "setFixedFrequency",
+  "args": [
+   6
+  ],
+  "profile": "data",
+  "frames": [
+   "(161, '1:1', '1:4', (3,))",
+   "(161, '1:1', '1:4', (2,))",
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Invalid frequency"
+ },
+ {
+  "method": "setFixedFrequency",
+  "args": [
+   6
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(161, '1:1', '1:4', (3,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setFrequencyMode",
+  "args": [
+   0
+  ],
+  "profile": "bench",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Cannot change frequency mode while recipe is active!"
+ },
+ {
+  "method": "setFrequencyMode",
+  "args": [
+   0
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise IndexError: list index out of range"
+ },
+ {
+  "method": "setFrequencyMode",
+  "args": [
+   0
+  ],
+  "profile": "data",
+  "frames": [
+   "(162, '0:0', '4:1', ())",
+   "(48, '1:1', '1:1', (0,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setFrequencyMode",
+  "args": [
+   0
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setFrequencyMode",
+  "args": [
+   1
+  ],
+  "profile": "bench",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Cannot change frequency mode while recipe is active!"
+ },
+ {
+  "method": "setFrequencyMode",
+  "args": [
+   1
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise IndexError: list index out of range"
+ },
+ {
+  "method": "setFrequencyMode",
+  "args": [
+   1
+  ],
+  "profile": "data",
+  "frames": [
+   "(162, '0:0', '4:1', ())",
+   "(221, '0:0', '32:1', ())",
+   "(48, '1:1', '1:1', (1,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setFrequencyMode",
+  "args": [
+   1
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setFrequencyMode",
+  "args": [
+   13560
+  ],
+  "profile": "bench",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Cannot change frequency mode while recipe is active!"
+ },
+ {
+  "method": "setFrequencyMode",
+  "args": [
+   13560
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise IndexError: list index out of range"
+ },
+ {
+  "method": "setFrequencyMode",
+  "args": [
+   13560
+  ],
+  "profile": "data",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Invalid Mode; must be 0 or 1"
+ },
+ {
+  "method": "setFrequencyMode",
+  "args": [
+   13560
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setFrequencyMode",
+  "args": [
+   3
+  ],
+  "profile": "bench",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Cannot change frequency mode while recipe is active!"
+ },
+ {
+  "method": "setFrequencyMode",
+  "args": [
+   3
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise IndexError: list index out of range"
+ },
+ {
+  "method": "setFrequencyMode",
+  "args": [
+   3
+  ],
+  "profile": "data",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Invalid Mode; must be 0 or 1"
+ },
+ {
+  "method": "setFrequencyMode",
+  "args": [
+   3
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setFrequencyMode",
+  "args": [
+   6
+  ],
+  "profile": "bench",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Cannot change frequency mode while recipe is active!"
+ },
+ {
+  "method": "setFrequencyMode",
+  "args": [
+   6
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise IndexError: list index out of range"
+ },
+ {
+  "method": "setFrequencyMode",
+  "args": [
+   6
+  ],
+  "profile": "data",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Invalid Mode; must be 0 or 1"
+ },
+ {
+  "method": "setFrequencyMode",
+  "args": [
+   6
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setPowerSetpoint",
+  "args": [
+   0
+  ],
+  "profile": "bench",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))",
+   "(155, '1:1', '1:2', (0,))",
+   "(154, '1:1', '1:2', (0,))",
+   "(129, '1:1', '6:1', (0,))",
+   "(169, '0:0', '1:2', ())",
+   "(8, '1:2', '1:1', (0,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPowerSetpoint",
+  "args": [
+   0
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "raise Exception: Unit not in host control mode!"
+ },
+ {
+  "method": "setPowerSetpoint",
+  "args": [
+   0
+  ],
+  "profile": "data",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))",
+   "(155, '1:1', '1:2', (0,))",
+   "(154, '1:1', '1:2', (0,))",
+   "(129, '1:1', '6:1', (0,))"
+  ],
+  "outcome": "raise ValueError: invalid literal for int() with base 10: '\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02'"
+ },
+ {
+  "method": "setPowerSetpoint",
+  "args": [
+   0
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setPowerSetpoint",
+  "args": [
+   1
+  ],
+  "profile": "bench",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))",
+   "(155, '1:1', '1:2', (0,))",
+   "(154, '1:1', '1:2', (0,))",
+   "(129, '1:1', '6:1', (0,))",
+   "(169, '0:0', '1:2', ())",
+   "(8, '1:2', '1:1', (1,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPowerSetpoint",
+  "args": [
+   1
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "raise Exception: Unit not in host control mode!"
+ },
+ {
+  "method": "setPowerSetpoint",
+  "args": [
+   1
+  ],
+  "profile": "data",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))",
+   "(155, '1:1', '1:2', (0,))",
+   "(154, '1:1', '1:2', (0,))",
+   "(129, '1:1', '6:1', (0,))"
+  ],
+  "outcome": "raise ValueError: invalid literal for int() with base 10: '\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02'"
+ },
+ {
+  "method": "setPowerSetpoint",
+  "args": [
+   1
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setPowerSetpoint",
+  "args": [
+   13560
+  ],
+  "profile": "bench",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))",
+   "(155, '1:1', '1:2', (0,))",
+   "(154, '1:1', '1:2', (0,))",
+   "(129, '1:1', '6:1', (0,))",
+   "(169, '0:0', '1:2', ())",
+   "(8, '1:2', '1:1', (13560,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPowerSetpoint",
+  "args": [
+   13560
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "raise Exception: Unit not in host control mode!"
+ },
+ {
+  "method": "setPowerSetpoint",
+  "args": [
+   13560
+  ],
+  "profile": "data",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))",
+   "(155, '1:1', '1:2', (0,))",
+   "(154, '1:1', '1:2', (0,))",
+   "(129, '1:1', '6:1', (0,))"
+  ],
+  "outcome": "raise ValueError: invalid literal for int() with base 10: '\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02'"
+ },
+ {
+  "method": "setPowerSetpoint",
+  "args": [
+   13560
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setPowerSetpoint",
+  "args": [
+   3
+  ],
+  "profile": "bench",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))",
+   "(155, '1:1', '1:2', (0,))",
+   "(154, '1:1', '1:2', (0,))",
+   "(129, '1:1', '6:1', (0,))",
+   "(169, '0:0', '1:2', ())",
+   "(8, '1:2', '1:1', (3,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPowerSetpoint",
+  "args": [
+   3
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "raise Exception: Unit not in host control mode!"
+ },
+ {
+  "method": "setPowerSetpoint",
+  "args": [
+   3
+  ],
+  "profile": "data",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))",
+   "(155, '1:1', '1:2', (0,))",
+   "(154, '1:1', '1:2', (0,))",
+   "(129, '1:1', '6:1', (0,))"
+  ],
+  "outcome": "raise ValueError: invalid literal for int() with base 10: '\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02'"
+ },
+ {
+  "method": "setPowerSetpoint",
+  "args": [
+   3
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setPowerSetpoint",
+  "args": [
+   6
+  ],
+  "profile": "bench",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))",
+   "(155, '1:1', '1:2', (0,))",
+   "(154, '1:1', '1:2', (0,))",
+   "(129, '1:1', '6:1', (0,))",
+   "(169, '0:0', '1:2', ())",
+   "(8, '1:2', '1:1', (6,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPowerSetpoint",
+  "args": [
+   6
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "raise Exception: Unit not in host control mode!"
+ },
+ {
+  "method": "setPowerSetpoint",
+  "args": [
+   6
+  ],
+  "profile": "data",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))",
+   "(155, '1:1', '1:2', (0,))",
+   "(154, '1:1', '1:2', (0,))",
+   "(129, '1:1', '6:1', (0,))"
+  ],
+  "outcome": "raise ValueError: invalid literal for int() with base 10: '\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02\\x02'"
+ },
+ {
+  "method": "setPowerSetpoint",
+  "args": [
+   6
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   0,
+   0
+  ],
+  "profile": "bench",
+  "frames": [
+   "(172, '1:2', '1:4', (8,))"
+  ],
+  "outcome": "raise Exception: Cannot change pulsing settings while pulsing is disabled (see cmd26 subcmd8)!"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   0,
+   0
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(172, '1:2', '1:4', (8,))"
+  ],
+  "outcome": "raise Exception: Cannot change pulsing settings while pulsing is disabled (see cmd26 subcmd8)!"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   0,
+   0
+  ],
+  "profile": "data",
+  "frames": [
+   "(172, '1:2', '1:4', (8,))"
+  ],
+  "outcome": "raise Exception: Cannot change pulsing settings while pulsing is disabled (see cmd26 subcmd8)!"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   0,
+   0
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(172, '1:2', '1:4', (8,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   0,
+   0,
+   0
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise Exception: Invalid option number, must be 1 or blank"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   0,
+   0,
+   0
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise Exception: Invalid option number, must be 1 or blank"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   0,
+   0,
+   0
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise Exception: Invalid option number, must be 1 or blank"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   0,
+   0,
+   0
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise Exception: Invalid option number, must be 1 or blank"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   1,
+   1
+  ],
+  "profile": "bench",
+  "frames": [
+   "(172, '1:2', '1:4', (8,))"
+  ],
+  "outcome": "raise Exception: Cannot change pulsing settings while pulsing is disabled (see cmd26 subcmd8)!"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   1,
+   1
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(172, '1:2', '1:4', (8,))"
+  ],
+  "outcome": "raise Exception: Cannot change pulsing settings while pulsing is disabled (see cmd26 subcmd8)!"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   1,
+   1
+  ],
+  "profile": "data",
+  "frames": [
+   "(172, '1:2', '1:4', (8,))"
+  ],
+  "outcome": "raise Exception: Cannot change pulsing settings while pulsing is disabled (see cmd26 subcmd8)!"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   1,
+   1
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(172, '1:2', '1:4', (8,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   1,
+   1,
+   1
+  ],
+  "profile": "bench",
+  "frames": [
+   "(26, '1:1,1:2', '1:1', (1, 1, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   1,
+   1,
+   1
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(26, '1:1,1:2', '1:1', (1, 1, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   1,
+   1,
+   1
+  ],
+  "profile": "data",
+  "frames": [
+   "(26, '1:1,1:2', '1:1', (1, 1, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   1,
+   1,
+   1
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(26, '1:1,1:2', '1:1', (1, 1, 0))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   13560,
+   13560
+  ],
+  "profile": "bench",
+  "frames": [
+   "(172, '1:2', '1:4', (8,))"
+  ],
+  "outcome": "raise Exception: Cannot change pulsing settings while pulsing is disabled (see cmd26 subcmd8)!"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   13560,
+   13560
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(172, '1:2', '1:4', (8,))"
+  ],
+  "outcome": "raise Exception: Cannot change pulsing settings while pulsing is disabled (see cmd26 subcmd8)!"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   13560,
+   13560
+  ],
+  "profile": "data",
+  "frames": [
+   "(172, '1:2', '1:4', (8,))"
+  ],
+  "outcome": "raise Exception: Cannot change pulsing settings while pulsing is disabled (see cmd26 subcmd8)!"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   13560,
+   13560
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(172, '1:2', '1:4', (8,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   13560,
+   13560,
+   13560
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise Exception: Invalid option number, must be 1 or blank"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   13560,
+   13560,
+   13560
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise Exception: Invalid option number, must be 1 or blank"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   13560,
+   13560,
+   13560
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise Exception: Invalid option number, must be 1 or blank"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   13560,
+   13560,
+   13560
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise Exception: Invalid option number, must be 1 or blank"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   3,
+   3
+  ],
+  "profile": "bench",
+  "frames": [
+   "(172, '1:2', '1:4', (8,))"
+  ],
+  "outcome": "raise Exception: Cannot change pulsing settings while pulsing is disabled (see cmd26 subcmd8)!"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   3,
+   3
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(172, '1:2', '1:4', (8,))"
+  ],
+  "outcome": "raise Exception: Cannot change pulsing settings while pulsing is disabled (see cmd26 subcmd8)!"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   3,
+   3
+  ],
+  "profile": "data",
+  "frames": [
+   "(172, '1:2', '1:4', (8,))"
+  ],
+  "outcome": "raise Exception: Cannot change pulsing settings while pulsing is disabled (see cmd26 subcmd8)!"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   3,
+   3
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(172, '1:2', '1:4', (8,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   3,
+   3,
+   3
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise Exception: Invalid option number, must be 1 or blank"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   3,
+   3,
+   3
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise Exception: Invalid option number, must be 1 or blank"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   3,
+   3,
+   3
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise Exception: Invalid option number, must be 1 or blank"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   3,
+   3,
+   3
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise Exception: Invalid option number, must be 1 or blank"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   6,
+   6
+  ],
+  "profile": "bench",
+  "frames": [
+   "(172, '1:2', '1:4', (8,))"
+  ],
+  "outcome": "raise Exception: Cannot change pulsing settings while pulsing is disabled (see cmd26 subcmd8)!"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   6,
+   6
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(172, '1:2', '1:4', (8,))"
+  ],
+  "outcome": "raise Exception: Cannot change pulsing settings while pulsing is disabled (see cmd26 subcmd8)!"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   6,
+   6
+  ],
+  "profile": "data",
+  "frames": [
+   "(172, '1:2', '1:4', (8,))"
+  ],
+  "outcome": "raise Exception: Cannot change pulsing settings while pulsing is disabled (see cmd26 subcmd8)!"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   6,
+   6
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(172, '1:2', '1:4', (8,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   6,
+   6,
+   6
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise Exception: Invalid option number, must be 1 or blank"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   6,
+   6,
+   6
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise Exception: Invalid option number, must be 1 or blank"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   6,
+   6,
+   6
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise Exception: Invalid option number, must be 1 or blank"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   6,
+   6,
+   6
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise Exception: Invalid option number, must be 1 or blank"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   8,
+   0
+  ],
+  "profile": "bench",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Cannot execute command 8 with RF on!"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   8,
+   0
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise IndexError: list index out of range"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   8,
+   0
+  ],
+  "profile": "data",
+  "frames": [
+   "(162, '0:0', '4:1', ())",
+   "(221, '0:0', '32:1', ())",
+   "(26, '1:2,1:2,1:2', '1:1', (8, 0, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   8,
+   0
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   8,
+   1
+  ],
+  "profile": "bench",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Cannot execute command 8 with RF on!"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   8,
+   1
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise IndexError: list index out of range"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   8,
+   1
+  ],
+  "profile": "data",
+  "frames": [
+   "(162, '0:0', '4:1', ())",
+   "(221, '0:0', '32:1', ())",
+   "(26, '1:2,1:2,1:2', '1:1', (8, 1, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulsingConfiguration",
+  "args": [
+   8,
+   1
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setPulsingDutyCycle",
+  "args": [
+   0
+  ],
+  "profile": "bench",
+  "frames": [
+   "(96, '1:2', '1:1', (0,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulsingDutyCycle",
+  "args": [
+   0
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(96, '1:2', '1:1', (0,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulsingDutyCycle",
+  "args": [
+   0
+  ],
+  "profile": "data",
+  "frames": [
+   "(96, '1:2', '1:1', (0,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulsingDutyCycle",
+  "args": [
+   0
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(96, '1:2', '1:1', (0,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setPulsingDutyCycle",
+  "args": [
+   1
+  ],
+  "profile": "bench",
+  "frames": [
+   "(96, '1:2', '1:1', (1,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulsingDutyCycle",
+  "args": [
+   1
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(96, '1:2', '1:1', (1,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulsingDutyCycle",
+  "args": [
+   1
+  ],
+  "profile": "data",
+  "frames": [
+   "(96, '1:2', '1:1', (1,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulsingDutyCycle",
+  "args": [
+   1
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(96, '1:2', '1:1', (1,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setPulsingDutyCycle",
+  "args": [
+   13560
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Duty Cycle Chosen: 0 - 99"
+ },
+ {
+  "method": "setPulsingDutyCycle",
+  "args": [
+   13560
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Duty Cycle Chosen: 0 - 99"
+ },
+ {
+  "method": "setPulsingDutyCycle",
+  "args": [
+   13560
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Duty Cycle Chosen: 0 - 99"
+ },
+ {
+  "method": "setPulsingDutyCycle",
+  "args": [
+   13560
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Duty Cycle Chosen: 0 - 99"
+ },
+ {
+  "method": "setPulsingDutyCycle",
+  "args": [
+   3
+  ],
+  "profile": "bench",
+  "frames": [
+   "(96, '1:2', '1:1', (3,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulsingDutyCycle",
+  "args": [
+   3
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(96, '1:2', '1:1', (3,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulsingDutyCycle",
+  "args": [
+   3
+  ],
+  "profile": "data",
+  "frames": [
+   "(96, '1:2', '1:1', (3,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulsingDutyCycle",
+  "args": [
+   3
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(96, '1:2', '1:1', (3,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setPulsingDutyCycle",
+  "args": [
+   6
+  ],
+  "profile": "bench",
+  "frames": [
+   "(96, '1:2', '1:1', (6,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulsingDutyCycle",
+  "args": [
+   6
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(96, '1:2', '1:1', (6,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulsingDutyCycle",
+  "args": [
+   6
+  ],
+  "profile": "data",
+  "frames": [
+   "(96, '1:2', '1:1', (6,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulsingDutyCycle",
+  "args": [
+   6
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(96, '1:2', '1:1', (6,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setPulsingFrequency",
+  "args": [
+   0
+  ],
+  "profile": "bench",
+  "frames": [
+   "(93, '1:4', '1:1', (0,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulsingFrequency",
+  "args": [
+   0
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(93, '1:4', '1:1', (0,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulsingFrequency",
+  "args": [
+   0
+  ],
+  "profile": "data",
+  "frames": [
+   "(93, '1:4', '1:1', (0,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulsingFrequency",
+  "args": [
+   0
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(93, '1:4', '1:1', (0,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setPulsingFrequency",
+  "args": [
+   1
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Frequency Chosen: 2 - 100,000"
+ },
+ {
+  "method": "setPulsingFrequency",
+  "args": [
+   1
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Frequency Chosen: 2 - 100,000"
+ },
+ {
+  "method": "setPulsingFrequency",
+  "args": [
+   1
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Frequency Chosen: 2 - 100,000"
+ },
+ {
+  "method": "setPulsingFrequency",
+  "args": [
+   1
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise Exception: Invalid Frequency Chosen: 2 - 100,000"
+ },
+ {
+  "method": "setPulsingFrequency",
+  "args": [
+   13560
+  ],
+  "profile": "bench",
+  "frames": [
+   "(93, '1:4', '1:1', (13560,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulsingFrequency",
+  "args": [
+   13560
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(93, '1:4', '1:1', (13560,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulsingFrequency",
+  "args": [
+   13560
+  ],
+  "profile": "data",
+  "frames": [
+   "(93, '1:4', '1:1', (13560,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulsingFrequency",
+  "args": [
+   13560
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(93, '1:4', '1:1', (13560,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setPulsingFrequency",
+  "args": [
+   3
+  ],
+  "profile": "bench",
+  "frames": [
+   "(93, '1:4', '1:1', (3,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulsingFrequency",
+  "args": [
+   3
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(93, '1:4', '1:1', (3,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulsingFrequency",
+  "args": [
+   3
+  ],
+  "profile": "data",
+  "frames": [
+   "(93, '1:4', '1:1', (3,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulsingFrequency",
+  "args": [
+   3
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(93, '1:4', '1:1', (3,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setPulsingFrequency",
+  "args": [
+   6
+  ],
+  "profile": "bench",
+  "frames": [
+   "(93, '1:4', '1:1', (6,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulsingFrequency",
+  "args": [
+   6
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(93, '1:4', '1:1', (6,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulsingFrequency",
+  "args": [
+   6
+  ],
+  "profile": "data",
+  "frames": [
+   "(93, '1:4', '1:1', (6,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setPulsingFrequency",
+  "args": [
+   6
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(93, '1:4', '1:1', (6,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setRegulationMode",
+  "args": [
+   0
+  ],
+  "profile": "bench",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "raise Exception: Invalid regulation mode entered"
+ },
+ {
+  "method": "setRegulationMode",
+  "args": [
+   0
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "raise Exception: Unit not in host control mode!"
+ },
+ {
+  "method": "setRegulationMode",
+  "args": [
+   0
+  ],
+  "profile": "data",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "raise Exception: Invalid regulation mode entered"
+ },
+ {
+  "method": "setRegulationMode",
+  "args": [
+   0
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setRegulationMode",
+  "args": [
+   1
+  ],
+  "profile": "bench",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "raise Exception: Invalid regulation mode entered"
+ },
+ {
+  "method": "setRegulationMode",
+  "args": [
+   1
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "raise Exception: Unit not in host control mode!"
+ },
+ {
+  "method": "setRegulationMode",
+  "args": [
+   1
+  ],
+  "profile": "data",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "raise Exception: Invalid regulation mode entered"
+ },
+ {
+  "method": "setRegulationMode",
+  "args": [
+   1
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setRegulationMode",
+  "args": [
+   13560
+  ],
+  "profile": "bench",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "raise Exception: Invalid regulation mode entered"
+ },
+ {
+  "method": "setRegulationMode",
+  "args": [
+   13560
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "raise Exception: Unit not in host control mode!"
+ },
+ {
+  "method": "setRegulationMode",
+  "args": [
+   13560
+  ],
+  "profile": "data",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "raise Exception: Invalid regulation mode entered"
+ },
+ {
+  "method": "setRegulationMode",
+  "args": [
+   13560
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setRegulationMode",
+  "args": [
+   3
+  ],
+  "profile": "bench",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "raise Exception: Invalid regulation mode entered"
+ },
+ {
+  "method": "setRegulationMode",
+  "args": [
+   3
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "raise Exception: Unit not in host control mode!"
+ },
+ {
+  "method": "setRegulationMode",
+  "args": [
+   3
+  ],
+  "profile": "data",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "raise Exception: Invalid regulation mode entered"
+ },
+ {
+  "method": "setRegulationMode",
+  "args": [
+   3
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setRegulationMode",
+  "args": [
+   6
+  ],
+  "profile": "bench",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))",
+   "(3, '1:1', '1:1', (6,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setRegulationMode",
+  "args": [
+   6
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "raise Exception: Unit not in host control mode!"
+ },
+ {
+  "method": "setRegulationMode",
+  "args": [
+   6
+  ],
+  "profile": "data",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))",
+   "(3, '1:1', '1:1', (6,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setRegulationMode",
+  "args": [
+   6
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setRegulationMode",
+  "args": [
+   7
+  ],
+  "profile": "bench",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))",
+   "(3, '1:1', '1:1', (7,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setRegulationMode",
+  "args": [
+   7
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "raise Exception: Unit not in host control mode!"
+ },
+ {
+  "method": "setRegulationMode",
+  "args": [
+   7
+  ],
+  "profile": "data",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))",
+   "(3, '1:1', '1:1', (7,))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setRegulationMode",
+  "args": [
+   7
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(155, '1:1', '1:2', (0,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setSetpointRampingConfiguration",
+  "args": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "profile": "bench",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Cannot change setpoint ramping parameters while recipe is active!"
+ },
+ {
+  "method": "setSetpointRampingConfiguration",
+  "args": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise IndexError: list index out of range"
+ },
+ {
+  "method": "setSetpointRampingConfiguration",
+  "args": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "profile": "data",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Invalid option number; must be 6, 8, or 3!"
+ },
+ {
+  "method": "setSetpointRampingConfiguration",
+  "args": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setSetpointRampingConfiguration",
+  "args": [
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "profile": "bench",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Cannot change setpoint ramping parameters while recipe is active!"
+ },
+ {
+  "method": "setSetpointRampingConfiguration",
+  "args": [
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise IndexError: list index out of range"
+ },
+ {
+  "method": "setSetpointRampingConfiguration",
+  "args": [
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "profile": "data",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Invalid option number; must be 6, 8, or 3!"
+ },
+ {
+  "method": "setSetpointRampingConfiguration",
+  "args": [
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setSetpointRampingConfiguration",
+  "args": [
+   13560,
+   13560,
+   13560,
+   13560,
+   13560,
+   13560,
+   13560
+  ],
+  "profile": "bench",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Cannot change setpoint ramping parameters while recipe is active!"
+ },
+ {
+  "method": "setSetpointRampingConfiguration",
+  "args": [
+   13560,
+   13560,
+   13560,
+   13560,
+   13560,
+   13560,
+   13560
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise IndexError: list index out of range"
+ },
+ {
+  "method": "setSetpointRampingConfiguration",
+  "args": [
+   13560,
+   13560,
+   13560,
+   13560,
+   13560,
+   13560,
+   13560
+  ],
+  "profile": "data",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Invalid option number; must be 6, 8, or 3!"
+ },
+ {
+  "method": "setSetpointRampingConfiguration",
+  "args": [
+   13560,
+   13560,
+   13560,
+   13560,
+   13560,
+   13560,
+   13560
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setSetpointRampingConfiguration",
+  "args": [
+   3,
+   3,
+   3,
+   3,
+   3,
+   3,
+   3
+  ],
+  "profile": "bench",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Cannot change setpoint ramping parameters while recipe is active!"
+ },
+ {
+  "method": "setSetpointRampingConfiguration",
+  "args": [
+   3,
+   3,
+   3,
+   3,
+   3,
+   3,
+   3
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise IndexError: list index out of range"
+ },
+ {
+  "method": "setSetpointRampingConfiguration",
+  "args": [
+   3,
+   3,
+   3,
+   3,
+   3,
+   3,
+   3
+  ],
+  "profile": "data",
+  "frames": [
+   "(162, '0:0', '4:1', ())",
+   "(31, '1:1,1:2', '1:1', (3, 3))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setSetpointRampingConfiguration",
+  "args": [
+   3,
+   3,
+   3,
+   3,
+   3,
+   3,
+   3
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setSetpointRampingConfiguration",
+  "args": [
+   6,
+   6,
+   6,
+   6,
+   6,
+   6,
+   6
+  ],
+  "profile": "bench",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Cannot change setpoint ramping parameters while recipe is active!"
+ },
+ {
+  "method": "setSetpointRampingConfiguration",
+  "args": [
+   6,
+   6,
+   6,
+   6,
+   6,
+   6,
+   6
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise IndexError: list index out of range"
+ },
+ {
+  "method": "setSetpointRampingConfiguration",
+  "args": [
+   6,
+   6,
+   6,
+   6,
+   6,
+   6,
+   6
+  ],
+  "profile": "data",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Invalid ramp mode number!"
+ },
+ {
+  "method": "setSetpointRampingConfiguration",
+  "args": [
+   6,
+   6,
+   6,
+   6,
+   6,
+   6,
+   6
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise Exception: Subcommand does not exist"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise Exception: Subcommand does not exist"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise Exception: Subcommand does not exist"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise Exception: Subcommand does not exist"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   0
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise Exception: Subcommand does not exist"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   0
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise Exception: Subcommand does not exist"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   0
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise Exception: Subcommand does not exist"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   0
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise Exception: Subcommand does not exist"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   1,
+   1,
+   1,
+   1
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise Exception: Invalid frequency step size!"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   1,
+   1,
+   1,
+   1
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise Exception: Invalid frequency step size!"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   1,
+   1,
+   1,
+   1
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise Exception: Invalid frequency step size!"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   1,
+   1,
+   1,
+   1
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise Exception: Invalid frequency step size!"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   1
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise TypeError: '<' not supported between instances of 'NoneType' and 'int'"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   1
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise TypeError: '<' not supported between instances of 'NoneType' and 'int'"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   1
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise TypeError: '<' not supported between instances of 'NoneType' and 'int'"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   1
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise TypeError: '<' not supported between instances of 'NoneType' and 'int'"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   13560,
+   13560,
+   13560,
+   13560
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise Exception: Subcommand does not exist"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   13560,
+   13560,
+   13560,
+   13560
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise Exception: Subcommand does not exist"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   13560,
+   13560,
+   13560,
+   13560
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise Exception: Subcommand does not exist"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   13560,
+   13560,
+   13560,
+   13560
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise Exception: Subcommand does not exist"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   13560
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise Exception: Subcommand does not exist"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   13560
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise Exception: Subcommand does not exist"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   13560
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise Exception: Subcommand does not exist"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   13560
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise Exception: Subcommand does not exist"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   15,
+   0
+  ],
+  "profile": "bench",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Cannot do this while RF is on!"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   15,
+   0
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise IndexError: list index out of range"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   15,
+   0
+  ],
+  "profile": "data",
+  "frames": [
+   "(162, '0:0', '4:1', ())",
+   "(118, '2:2', '1:1', (15, 0))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   15,
+   0
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(162, '0:0', '4:1', ())"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   3,
+   3,
+   3,
+   3
+  ],
+  "profile": "bench",
+  "frames": [
+   "(118, '2:2', '1:1', (3, 3))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   3,
+   3,
+   3,
+   3
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(118, '2:2', '1:1', (3, 3))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   3,
+   3,
+   3,
+   3
+  ],
+  "profile": "data",
+  "frames": [
+   "(118, '2:2', '1:1', (3, 3))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   3,
+   3,
+   3,
+   3
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(118, '2:2', '1:1', (3, 3))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   3
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise Exception: Invalid gain!"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   3
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise Exception: Invalid gain!"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   3
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise Exception: Invalid gain!"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   3
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise Exception: Invalid gain!"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   6,
+   6,
+   6,
+   6
+  ],
+  "profile": "bench",
+  "frames": [
+   "(248, '1:2', '1:2', (7,))"
+  ],
+  "outcome": "raise Exception: Must be greater than low threshold!"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   6,
+   6,
+   6,
+   6
+  ],
+  "profile": "csr_ok",
+  "frames": [
+   "(248, '1:2', '1:2', (7,))",
+   "(118, '2:2', '1:1', (6, 6))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   6,
+   6,
+   6,
+   6
+  ],
+  "profile": "data",
+  "frames": [
+   "(248, '1:2', '1:2', (7,))",
+   "(118, '2:2', '1:1', (6, 6))"
+  ],
+  "outcome": "return None"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   6,
+   6,
+   6,
+   6
+  ],
+  "profile": "csr12_all",
+  "frames": [
+   "(248, '1:2', '1:2', (7,))"
+  ],
+  "outcome": "raise Exception: Feature Not Available!"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   6
+  ],
+  "profile": "bench",
+  "frames": [],
+  "outcome": "raise TypeError: '>' not supported between instances of 'NoneType' and 'int'"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   6
+  ],
+  "profile": "csr_ok",
+  "frames": [],
+  "outcome": "raise TypeError: '>' not supported between instances of 'NoneType' and 'int'"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   6
+  ],
+  "profile": "data",
+  "frames": [],
+  "outcome": "raise TypeError: '>' not supported between instances of 'NoneType' and 'int'"
+ },
+ {
+  "method": "setUnlockedSubcommand",
+  "args": [
+   6
+  ],
+  "profile": "csr12_all",
+  "frames": [],
+  "outcome": "raise TypeError: '>' not supported between instances of 'NoneType' and 'int'"
+ }
+]

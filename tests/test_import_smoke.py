@@ -23,8 +23,6 @@ SAFE_MODULES = [
     "Paramount_PowerPoint_Builder",
     "AE_Com_Module",
     "AECommandsUniversal",
-    "AECommandsDLPUnits",
-    "AE_Commands_PMNT_HF_1XX",
     "AE_Commands_7434753",
     "AECommands",
     "Lynx",

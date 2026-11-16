@@ -32,6 +32,8 @@ class FakeAEBus:
     frames: list[Frame] = field(default_factory=list)
     responders: dict[int, Responder] = field(default_factory=dict)
     default: Responder = csr_ok
+    limit: int | None = None
+    transports: list["FakeTransport"] = field(default_factory=list)
 
     def reply(self, cmd: int, response: list | Responder) -> None:
         """Script the reply for an AE command number."""
@@ -45,10 +47,19 @@ class FakeAEBus:
         self.frames.clear()
 
     def tcp_factory(self, *args, **kwargs) -> "FakeTransport":
-        return FakeTransport(self, "tcp", None)
+        return self._open("tcp", None)
 
     def serial_factory(self, port=None, *args, **kwargs) -> "FakeTransport":
-        return FakeTransport(self, "serial", port)
+        return self._open("serial", port)
+
+    def _open(self, kind: str, target: object) -> "FakeTransport":
+        transport = FakeTransport(self, kind, target)
+        self.transports.append(transport)
+        return transport
+
+
+class FrameLimitReached(RuntimeError):
+    """Raised when a library keeps polling (e.g. an RF ON retry loop) past FakeAEBus.limit."""
 
 
 class FakeTransport:
@@ -62,6 +73,8 @@ class FakeTransport:
         self.target = address
 
     def create_buffer_cmd(self, cmd, send_sizes, recv_sizes, *args, **kwargs) -> list:
+        if self.bus.limit is not None and len(self.bus.frames) >= self.bus.limit:
+            raise FrameLimitReached(f"more than {self.bus.limit} frames")
         frame = Frame(self.kind, self.target, cmd, send_sizes, recv_sizes, tuple(args))
         self.bus.frames.append(frame)
         return list(self.bus.responders.get(cmd, self.bus.default)(frame))

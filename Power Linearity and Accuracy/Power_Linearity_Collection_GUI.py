@@ -6,7 +6,7 @@ Date last modified:     August 18, 2022
 Last Modified by:       Christopher McLean
 Revision of Python:     3.9
 Brief Description:      Sweeps frequency at maximum power and records changes in power
-Dependancies:           datetime, time, numpy, csv, os, tkinter, sys, Lynx AE_Commands_PMNT_HF_1XX, AECommands
+Dependancies:           datetime, time, numpy, csv, os, tkinter, sys, Lynx AECommandsUniversal, AECommands
 
 """
 import sys
@@ -26,7 +26,7 @@ import csv
 from tkinter import *
 from tkinter import filedialog, messagebox
 import Lynx
-import AE_Commands_PMNT_HF_1XX
+import AECommandsUniversal
 import AECommands
 
 
@@ -190,7 +190,7 @@ lynx = Lynx.lynx(lynxID)
 lynxSerial = str(lynx.reportSerialNumber())
 
 #Connect to Generator and get information
-Egen = AE_Commands_PMNT_HF_1XX.generator(genID)
+Egen = AECommandsUniversal.generator(genID)
 # unitNum = Egen.reportSerialNumber(1)
 brandedCheck = Egen.reportSerialNumber(1)
 if brandedCheck[0] == 'X': #Checks to see if the first digit of the 315 exists

@@ -17,7 +17,7 @@ import math
 from time import ctime, sleep, time
 import os
 from tkinter import *
-import AE_Commands_PMNT_HF_1XX
+import AECommandsUniversal
 import AECommands
 
 # COMMS SETUP
@@ -340,7 +340,7 @@ lynxSerial = lynx.reportSerialNumber()
 nav = AECommands.navigator(navPort)
 
 # setup paramount
-Egen = AE_Commands_PMNT_HF_1XX.generator(genIP)
+Egen = AECommandsUniversal.generator(genIP)
 # Egen.unlock()
 unitSerial = Egen.reportSerialNumber()
 Egen.rfOFF()

@@ -5,9 +5,8 @@ AE instrument and command libraries used by the collection scripts. To put this 
 | Module | Used by |
 |---|---|
 | `AE_Com_Module.py` | All AE command modules (AEBus serial/TCP transport) |
-| `AE_Commands_PMNT_HF_1XX.py` | Most collection scripts (Paramount HF generator commands) |
-| `AE_Commands_7434753.py` | Pulse Sync (generated from PMNT_HF_1XX; signatures have diverged) |
-| `AECommandsDLPUnits.py` | DLP Rise/Fall collection |
+| `AECommandsUniversal.py` | **The DUT command adapter.** Every collection script that drives the generator uses it. The DLP Rise/Fall collector uses its `DLP_*`, `pulseEnable`, `setPulseMode`, and `setDLPFreq*` methods. |
+| `AE_Commands_7434753.py` | Pulse Sync (generated from the retired PMNT_HF_1XX library; signatures have diverged) |
 | `AECommands.py` | Only the `navigator` class is used (Power Profile, Power Linearity) |
 | `Lynx.py` | Lynx power meter |
 | `SpectrumAnalyzer/` | Spectrum analyzer drivers (Harmonics). There is no common interface yet. |

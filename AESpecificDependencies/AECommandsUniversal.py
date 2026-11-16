@@ -77,6 +77,23 @@ def csrChecker(response):
         elif response[2] == 119:
             raise Exception('Profibus Was Reset!')
 
+
+class CSRError(Exception):
+    """Nonzero CSR from a DLP command (same codes and messages as the retired AECommandsDLPUnits)."""
+    csrCodes={
+        2:'Output is on',
+        4:'Data is out of range',
+        7:'Faults are active',
+        12:'Feature not available',
+        99:'Command not implemented'}
+    def __init__(self, csr):
+        self.csr = csr
+
+    def __str__(self):
+        if self.csr in self.csrCodes.keys(): return self.csrCodes[self.csr]
+        return 'CSR code %s' %(self.csr)
+
+
 def processStatusTranslate(statusBits):
     print('PROCESS STATUS DATA BEGIN')
     x = ['In Tolerance', 'Out of Tolerance']
@@ -3593,6 +3610,66 @@ class generator:
     def tempRateFaultTimerEEPROM(self):  #LOCATION: BYTE 124 OF MB1
         hexbytes = self.readEEPROM(67,0)[125]
         return int(hexbytes, 16)
+
+# -------------------------------------DLP COMMANDS----------------------------------------
+    # Copied wire-for-wire from the retired AECommandsDLPUnits.generator for
+    # DLPDataCollection_GUI.py. Where this class already had a method of the same name
+    # with different frames (RF ON/OFF, setRegulationMode, DLP_setpoint), the DLP version
+    # carries a DLP_ prefix so existing callers are unaffected. None of these add bus
+    # traffic (no control-mode queries) before the command.
+
+    def _dlp_csr_cmd(self, cmd, send_sizes, *args):
+        """Send a command that only returns a 1-byte CSR (AECommandsDLPUnits.csr_cmd)."""
+        buf = self.gen.create_buffer_cmd(cmd, send_sizes, '2:1', *args)  # buf returns [err, bytesreceived, val0, val1 ...]
+        if buf[0] != 0: raise RuntimeError("unexpected")  # ethernet fault, bad ack etc.
+        if len(buf) >= 3 and buf[2] != 0: raise CSRError(buf[2])
+
+    def DLP_RF_OFF(self):
+        self.gen.create_buffer_cmd(1, '0:0', '1:1')  # RF OFF
+
+    def DLP_RF_ON(self):
+        res = self.gen.create_buffer_cmd(2, '0:0', '1:1')  # RF ON!
+        while res[2] != 0:
+            res = self.gen.create_buffer_cmd(2, '0:0', '1:1')
+        return res[2]
+
+    def DLP_setRegulationMode(self, mode):
+        # 1 = Sate 1 | 2 = State 0
+        self.gen.create_buffer_cmd(3, '2:1', '0:0', 1, mode)
+        if mode == 6:
+            print('Forward Mode Set')
+        if mode == 7:
+            print('Delivered Mode Set')
+
+    def setPulseMode(self, mode):
+        # 0 = Disabled, 1 = Pulse Enable, 3 = DLP enable
+        self.gen.create_buffer_cmd(26, '3:2', '0:0', 8, mode, 0)
+        if mode == 3:
+            print('DLP Enabled')
+
+    def pulseEnable(self, onoff):
+        #0 = Off, 1 = ON
+        self.gen.create_buffer_cmd(26, '3:2', '0:0', 7, onoff, 0)
+        if onoff == 1:
+            print('Pulsing On')
+
+    def DLP_setpoint_csr(self, s1_setpoint, s0_setpoint):
+        self._dlp_csr_cmd(8, '1:1,1:4', 2, s1_setpoint)
+        self._dlp_csr_cmd(8, '1:1,1:4', 3, s0_setpoint)
+
+    def setDLPFreq_s1(self, freq):
+        res = self.gen.create_buffer_cmd(61, '1:1, 1:4', '0:0', 1, int(freq))
+
+    def setDLPFreq_s0(self, freq):
+        res = self.gen.create_buffer_cmd(61, '1:1, 1:4', '0:0', 2, int(freq))
+
+    def setDLPfreqMode(self, s1_mode, s0_mode):
+        self._dlp_csr_cmd(48, '1:1, 1:1', 1, s1_mode)
+        self._dlp_csr_cmd(48, '1:1, 1:1', 2, s0_mode)
+
+    def setPulseFreq_DutyCycle(self, pf, dc):
+        self._dlp_csr_cmd(93, '1:4', pf)
+        self._dlp_csr_cmd(96, '1:2', dc)
 
     def close(self):
         self.gen.close()

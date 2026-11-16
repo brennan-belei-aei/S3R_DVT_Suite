@@ -41,7 +41,7 @@ import pyvisa
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import suite_common.bootstrap  # noqa: F401,E402
 from suite_common.bench import bench_default, visa_socket_resource  # noqa: E402
-import AE_Commands_PMNT_HF_1XX  # noqa: E402
+import AECommandsUniversal  # noqa: E402
 
 # =============================================================================
 # TEST IDENTITY AND OUTPUT CONTRACT
@@ -334,7 +334,7 @@ class TransferFunctionInstruments:
             )
 
         print(f"Connecting to DUT at {self.dut_address}...")
-        self.dut = AE_Commands_PMNT_HF_1XX.generator(self.dut_address)
+        self.dut = AECommandsUniversal.generator(self.dut_address)
         print("DUT connected.")
 
     def safe_state(self) -> None:

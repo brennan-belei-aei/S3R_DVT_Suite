@@ -19,7 +19,7 @@ from suite_common.bench import bench_default
 from suite_common.inputs import format_number_list, parse_number_list
 from suite_common.output_folders import create_unique_test_output_folder
 
-import AE_Commands_PMNT_HF_1XX
+import AECommandsUniversal
 
 # ==========================================================
 # UNIFIED LAUNCHER COMPATIBILITY
@@ -585,7 +585,7 @@ def connect_generator():
         raise RuntimeError("DUT generator address is not set. Select a bench profile in the Unified Collection GUI or set PARAMOUNT_GENERATOR_ADDRESS.")
 
     print("\nConnecting to RF generator...")
-    gen = AE_Commands_PMNT_HF_1XX.generator(GEN_IP)
+    gen = AECommandsUniversal.generator(GEN_IP)
 
     gen.rfOFF()
     sleep(0.2)

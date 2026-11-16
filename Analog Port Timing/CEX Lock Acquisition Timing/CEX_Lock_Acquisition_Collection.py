@@ -17,7 +17,7 @@ import pyvisa
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 import suite_common.bootstrap  # noqa: F401
 from suite_common.bench import bench_default,visa_socket_resource
-import AE_Commands_PMNT_HF_1XX
+import AECommandsUniversal
 
 TEST_NAME="CEX Lock Acquisition"
 TEST_ID="CEX_LOCK_ACQUISITION"
@@ -123,7 +123,7 @@ class Instruments:
     print("Wavegen:",item.query("*IDN?").strip());self.wg=item;break
    except Exception as exc:errors.append(f"{address}: {exc}")
   if self.wg is None:raise RuntimeError("Wavegen connection failed. "+" | ".join(errors))
-  self.dut=AE_Commands_PMNT_HF_1XX.generator(self.dut_address);print("DUT connected.")
+  self.dut=AECommandsUniversal.generator(self.dut_address);print("DUT connected.")
  def close(self):
   try:
    if self.wg is not None:

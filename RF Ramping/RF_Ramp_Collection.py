@@ -1,6 +1,6 @@
 """RF ramp verification data collection GUI for the Paramount transparency suite.
 
-Dependencies: pyvisa, numpy, and the local AE_Commands_PMNT_HF_1XX.py library.
+Dependencies: pyvisa, numpy, and the local AECommandsUniversal.py library.
 The script is standalone and also consumes PARAMOUNT_* values from the unified launcher.
 """
 from __future__ import annotations
@@ -15,7 +15,7 @@ APP_TITLE = "RF Ramp Verification - Data Collection"
 APP_DIR = Path(__file__).resolve().parent
 SETTINGS = APP_DIR / "RF_Ramp_Collection_Settings.json"
 TEST_NAME = "RF Ramp Verification"
-GENERATOR_MODULE = "AE_Commands_PMNT_HF_1XX"
+GENERATOR_MODULE = "AECommandsUniversal"
 DEFAULT_POWER_LEVELS = "50, 1000, 2000, 3000"
 DEFAULT_RAMP_TIMES = "200, 500, 1000, 2000, 3000, 5000"
 
@@ -114,7 +114,7 @@ def load_generator_module():
             f"A recursive search of the repository parents and Documents folder also found no match."
         )
     # Add the library directory so its sibling dependencies, including AE_Com_Module,
-    # can be imported by AE_Commands_PMNT_HF_1XX.py.
+    # can be imported by AECommandsUniversal.py.
     library_dir = str(found.parent)
     if library_dir not in sys.path:
         sys.path.insert(0, library_dir)

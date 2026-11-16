@@ -28,7 +28,7 @@ import pyvisa
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import suite_common.bootstrap  # noqa: F401
 from suite_common.bench import bench_default, visa_socket_resource
-import AE_Commands_PMNT_HF_1XX
+import AECommandsUniversal
 
 TEST_NAME = "Interlock Response Timing"
 TEST_ID = "INTERLOCK_RESPONSE_TIMING"
@@ -196,7 +196,7 @@ class Instruments:
         self.wavegen=self._open_with_fallback((self.wavegen_address,self.wavegen_fallback),"waveform generator")
         self.supply=self._open_with_fallback((self.supply_address,self.supply_fallback),"BK Precision 9141")
         configure_interlock_supply(self.supply)
-        self.dut=AE_Commands_PMNT_HF_1XX.generator(self.dut_address);print("DUT connected.")
+        self.dut=AECommandsUniversal.generator(self.dut_address);print("DUT connected.")
 
     def close(self):
         try:
