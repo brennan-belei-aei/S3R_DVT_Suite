@@ -60,9 +60,12 @@ Script paths are stored relative to the repo. If a saved path no longer exists, 
 ## Checks
 
 ```powershell
-.venv\Scripts\python Paramount_Data_Collection_Unified_GUI.py --self-test
+.venv\Scripts\pip install -r requirements-dev.txt   # once: adds pytest and pyflakes
+.venv\Scripts\python -m pytest tests
 .venv\Scripts\python -m pyflakes suite_common *.py
 ```
+
+`tests/` needs no hardware. `tests/fakes/` records AE-bus frames and SCPI traffic so command sequences can be compared before and after a change. If you intentionally change a test definition, regenerate the registry baseline with `.venv\Scripts\python -m tests.tools.dump_registry --write`.
 
 ## Docs
 

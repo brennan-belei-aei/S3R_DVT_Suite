@@ -14,6 +14,12 @@ Unified_Collection_GUI_Settings.json
 Unified_Analysis_GUI_Settings.json
 AE_Transparency_Testing_Suite_Settings.json
 
+# Pre-refactor copies of the per-PC settings above (delete once migration is confirmed)
+_backup_local_settings/
+
+# Test tooling
+.pytest_cache/
+
 # Legacy runtime copies written beside child scripts
 .__unified_runtime_*.py
 .__aebus_runtime_*.py
