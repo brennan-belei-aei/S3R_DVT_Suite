@@ -43,6 +43,7 @@ tools/  archive/  docs/  tests/          standalone utilities, unused legacy cod
 - **Product, firmware, and DUT adapter:** the launcher's firmware list comes from `config/AE_Product_Profiles.json` (schema v2: each product's `firmware` rows name a `dut_adapter` and its `compatibility`). The launcher shows whether the adapter is *Verified*, *Unverified* (asks before launching), or *Unavailable* (blocks), writes `runtime/suite_context.json`, and passes its path in `PARAMOUNT_SUITE_CONTEXT`.
 - **Process managers and provenance:** `suite_apps/collection_process_manager.py` and `analysis_process_manager.py` launch, monitor, and cancel child scripts. When a script ends, they write `run_manifest.json` into each folder it created under the collection folder (a *Run Package*), and `analysis_manifest.json` into each analysis output/package folder. A manifest records product, firmware, adapter, bench profile and instrument addresses, effective `PARAMOUNT_*` settings, suite commit, plugin id/version, script hash, timestamps, status, and input/output file hashes. Runs with no detectable output folder are recorded in `runtime/run_records/`.
 - **Standalone runs:** every collection script can also run on its own. It then reads addresses from the active bench profile.
+- **Instruments:** collection scripts never import pyvisa or AE modules. They open instruments with `suite_instruments.factory.InstrumentFactory`, and a test enforces this. See [suite_instruments/README.md](suite_instruments/README.md).
 - **Address lookup order:** `bench_default()` in `suite_common/bench.py` checks the environment variable first, then the active profile in `runtime/Bench_Profiles.json`, then blank.
 
 ## Configuration
@@ -73,7 +74,7 @@ Script paths are stored relative to the repo. If a saved path no longer exists, 
    from suite_common.bench import bench_default
    ```
    That first line finds the repo root at any folder depth; do not use `parents[N]`.
-2. Get every instrument address with `bench_default("<equipment key>")`. Never hardcode IPs, serials, or COM ports.
+2. Get every instrument address with `bench_default("<equipment key>")`, and open instruments with `InstrumentFactory({role: address}).create(role)` (from `suite_instruments.factory`). Never hardcode IPs, serials, or COM ports, and never import pyvisa or AE modules in a collection script.
 3. Describe the test in a `plugin.json` beside each script (`"kind": "collection"` or `"analysis"`, the same `id` in both). Copy an existing one; the format is defined in [suite_sdk/plugin.schema.json](suite_sdk/plugin.schema.json). Each entry under `tests` needs a unique `key`, a display `name`, the script path in `entry`, an `order`, and, for collection tests, the bench equipment in `requires` and the setup text in `instructions`. Do not edit the GUIs.
 4. Run `.venv\Scripts\python -m pytest tests/test_plugin_registry.py tests/test_plugin_layout.py` to confirm the plugin is valid and its imports resolve.
 
@@ -83,11 +84,16 @@ Tests that exist on disk but are not offered in the GUIs yet (Arc Management, RF
 
 ```powershell
 .venv\Scripts\pip install -r requirements-dev.txt   # once: adds pytest and pyflakes
-.venv\Scripts\python -m pytest tests
-.venv\Scripts\python -m pyflakes suite_common suite_sdk suite_apps Transparency_Test_Suite_Launcher.py
+.venv\Scripts\python -m pytest tests -q -p no:cacheprovider -W ignore::SyntaxWarning
+.venv\Scripts\python -m pyflakes suite_common suite_sdk suite_apps Transparency_Test_Suite_Launcher.py tests
 ```
 
-`tests/` needs no hardware. `tests/fakes/` records AE-bus frames and SCPI traffic so command sequences can be compared before and after a change. If you intentionally change a test definition, regenerate the registry baseline with `.venv\Scripts\python -m tests.tools.dump_registry --write`.
+`tests/` needs no hardware.
+
+- **Golden logs:** `tests/tools/golden_scpi.py` runs each collection script against a simulated bench and compares every VISA write/query and AE-bus frame with a recorded golden log in `tests/fixtures/golden_scpi/`. Any change to a collection script must keep those logs identical. To change the traffic on purpose, record first; see [AGENTS.md](AGENTS.md).
+- **DUT adapter:** `tests/tools/golden_frames.py` does the same for the AE command adapter.
+- **Registry baseline:** if you intentionally change a test definition, regenerate it with `.venv\Scripts\python -m tests.tools.dump_registry --write`.
+- **Temp folder:** if pytest cannot use its default temp folder, add `--basetemp "$env:TEMP\pt"`.
 
 ## Docs
 

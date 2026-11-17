@@ -40,7 +40,7 @@ You are continuing a phased, behavior-preserving refactor of the S3R_DVT_Suite r
 ## Remaining tasks
 
 1. **Phase 7: done.** See the Phase 7 section in docs/MIGRATION_REPORT.md for what was merged and what was deliberately left separate.
-2. **Phase 8 (next):** update `README.md` and docs, add `AGENTS.md`, write the final migration report and bench checklist. Delete `_backup_local_settings/` only after the owner confirms.
+2. **Phase 8: done.** `AGENTS.md`, the updated docs, and the final summary and bench checklist at the end of docs/MIGRATION_REPORT.md. Still pending: deleting `_backup_local_settings/` (only after the owner confirms), the bench checklist, and the merge plan. Next work comes from docs/roadmap/NEXT_STEPS.md.
 3. **Open issues (owner decisions recorded; do not silently fix):**
    - RF Tuning needs `keysight_53220a_fast.py`, which has never been in the repo; it belongs in `suite_instruments/adapters/keysight/`. The owner chose to leave this open for now.
    - The Quasi/Split-CW collectors need `AECommands_forFastDAQ.py`, which is not in the repo. Their connection code already goes through `ae.fastdaq`; copying the module into `suite_instruments/adapters/ae/` makes them runnable. Record goldens for them then.

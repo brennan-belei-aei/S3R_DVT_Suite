@@ -1,6 +1,6 @@
 # Plugin-architecture migration report
 
-Branch: `refactor/plugin-architecture`. Each phase appends its section here. The final report (moves, deletions, diagram discrepancies, bench checklist) is completed in Phase 8.
+Branches: `refactor/plugin-architecture` (Phases 0-5, tag `phase5-complete`) and `refactor/phase6-instruments` (Phases 6-8). Each phase appended its section below. **The final summary and the bench checklist are at the end.**
 
 ## Phase 0: Safety net
 
@@ -599,3 +599,89 @@ Deliberately not merged, because the copies differ in meaning, not just style:
 - `bool_value` (one accepts `valid`), `write_csv` (encodings, empty-row handling, atomic replace), `read_settings` (missing-file handling) and `window_median` (minimum sample count).
 - The RF Ramping and Digital Timing waveform readers (different encodings and command order).
 - The nine `export_powerpoint_package` variants (different tables and slides per analysis).
+
+## Phase 8: documentation
+
+- **`AGENTS.md` (new):** the rules, checks, editing gotchas and known issues for anyone, person or AI agent, changing code. The README and the docs had pointed at an `AGENTS.md`, a `docs/ai/PROJECT_MEMORY.md` and `.github/` instruction files that never existed on any branch. `AGENTS.md` now holds that content; the docs index and `docs/ai/AI_WORKFLOW.md` point to it, and the workflow describes the golden-gated change process.
+- **README:**
+  - instrument rule added to "How it fits together";
+  - "Adding a test" uses `InstrumentFactory`;
+  - "Checks" describes the golden logs and the `--basetemp` workaround;
+  - new "Shared helpers" section.
+- **`suite_common/README.md`:** `output_folders`, `powerpoint`, `reports` and `signals` rows.
+- **`docs/roadmap/NEXT_STEPS.md`:** items the refactor finished are marked Done, and the gaps it surfaced are added (per-bench adapters in collection, missing drivers, vendor adapters, diagram items).
+- **Moved:** `docs/rf_on_off_timing_usage.txt` to `docs/legacy/` (a sample console log).
+
+## Final summary
+
+| Phase | Commit(s) | Result |
+|---|---|---|
+| 0 Safety net | `14fbdf6` | pytest harness, fakes, registry baseline, backups |
+| 1 Hygiene | `f6b22b3` | Dead code and duplicates removed; legacy code archived; tools moved; `logs/` untracked |
+| 1b DUT adapter | `da722de` | `AECommandsUniversal` is the single DUT adapter (golden AE frames); PMNT_HF_1XX and DLPUnits retired |
+| 2 Configuration | `4e8b68c` | `config/` (committed) and `runtime/` (per-PC); JSON files no longer at the repo root; legacy settings adopted automatically |
+| 3 Plugins | `97e312c` | `suite_sdk` registry and `plugin.json` per test; both GUIs build their lists from it |
+| 4 Layout | `474a7e9` | `collection_plugins/`, `analysis_plugins/`, `suite_apps/`, `assets/`; depth-independent repo-root line |
+| 5 Context and provenance | `19abc0a` | Launcher firmware and adapter selection, `runtime/suite_context.json`, process managers, run and analysis manifests |
+| 6 Instruments | `1d65a24` ... `7702478` | `suite_instruments` layer; every collection script opens instruments through `InstrumentFactory`, each proven by golden SCPI/AE-bus logs |
+| 7 Deduplication | `ba66f4e`, `07c9ab7`, `2596009` | Shared name, run-folder, waveform and analysis helpers replace about 60 copies |
+| 8 Docs | this commit | `AGENTS.md`, docs index, roadmap, final report |
+
+Final state:
+- **429 tests pass without hardware,** including 29 golden SCPI/AE-bus scenarios and the AE-frame goldens.
+- pyflakes is clean on the shared packages, apps and tests.
+- The three app self-tests pass.
+- Separate commit: Arc Management's default regulation mode is 6 (`955316d`, owner decision).
+
+### Differences from the block diagram
+
+| Diagram | As built | Why |
+|---|---|---|
+| DUT adapter `AE_Commands_PMNT_HF_1XX.py` | `AECommandsUniversal` (PMNT_HF_1XX retired) | Owner decision (Amendment A) |
+| Vendor adapters for Keysight, Tektronix, Rohde & Schwarz, AE | Keysight driver, AE modules, and a generic SCPI adapter (`visa.scpi`); Tektronix waveform transfer is a shared helper | No R&S instruments in use. Moving SCPI into vendor adapters would change script structure; that is roadmap item 11. |
+| "Keeps SCPI commands out of test scripts" | Scripts keep their SCPI; only connection code (and the waveform transfer) moved | Behavior preservation: every command sequence is proven identical |
+| Factory "applies settings and limits"; "bench profiles select instrument adapters" | Factory checks addresses, adapters and capabilities. Profile `adapters` work with `InstrumentFactory.from_bench()`, but collection scripts build the factory from their GUI addresses. | Roadmap item 9 |
+| Transport "timeouts and retries" | Bounded open retries, timeouts and logging; no automatic resends | Resending SCPI or AE commands can change instrument state |
+| `suite_common` Logging / Safety modules | Instrument logging in `suite_instruments`; no general logging or safety module | Roadmap item 5 |
+| Process manager "cancel" | `ChildProcessManager.cancel()` exists, but there is no GUI button | A kill button on running RF tests is a UX/safety decision for the owner |
+| `Transparency_Test_Results.pptx`, product- and date-stamped | The PowerPoint file name is unchanged | Output naming change left to the owner |
+
+### Open issues
+
+See [AGENTS.md](../AGENTS.md) for the current list:
+- missing `keysight_53220a_fast.py` (RF Tuning) and `AECommands_forFastDAQ.py` (Quasi-CW / Split-CW);
+- the undefined names `is_low_power_fall`, `exc` and `j`;
+- the AECommandsUniversal latent defects;
+- the empty Paramount Plus / Apex firmware lists;
+- the hardcoded unit-serial overrides in Power Accuracy and Linearity.
+
+### Bench checklist (run before merging to `main`)
+
+Run each item once with the Collection GUI on one bench, at 1 cycle or acquisition, and compare the files and console output with a pre-refactor run. Every run folder should also contain `run_manifest.json`.
+
+1. **Launcher:** Paramount with firmware `7433660J00` shows **Verified**, and both GUIs open from it.
+2. **CEX Lock Acquisition:** the scope and waveform generator answer `*IDN?`, the CEX reference toggles, and the lock/unlock checks pass. CH1-CH3 CSVs and `Lock_State_Verification.csv` are written.
+3. **Interlock Response Timing:** the BK 9141 programs 25 V / 0.5 A, the interlock falls, RF drops, and CH1-CH2 CSVs are written. Check the `::SOCKET` fallback message if the supply is only reachable that way.
+4. **RF Enable Timing:** RF ON and OFF edges are captured at each power, and CH1-CH3 CSVs are written.
+5. **Setpoint Transfer Function:** the wavegen opens (with the `::SOCKET` fallback if busy), and the transfer CSV is written.
+6. **Analog Processing Timing:** the operator `RUN` prompt appears, the scope arms (READY) and triggers, and the waveforms and summary are saved.
+7. **CW Rise/Fall:** Rising Edge, then Falling Edge. Sync Out is verified (On, Track RF), the scope triggers, and the CSV is saved.
+8. **SLP:** Both Edges. The pulse readback passes, and the RISE and FALL CSVs are saved.
+9. **DLP:** one rising and one falling transition. DLP mode is set and the waveforms are saved; RF is off and DLP disabled at the end.
+10. **Pulse Sync:** a dry run first (no instrument contact). Then a live run with 1 sample: the master/slave readback is correct, there are 4 channel CSVs per capture, and RF is off and pulsing disabled at the end.
+11. **Arc Management:** regulation mode shows 6. With 1 sample, the Siglent output toggles, the scope triggers, and the CH1-CH4 CSV is saved.
+12. **RF Ramping:** one power, one ramp time, rise and fall. The waveforms and `capture_index.csv` are saved.
+13. **Digital Timing:** `--check`, then `--trial`. RF ON/OFF captures and screenshots are saved.
+14. **DC Operating Point:** 1 frequency, 2 setpoints. The Lynx serial is read and the CSV rows are written.
+15. **Power Accuracy:** 3 frequency points and a short warm-up. The CSV and settings file are written.
+16. **Power Linearity:** the warm-up and the first frequency's power steps run.
+17. **Power Profile:** one frequency's tuner map. The Navigator moves and stabilized rows are written.
+18. **Harmonics:** 2 frequencies x 1 setpoint. The analyzer span and RBW are correct, and the spectrum CSV is written.
+19. **Analyses:** run one analysis per family on the data from steps 2-18. Output folder names keep the `<timestamp> - <name>[ - Run N]` pattern, workbooks open, and the PowerPoint builds from the presentation package.
+20. **Not testable yet:** RF Tuning (needs the counter driver) and Quasi-CW / Split-CW (need `AECommands_forFastDAQ.py`).
+
+### Merge plan
+1. Run the checklist on `refactor/phase6-instruments`.
+2. Merge it into `refactor/plugin-architecture` (a fast-forward), then into `main`.
+3. Tag the result as the first release.
+4. Keep `phase5-complete` as the fallback tag.

@@ -10,8 +10,10 @@ Shared helpers imported by the unified GUIs and every test script. Its only depe
 | `paths` | `discover_script` searches the repo recursively by filename (used for custom analyses and the launcher). `resolve_saved_script` keeps a saved script path if it still exists, otherwise uses the plugin default. `to_portable_path` / `resolve_portable_path` handle repo-relative settings paths. Also `child_creation_flags` and `open_path`. |
 | `process_protocol` | The versioned `PARAMOUNT_*` environment contract (`ENV_VARS`, `PROTOCOL_VERSION`, `SUITE_CONTEXT_ENV`, `RUN_ID_ENV`). Declare every new variable here. |
 | `manifests` | Run/Analysis Package provenance: `build_manifest`, `write_manifest`, `file_hashes`, `describe_input`, `missing_fields`. Written by the process managers in `suite_apps/`. |
-| `output_folders` | `create_unique_test_output_folder(parent, test, generator)` |
+| `output_folders` | `create_unique_test_output_folder(parent, test, generator)` for the standard collection folder; `create_unique_folder(parent, base_name)` for the `" - Run N"` collision rule; `path_component` / `path_component_strict` for Windows-safe names. |
 | `inputs` | `parse_number_list` / `format_number_list` for comma-separated GUI fields |
-| `powerpoint` | PNG snapshot and diff helpers for analysis PowerPoint export |
+| `powerpoint` | `powerpoint_export_requested()`, plus PNG snapshot and diff helpers for analysis PowerPoint export |
+| `reports` | `open_with_default_app(path, on_error=None)` and `size_workbook_columns(writer, max_width)` for analysis outputs |
+| `signals` | `centered_moving_average(values, window)` |
 
 To add bench equipment, add an `EquipmentField` to `EQUIPMENT_FIELDS`. The Collection GUI and the environment hand-off pick it up automatically.
