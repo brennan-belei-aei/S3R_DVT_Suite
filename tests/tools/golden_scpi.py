@@ -34,13 +34,15 @@ WAVEFORM_POINTS = np.array([0.0, 100.0, 200.0, 300.0, 200.0, 100.0, 0.0, -100.0]
 
 
 class Clock:
-    def __init__(self) -> None:
+    def __init__(self, tick: float = 0.0) -> None:
         self.now = 1_000.0
+        self.tick = tick  # advance per reading, for loops that poll the clock without sleeping
 
     def sleep(self, seconds) -> None:
         self.now += max(0.0, float(seconds))
 
     def monotonic(self) -> float:
+        self.now += self.tick
         return self.now
 
     time = perf_counter = monotonic
@@ -179,7 +181,9 @@ class Bench:
         if upper == "MEAS:CURR?":
             return "0.010"
         if upper.endswith("?"):
-            return self.setting(resource, upper[:-1].strip(), "0")
+            value = self.setting(resource, upper[:-1].strip(), "0")
+            unit = re.fullmatch(r"(-?[\d.]+(?:E[-+]?\d+)?)\s*(?:HZ|DB)", value, re.I)  # instruments report bare numbers
+            return unit.group(1) if unit else value
         return "0"
 
     # -- AE bus (frame-level DUT model) ---------------------------------------------------
@@ -225,7 +229,7 @@ class Bench:
             return [0, 0, 0]
         if cmd == 161:  # fixed frequency (Hz): 0/1 current, 2 maximum, 3 minimum
             low, high = self.fixed_frequency_hz
-            return [0, 4, {2: high, 3: low}.get(int(args[0]), 13_560_000)]
+            return [0, 4, {2: high, 3: low}.get(int(args[0]) if args else 0, 13_560_000)]
         if cmd == 154:  # regulation mode: forward power
             return [0, 2, 6]
         if cmd == 169:  # user power limit (W)
@@ -381,6 +385,9 @@ class GuiRun:
     curves: int                                    # waveform transfers a complete run makes
     choices: dict[str, Any] = field(default_factory=dict)
     argv: tuple[str, ...] = ()
+    stdin: str = ""                                # what the operator types at console prompts
+    finished: str = ""                             # stdout text a complete run prints (scripts that sys.exit() on error)
+    open_files: tuple[str, ...] = ()               # file contents for filedialog.askopenfile, in order
 
 
 def run_gui_script(relative: str, gui: GuiRun, bench: Bench, clock: Clock, parent: Path) -> int:
@@ -398,7 +405,7 @@ def run_gui_script(relative: str, gui: GuiRun, bench: Bench, clock: Clock, paren
         importlib.import_module(name)
     from tests.tools import fake_tk
 
-    operator = fake_tk.Operator(gui.entries, gui.choices, gui.start, str(parent), bench.record)
+    operator = fake_tk.Operator(gui.entries, gui.choices, gui.start, str(parent), bench.record, gui.open_files)
     fakes = fake_tk.modules(operator)
     path = REPO_ROOT / relative
     spec = importlib.util.spec_from_file_location("__main__", path)
@@ -408,6 +415,9 @@ def run_gui_script(relative: str, gui: GuiRun, bench: Bench, clock: Clock, paren
     saved_clocks = {name: getattr(real_time, name) for name in clocks}
     saved_env = {k: v for k, v in os.environ.items() if k.startswith("PARAMOUNT_")}
     saved_argv, saved_cwd = sys.argv, os.getcwd()
+    saved_stdin, saved_hook = sys.stdin, sys.excepthook
+    saved_use = matplotlib.use
+    output = io.StringIO()
     root_logger = logging.getLogger()
     saved_handlers, saved_level = list(root_logger.handlers), root_logger.level
     try:
@@ -417,16 +427,23 @@ def run_gui_script(relative: str, gui: GuiRun, bench: Bench, clock: Clock, paren
         sys.modules.update(fakes)
         sys.modules["__main__"] = module
         sys.argv = [str(path), *gui.argv]
+        sys.path.insert(0, str(path.parent))  # as `python script.py` does (sibling helper modules)
+        sys.stdin = io.StringIO(gui.stdin)
+        matplotlib.use = lambda *args, **kwargs: None  # stay on the headless Agg backend (scripts ask for TkAgg)
         os.chdir(parent)  # scripts that write relative paths (logs/) write into the run folder
         for name in clocks:
             setattr(real_time, name, getattr(clock, name))
         try:
-            spec.loader.exec_module(module)
+            with contextlib.redirect_stdout(output):
+                spec.loader.exec_module(module)
         except SystemExit as stop:
             if stop.code not in (None, 0):
                 raise
     finally:
-        sys.argv = saved_argv
+        sys.argv, sys.stdin, sys.excepthook = saved_argv, saved_stdin, saved_hook
+        matplotlib.use = saved_use
+        if str(path.parent) in sys.path:
+            sys.path.remove(str(path.parent))
         os.chdir(saved_cwd)
         for name in clocks:
             setattr(real_time, name, saved_clocks[name])
@@ -446,6 +463,8 @@ def run_gui_script(relative: str, gui: GuiRun, bench: Bench, clock: Clock, paren
     errors = [title for kind, title, _ in operator.messages if kind == "showerror"]
     if errors:
         raise RuntimeError(f"error dialog: {errors[0]}")
+    if gui.finished and gui.finished not in output.getvalue():
+        raise RuntimeError(f"run did not finish (no {gui.finished!r} in its output)")
     curves = sum(1 for entry in bench.log if entry.startswith("('query_binary_values'") and "'CURVE?'" in entry.upper())
     if curves != gui.curves:
         raise RuntimeError(f"{curves} waveform transfers; a complete run makes {gui.curves}")
@@ -583,6 +602,20 @@ ARC_BENCH = {"ae_trigger_model": True, "identities": {SDG: "Siglent Technologies
 COMMAND_PROCESSING_BENCH = {"fixed_frequency_hz": (1_700_000, 2_300_000), "power_limits_w": (10, 5000),
                             "ae_values": {144: 1700, 145: 2300, 146: 1985}}
 
+LYNX = "LYNXGOLDEN"
+NAVIGATOR_PORT = "COM11"
+DC_OPERATING_POINT_GUI = {"DUT IP / hostname": DUT, "Lynx hostname / port": LYNX, "RF frequencies (kHz)": "13560",
+                          "Power sweep setpoints (W)": "50, 100"}
+POWER_ACCURACY_GUI = {"DUT IP / hostname": DUT, "Lynx hostname / port": LYNX, "Number of frequency points": "3",
+                      "Warm-up time (s)": "1"}
+POWER_LINEARITY_GUI = {"Generator hostname / IP address": DUT, "Lynx hostname / IP address": LYNX,
+                       "Number of collection cycles": "1"}
+POWER_PROFILE_GUI = {"DUT IP / hostname": DUT, "Lynx hostname / port": LYNX, "Navigator COM port": NAVIGATOR_PORT}
+# Tuner-loss maps (shunt, series, R, X, efficiency), one per frequency: two 50-ohm-ish loads each.
+POWER_PROFILE_MAPS = ("5000,5100,50,0,0.9\n5200,5300,55,5,0.9\n",) * 3
+HARMONICS_GUI = {"DUT IP / hostname": DUT, "Spectrum analyzer IP / hostname": "192.0.2.12",
+                 "Generator frequencies (Hz)": "13560000, 14238000", "Power setpoints (W)": "50, 100"}
+
 PSYNC_SLAVE = "PSYNCSLAVE"
 PULSED = {"acquisition_model": True, "pulse_model": True}
 
@@ -610,6 +643,7 @@ class Scenario:
     gui: GuiRun | None = None
     bench: dict[str, Any] = field(default_factory=dict)     # Bench model switches
     expect: str = "return 0"                                # golden outcome (error-path scenarios differ)
+    clock_tick: float = 0.0                                 # see Clock.tick
 
 
 SCENARIOS = {s.name: s for s in (
@@ -670,6 +704,21 @@ SCENARIOS = {s.name: s for s in (
              gui=GuiRun({}, None, 0), bench=COMMAND_PROCESSING_BENCH,
              # Bench-specific benchmark: runs until a firmware-feature check the scripted DUT does not model.
              expect="raise Exception: Cannot do this if Tuning algorithm III is not enabled!"),
+    # Lynx/Navigator/spectrum-analyzer collectors, run end to end as __main__.
+    Scenario("dc_operating_point", "collection_plugins/dc_operating_point/DC_Operating_Point_Collection_GUI.py", None,
+             gui=GuiRun(DC_OPERATING_POINT_GUI, "Start Test", 0, stdin="\n", finished="DONE"), clock_tick=0.05),
+    Scenario("power_accuracy", "collection_plugins/power_linearity_accuracy/Power_Accuracy_Collection_GUI.py", None,
+             gui=GuiRun(POWER_ACCURACY_GUI, "Start Test", 0, finished="Test Complete")),
+    Scenario("power_linearity", "collection_plugins/power_linearity_accuracy/Power_Linearity_Collection_GUI.py", None,
+             gui=GuiRun(POWER_LINEARITY_GUI, "Start Test", 0, finished="Test Complete"),
+             bench={"power_limits_w": (50, 3000)}),  # its warm-up commands the reported supply size
+    Scenario("power_profile", "collection_plugins/power_profile/Power_Profile_Collection_GUI.py", None,
+             gui=GuiRun({**POWER_PROFILE_GUI, "Tuner map parent folder": "."}, "Start Test", 0, stdin="\n",
+                        finished="DONE", open_files=POWER_PROFILE_MAPS),
+             bench={"navigator_port": NAVIGATOR_PORT}, clock_tick=0.05),
+    Scenario("harmonics_spurious", "collection_plugins/harmonics_spurious/Harmonics_Spurious_Collection.py", None,
+             gui=GuiRun(HARMONICS_GUI, "Start Test", 0, {"Run Harmonics test": True, "Run Spurious test": True},
+                        finished="Spectrum collection and cycle averaging complete.")),
     Scenario("rf_enable_timing_wavegen_fallback",
              "collection_plugins/analog_port_timing/RF_enable_timing_collection.py", _rf_enable,
              frozenset({WAVEGEN})),
@@ -679,7 +728,7 @@ SCENARIOS = {s.name: s for s in (
 def run_scenario(name: str, parent: Path) -> dict:
     scenario = SCENARIOS[name]
     bench = Bench(refuse=set(scenario.refuse), **{k: (dict(v) if isinstance(v, dict) else v) for k, v in scenario.bench.items()})
-    clock = Clock()
+    clock = Clock(scenario.clock_tick)
     with scripted_bench(bench):
         if scenario.gui is not None:
             try:

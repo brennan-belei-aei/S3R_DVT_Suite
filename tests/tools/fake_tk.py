@@ -23,7 +23,8 @@ def _noop(*args, **kwargs):
 
 class Operator:
     def __init__(self, entries: dict[str, str], choices: dict[str, Any], start: str | None, directory: str,
-                 record: Callable[..., None]):
+                 record: Callable[..., None], open_files: tuple[str, ...] = ()):
+        self.open_files = list(open_files)  # contents returned, in order, by filedialog.askopenfile
         self.entries = dict(entries)
         self.choices = dict(choices)
         self.start = start
@@ -245,13 +246,20 @@ def modules(operator: Operator) -> dict[str, types.ModuleType]:
     Widget.operator = operator
     ttk = _module("tkinter.ttk", Label=Label, Button=Button, Radiobutton=Radiobutton,
                   Checkbutton=Checkbutton, Entry=Widget, Style=Widget)
-    filedialog = _module("tkinter.filedialog", askdirectory=lambda *a, **k: operator.directory,
+    def askopenfile(*args, **kwargs):
+        import io
+        operator.record("askopenfile", str(kwargs.get("title", "")))
+        return io.StringIO(operator.open_files.pop(0))
+
+    filedialog = _module("tkinter.filedialog", askdirectory=lambda *a, **k: operator.directory, askopenfile=askopenfile,
                          askopenfilename=lambda *a, **k: "", asksaveasfilename=lambda *a, **k: "")
     messagebox = _module("tkinter.messagebox", **{
         kind: (lambda kind: lambda *a, **k: operator.message(kind, *a, **k))(kind)
         for kind in ("showerror", "showinfo", "showwarning", "askyesno", "askokcancel", "askyesnocancel")
     })
+    # Named explicitly so `from tkinter import *` (which ignores module __getattr__) finds them.
     tk = _module("tkinter", TclError=TclError, Tk=Tk, Toplevel=Toplevel, Text=Text, Label=Label, Button=Button,
+                 Frame=Widget, Entry=Widget,
                  Radiobutton=Radiobutton, Checkbutton=Checkbutton, Variable=Variable, StringVar=StringVar,
                  BooleanVar=BooleanVar, IntVar=IntVar, DoubleVar=DoubleVar,
                  ttk=ttk, filedialog=filedialog, messagebox=messagebox)
