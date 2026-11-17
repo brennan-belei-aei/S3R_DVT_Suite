@@ -9,6 +9,9 @@ from __future__ import annotations
 import csv, json, math, os, re, threading, traceback
 from datetime import datetime
 from pathlib import Path
+import sys
+sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
+from suite_common.output_folders import create_unique_folder, path_component_strict  # noqa: E402
 from typing import Any, Optional
 import matplotlib
 matplotlib.use("Agg")
@@ -362,16 +365,12 @@ def save_summary_plot(path, summaries):
     fig.tight_layout(); fig.savefig(path, dpi=PLOT_DPI); plt.close(fig)
 
 def safe_name(value, fallback="Dataset"):
-    value=re.sub(r'[<>:"/\\|?*\x00-\x1f]','_',str(value or '').strip())
-    return re.sub(r'\s+',' ',value).strip(' .') or fallback
+    return path_component_strict(value, fallback)
 
 
 def unique_output(parent: Path, label: str) -> Path:
-    stamp=datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-    base=parent/f"{stamp} - Analog Processing Timing Analysis - {safe_name(label)}"
-    out=base; run=1
-    while out.exists(): run+=1; out=parent/f"{base.name} - Run {run}"
-    out.mkdir(parents=False,exist_ok=False); return out
+    stamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    return create_unique_folder(parent, f"{stamp} - Analog Processing Timing Analysis - {safe_name(label)}")
 
 
 def analyze_dataset(folder: Path, output_parent: Path, label: str, smoothing_s: float, progress) -> dict:

@@ -12,11 +12,13 @@ import csv
 import json
 import math
 import os
-import re
 import threading
 import traceback
 from datetime import datetime
 from pathlib import Path
+import sys
+sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
+from suite_common.output_folders import create_unique_folder, path_component_strict  # noqa: E402
 from typing import Any, Optional
 
 import matplotlib
@@ -52,18 +54,12 @@ def bool_value(value: Any) -> bool:
 
 
 def safe_name(value: object, fallback: str = "Dataset") -> str:
-    text = re.sub(r'[<>:"/\\|?*\x00-\x1f]', "_", str(value or "").strip())
-    return re.sub(r"\s+", " ", text).strip(" .") or fallback
+    return path_component_strict(value, fallback)
 
 
 def unique_output(parent: Path, label: str) -> Path:
     stamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    base = parent / f"{stamp} - {ANALYSIS_NAME} Analysis - {safe_name(label)}"
-    candidate = base; run = 1
-    while candidate.exists():
-        run += 1; candidate = parent / f"{base.name} - Run {run}"
-    candidate.mkdir(parents=False, exist_ok=False)
-    return candidate
+    return create_unique_folder(parent, f"{stamp} - {ANALYSIS_NAME} Analysis - {safe_name(label)}")
 
 
 def read_waveform_csv(path: Path) -> tuple[np.ndarray, np.ndarray]:

@@ -29,6 +29,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
+from suite_common.output_folders import create_unique_folder, path_component  # noqa: E402
 import suite_common.bootstrap  # noqa: F401
 from suite_common.bench import bench_default
 
@@ -695,20 +696,12 @@ def _normalise_scope_resource(value: str) -> str:
 
 
 def _safe_component(value: str) -> str:
-    cleaned = re.sub(r'[<>:"/\\|?*]+', "_", str(value)).strip().rstrip(".")
-    return cleaned or "Unknown"
+    return path_component(value, "Unknown")
 
 
 def _create_unique_run_folder(parent: Path) -> Path:
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    base_name = f"{timestamp} - {TEST_FOLDER_NAME} - {_safe_component(MASTER_ADDRESS)}"
-    candidate = parent / base_name
-    run_number = 2
-    while candidate.exists():
-        candidate = parent / f"{base_name} - Run {run_number}"
-        run_number += 1
-    candidate.mkdir(parents=False, exist_ok=False)
-    return candidate
+    return create_unique_folder(parent, f"{timestamp} - {TEST_FOLDER_NAME} - {_safe_component(MASTER_ADDRESS)}")
 
 
 def _write_run_settings(run_directory: Path) -> None:

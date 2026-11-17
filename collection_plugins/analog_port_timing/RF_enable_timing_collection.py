@@ -25,6 +25,7 @@ from typing import Any, Iterable, Optional
 import numpy as np
 
 sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
+from suite_common.output_folders import create_unique_folder, path_component_strict  # noqa: E402
 import suite_common.bootstrap  # noqa: F401
 from suite_common.bench import bench_default, visa_socket_resource
 from suite_instruments.factory import InstrumentFactory
@@ -98,8 +99,7 @@ PRINT_RECORDED_ROWS = True
 
 
 def safe_component(value: object, fallback: str) -> str:
-    text = re.sub(r'[<>:"/\\|?*\x00-\x1f]', "_", str(value or "").strip())
-    return re.sub(r"\s+", " ", text).strip(" .") or fallback
+    return path_component_strict(value, fallback)
 
 
 def parse_power_levels(text: str) -> list[float]:
@@ -474,10 +474,7 @@ def capture_edge(inst: Instruments, ctx: RunContext, power_w: float, rated_power
 
 def create_run_folder(parent: Path, dut_address: str) -> Path:
     stamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    base = parent / f"{stamp} - {TEST_NAME} - {safe_component(dut_address, 'Generator')}"
-    candidate = base; run = 1
-    while candidate.exists(): run += 1; candidate = parent / f"{base.name} - Run {run}"
-    candidate.mkdir(parents=False, exist_ok=False); return candidate
+    return create_unique_folder(parent, f"{stamp} - {TEST_NAME} - {safe_component(dut_address, 'Generator')}")
 
 
 def run_collection(parent: Path, dut_address: str, scope_address: str, wavegen_address: str,

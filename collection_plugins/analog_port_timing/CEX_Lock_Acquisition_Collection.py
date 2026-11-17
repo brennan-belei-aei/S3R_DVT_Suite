@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any,Callable,Iterable,Optional
 import numpy as np
 sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
+from suite_common.output_folders import create_unique_folder, path_component_strict  # noqa: E402
 import suite_common.bootstrap  # noqa: F401
 from suite_common.bench import bench_default,visa_socket_resource
 from suite_instruments.factory import InstrumentFactory
@@ -68,7 +69,7 @@ T2_DEFINITION="Scope CH3 falling 90% level, first 10% of drop toward 0 V"
 
 
 def safe(value,fallback):
- text=re.sub(r'[<>:"/\\|?*\x00-\x1f]',"_",str(value or "").strip());return re.sub(r"\s+"," ",text).strip(" .") or fallback
+ return path_component_strict(value, fallback)
 
 def parse_powers(text):
  values=[float(x) for x in re.split(r"[,;\s]+",text.strip()) if x]
@@ -83,9 +84,8 @@ def validate(rated,powers,count):
   if not 0<power<=rated:raise ValueError(f"Power {power:g} W is outside 0 to {rated:g} W.")
 
 def unique_folder(parent,dut):
- stamp=datetime.now().strftime("%Y-%m-%d_%H-%M-%S");base=parent/f"{stamp} - {TEST_NAME} - {safe(dut,'Generator')}";out=base;run=1
- while out.exists():run+=1;out=parent/f"{base.name} - Run {run}"
- out.mkdir(parents=False,exist_ok=False);return out
+ stamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+ return create_unique_folder(parent, f"{stamp} - {TEST_NAME} - {safe(dut, 'Generator')}")
 
 @dataclass
 class RunContext:

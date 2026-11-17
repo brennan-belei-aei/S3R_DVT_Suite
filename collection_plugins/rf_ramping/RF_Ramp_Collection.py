@@ -14,6 +14,7 @@ from tkinter import filedialog, messagebox, ttk
 APP_TITLE = "RF Ramp Verification - Data Collection"
 APP_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
+from suite_common.output_folders import create_unique_folder, path_component  # noqa: E402
 from suite_common.config import plugin_settings_path  # noqa: E402
 from suite_instruments.factory import InstrumentFactory  # noqa: E402
 from suite_instruments.transport.visa import resource_manager  # noqa: E402
@@ -31,18 +32,11 @@ class Condition:
 
 
 def safe_component(value):
-    return re.sub(r'[<>:"/\\|?*]+', '_', str(value)).strip().rstrip('.') or "Unnamed"
+    return path_component(value, "Unnamed")
 
 def unique_run_folder(parent: Path, product: str) -> Path:
     stamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    base = f"{stamp} - {TEST_NAME} - {safe_component(product)}"
-    candidate = parent / base
-    run = 2
-    while candidate.exists():
-        candidate = parent / f"{base} - Run {run}"
-        run += 1
-    candidate.mkdir(parents=False, exist_ok=False)
-    return candidate
+    return create_unique_folder(parent, f"{stamp} - {TEST_NAME} - {safe_component(product)}")
 
 def parse_transitions(text):
     out=[]

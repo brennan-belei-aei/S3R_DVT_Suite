@@ -24,6 +24,7 @@ import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 
 sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
+from suite_common.output_folders import create_unique_folder, path_component  # noqa: E402
 from suite_common.bench import bench_default
 from suite_sdk.registry import load_registry
 
@@ -41,18 +42,12 @@ def find_script(mode):
 
 
 def safe_component(value):
-    return re.sub(r'[<>:"/\\|?*]+', "_", str(value)).strip().rstrip(".") or "Unknown"
+    return path_component(value, "Unknown")
 
 
 def unique_run_folder(parent, generator):
     stamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    base = f"{stamp} - {TEST_NAME} - {safe_component(generator)}"
-    candidate = parent / base
-    number = 2
-    while candidate.exists():
-        candidate = parent / f"{base} - Run {number}"; number += 1
-    candidate.mkdir(parents=False, exist_ok=False)
-    return candidate
+    return create_unique_folder(parent, f"{stamp} - {TEST_NAME} - {safe_component(generator)}")
 
 
 def replace_one(source, pattern, replacement, label):

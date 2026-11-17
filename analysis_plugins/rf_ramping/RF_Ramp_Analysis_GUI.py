@@ -9,12 +9,13 @@ import csv
 import json
 import math
 import os
-import re
 import sys
 import traceback
 import threading
 from datetime import datetime
 from pathlib import Path
+sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
+from suite_common.output_folders import path_component  # noqa: E402
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 
@@ -27,7 +28,7 @@ ANALYSIS_ID = "rf_ramp_verification"
 
 
 def safe_name(value: str) -> str:
-    return re.sub(r'[<>:"/\\|?*]+', "_", str(value)).strip().rstrip(".") or "Dataset"
+    return path_component(value, "Dataset")
 
 
 def read_waveform(path: Path):

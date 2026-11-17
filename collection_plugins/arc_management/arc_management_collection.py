@@ -31,6 +31,7 @@ from tkinter import filedialog, messagebox, ttk
 
 APP_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
+from suite_common.output_folders import create_unique_folder, path_component  # noqa: E402
 from suite_common.config import plugin_settings_path  # noqa: E402
 import suite_common.bootstrap  # noqa: E402,F401  (AE command modules on sys.path)
 from suite_instruments.factory import InstrumentFactory  # noqa: E402
@@ -285,19 +286,12 @@ def visa_from_ip(ip: str) -> str:
 
 
 def safe_name(value: str) -> str:
-    return re.sub(r'[<>:"/\\|?*]+', "_", value).strip().rstrip(".") or "Unknown"
+    return path_component(value, "Unknown")
 
 
 def create_run_directory(parent: Path, generator_name: str) -> Path:
     stamp = datetime.now().astimezone().strftime("%Y-%m-%d_%H-%M-%S")
-    base = f"{stamp} - Arc Management - {safe_name(generator_name)}"
-    candidate = parent / base
-    number = 2
-    while candidate.exists():
-        candidate = parent / f"{base} - Run {number}"
-        number += 1
-    candidate.mkdir(parents=False)
-    return candidate
+    return create_unique_folder(parent, f"{stamp} - Arc Management - {safe_name(generator_name)}")
 
 
 def request_stop(*_args) -> None:

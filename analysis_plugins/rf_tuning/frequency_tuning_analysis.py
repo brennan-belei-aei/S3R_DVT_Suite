@@ -28,6 +28,7 @@ import matplotlib.pyplot as plt
 ANALYSIS_ID = "rf_tuning"
 APP_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
+from suite_common.output_folders import create_unique_folder, path_component  # noqa: E402
 from suite_common.config import plugin_settings_path  # noqa: E402
 SETTINGS_FILE = plugin_settings_path("rf_tuning", "analysis")
 
@@ -67,19 +68,12 @@ class AnalysisSettings:
 
 
 def safe_name(text: str) -> str:
-    return re.sub(r'[<>:"/\\|?*]+', "_", text).strip().rstrip(".") or "RF_Tuning_Analysis"
+    return path_component(text, "RF_Tuning_Analysis")
 
 
 def unique_output_folder(parent: Path) -> Path:
     stamp = datetime.now().astimezone().strftime("%Y-%m-%d_%H-%M-%S")
-    base = parent / f"{stamp} - RF Tuning Analysis"
-    candidate = base
-    run = 2
-    while candidate.exists():
-        candidate = parent / f"{base.name} - Run {run}"
-        run += 1
-    candidate.mkdir(parents=True)
-    return candidate
+    return create_unique_folder(parent, f"{stamp} - RF Tuning Analysis", parents=True)
 
 
 def read_json(path: Path) -> dict:

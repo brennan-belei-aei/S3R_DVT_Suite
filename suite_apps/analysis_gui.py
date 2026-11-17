@@ -28,6 +28,7 @@ from suite_common.paths import (  # noqa: E402
     to_portable_path,
 )
 from suite_common.config import analysis_gui_settings_path, display_path, migrate_legacy_settings
+from suite_common.output_folders import create_unique_folder, path_component
 from suite_sdk.registry import describe_unavailable, load_registry
 from suite_sdk.context import SuiteContext  # noqa: E402
 from suite_apps.analysis_process_manager import AnalysisProcessManager  # noqa: E402
@@ -633,20 +634,14 @@ class UnifiedAnalysisApp:
 
     @staticmethod
     def _safe_folder_component(value: str) -> str:
-        cleaned = re.sub(r'[<>:"/\\|?*]+', "_", str(value)).strip().rstrip(".")
-        return cleaned or "Paramount Analysis Presentation"
+        return path_component(value, "Paramount Analysis Presentation")
 
     def _create_presentation_run_folder(self) -> Path:
         from datetime import datetime
         parent = Path(self.presentation_text_vars["output_parent"].get().strip()).expanduser().resolve()
         timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         base_name = f"{timestamp} - {self._safe_folder_component(self.presentation_text_vars['title'].get())}"
-        candidate = parent / base_name
-        run_number = 2
-        while candidate.exists():
-            candidate = parent / f"{base_name} - Run {run_number}"
-            run_number += 1
-        candidate.mkdir(parents=False, exist_ok=False)
+        candidate = create_unique_folder(parent, base_name)
         (candidate / ANALYSIS_PACKAGES_FOLDER).mkdir()
         return candidate
 

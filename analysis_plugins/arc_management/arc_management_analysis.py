@@ -29,6 +29,7 @@ import matplotlib.pyplot as plt
 ANALYSIS_ID = "arc_management"
 APP_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
+from suite_common.output_folders import create_unique_folder, path_component  # noqa: E402
 from suite_common.config import plugin_settings_path  # noqa: E402
 SETTINGS_FILE = plugin_settings_path("arc_management", "analysis")
 CSV_PATTERN = re.compile(r"arc_sample_(?P<sample>\d+)_(?P<stamp>.+)\.csv$", re.I)
@@ -61,19 +62,12 @@ class Settings:
 
 
 def safe_name(text: str) -> str:
-    return re.sub(r'[<>:"/\\|?*]+', "_", str(text)).strip().rstrip(".") or "Arc_Management"
+    return path_component(text, "Arc_Management")
 
 
 def unique_output(parent: Path) -> Path:
     stamp = datetime.now().astimezone().strftime("%Y-%m-%d_%H-%M-%S")
-    base = parent / f"{stamp} - Arc Management Analysis"
-    path = base
-    run = 2
-    while path.exists():
-        path = parent / f"{base.name} - Run {run}"
-        run += 1
-    path.mkdir(parents=True)
-    return path
+    return create_unique_folder(parent, f"{stamp} - Arc Management Analysis", parents=True)
 
 
 def read_json(path: Path) -> dict:

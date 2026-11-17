@@ -72,6 +72,7 @@ from tkinter import filedialog, messagebox, ttk
 import numpy as np
 
 sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
+from suite_common.output_folders import create_unique_folder, path_component_strict  # noqa: E402
 import suite_common.bootstrap  # noqa: E402,F401
 from suite_instruments.errors import InstrumentError  # noqa: E402
 from suite_instruments.factory import InstrumentFactory  # noqa: E402
@@ -1140,9 +1141,7 @@ def check_connections(scope_ip, com_port, scope_interface="VXI-11"):
 
 def sanitize_windows_name(value):
     """Return a Windows-safe folder-name component."""
-    cleaned = re.sub(r'[<>:"/\\|?*\x00-\x1f]', "_", str(value).strip())
-    cleaned = re.sub(r"\s+", " ", cleaned).strip(" .")
-    return cleaned or "Unknown DUT"
+    return path_component_strict(value, "Unknown DUT")
 
 
 def create_unique_test_folder(parent_folder, dut_name, now=None):
@@ -1151,14 +1150,7 @@ def create_unique_test_folder(parent_folder, dut_name, now=None):
     if not parent.is_dir():
         raise ValueError(f"Selected data parent folder does not exist: {parent}")
     timestamp = (now or datetime.now()).strftime("%Y-%m-%d_%H-%M-%S")
-    base = f"{timestamp} - {TEST_NAME} - {sanitize_windows_name(dut_name)}"
-    candidate = parent / base
-    run_number = 2
-    while candidate.exists():
-        candidate = parent / f"{base} - Run {run_number}"
-        run_number += 1
-    candidate.mkdir()
-    return candidate
+    return create_unique_folder(parent, f"{timestamp} - {TEST_NAME} - {sanitize_windows_name(dut_name)}")
 
 
 def main():

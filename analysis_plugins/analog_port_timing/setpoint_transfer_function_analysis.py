@@ -12,12 +12,14 @@ import csv
 import json
 import math
 import os
-import re
 import threading
 import traceback
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
+import sys
+sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
+from suite_common.output_folders import create_unique_folder, path_component_strict  # noqa: E402
 from typing import Any, Optional
 
 import matplotlib
@@ -40,8 +42,7 @@ REQUIRED_COLUMNS = {
 
 
 def safe_name(value: str, fallback: str = "Dataset") -> str:
-    value = re.sub(r'[<>:"/\\|?*\x00-\x1f]', "_", str(value).strip())
-    return re.sub(r"\s+", " ", value).strip(" .") or fallback
+    return path_component_strict(value, fallback)
 
 
 def bool_value(value: Any) -> bool:
@@ -50,14 +51,7 @@ def bool_value(value: Any) -> bool:
 
 def unique_output(parent: Path, label: str) -> Path:
     stamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    base = parent / f"{stamp} - {OUTPUT_FOLDER_NAME} - {safe_name(label)}"
-    candidate = base
-    run = 1
-    while candidate.exists():
-        run += 1
-        candidate = parent / f"{base.name} - Run {run}"
-    candidate.mkdir(parents=False, exist_ok=False)
-    return candidate
+    return create_unique_folder(parent, f"{stamp} - {OUTPUT_FOLDER_NAME} - {safe_name(label)}")
 
 
 def find_dataset_file(folder: Path) -> Path:

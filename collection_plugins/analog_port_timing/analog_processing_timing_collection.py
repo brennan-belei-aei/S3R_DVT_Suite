@@ -20,6 +20,7 @@ from typing import Callable, Iterable, Optional
 import numpy as np
 import matplotlib.pyplot as plt
 sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
+from suite_common.output_folders import create_unique_folder, path_component_strict  # noqa: E402
 import suite_common.bootstrap
 from suite_common.bench import bench_default, visa_socket_resource
 from suite_instruments.factory import InstrumentFactory
@@ -764,19 +765,12 @@ MAX_CYCLES = 100
 
 
 def _safe(value, fallback):
-    import re
-    value = re.sub(r'[<>:"/\\|?*\x00-\x1f]', '_', str(value or '').strip())
-    return re.sub(r'\s+', ' ', value).strip(' .') or fallback
+    return path_component_strict(value, fallback)
 
 
 def _unique_folder(parent, dut_address):
-    stamp=datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-    base=parent/f"{stamp} - {TEST_NAME} - {_safe(dut_address,'Generator')}"
-    candidate=base; index=1
-    while candidate.exists():
-        index+=1; candidate=parent/f"{base.name} - Run {index}"
-    candidate.mkdir(parents=False,exist_ok=False)
-    return candidate
+    stamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    return create_unique_folder(parent, f"{stamp} - {TEST_NAME} - {_safe(dut_address, 'Generator')}")
 
 
 def _run_collection(parent, cycles, dynamic_scaling, dut_address, scope_address, wavegen_address):

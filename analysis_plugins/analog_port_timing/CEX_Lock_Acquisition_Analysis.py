@@ -5,9 +5,12 @@ active-low CEX LOCK first 10% of the falling transition toward 0 V. Acquisition
 time is T2 minus T1. CH2 independently verifies RF waveform activity.
 """
 from __future__ import annotations
-import csv,json,math,os,re,threading,traceback
+import csv,json,math,os,threading,traceback
 from datetime import datetime
 from pathlib import Path
+import sys
+sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
+from suite_common.output_folders import create_unique_folder, path_component_strict  # noqa: E402
 from typing import Any
 import matplotlib
 matplotlib.use("Agg")
@@ -21,11 +24,11 @@ PRE_WINDOW=(-400e-3,-50e-3);POST_WINDOW=(50e-3,400e-3)
 T1_FRACTION=.90;T2_FRACTION=.10;RF_ACTIVITY_MIN_RATIO=2.0;PLOT_DPI=150
 REQUIRED={"Requested_Power_W","Acquisition","Triggered","CH1_File","CH2_File","CH3_File"}
 def b(v):return str(v).strip().lower() in {"1","true","yes","y"}
-def safe(v,f="Dataset"):return re.sub(r"\s+"," ",re.sub(r'[<>:"/\\|?*\x00-\x1f]',"_",str(v or "").strip())).strip(" .") or f
+def safe(v,f="Dataset"):
+    return path_component_strict(v, f)
 def unique(parent,label):
- stamp=datetime.now().strftime("%Y-%m-%d_%H-%M-%S");base=parent/f"{stamp} - {ANALYSIS_NAME} Analysis - {safe(label)}";out=base;i=1
- while out.exists():i+=1;out=parent/f"{base.name} - Run {i}"
- out.mkdir(parents=False);return out
+ stamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+ return create_unique_folder(parent, f"{stamp} - {ANALYSIS_NAME} Analysis - {safe(label)}")
 def read(path):
  try:
   d=np.genfromtxt(path,delimiter=",",names=True,dtype=float,encoding="utf-8-sig",invalid_raise=False)

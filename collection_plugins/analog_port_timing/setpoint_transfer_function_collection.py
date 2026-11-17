@@ -26,7 +26,6 @@ import csv
 import json
 import math
 import os
-import re
 import sys
 import time
 import traceback
@@ -37,6 +36,7 @@ from typing import Any, Optional
 
 # Keep compatibility with the existing suite layout.
 sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
+from suite_common.output_folders import create_unique_folder, path_component_strict  # noqa: E402
 import suite_common.bootstrap  # noqa: F401,E402
 from suite_common.bench import bench_default, visa_socket_resource  # noqa: E402
 from suite_instruments.factory import InstrumentFactory  # noqa: E402
@@ -97,10 +97,7 @@ RUN_MANIFEST_FILENAME = "Run_Manifest.json"
 
 
 def _safe_component(value: object, fallback: str) -> str:
-    text = str(value or "").strip()
-    text = re.sub(r"[<>:\"/\\|?*\x00-\x1F]", "_", text)
-    text = re.sub(r"\s+", " ", text).strip(" .")
-    return text or fallback
+    return path_component_strict(value, fallback)
 
 
 def choose_parent_folder() -> Optional[Path]:
@@ -137,13 +134,7 @@ def create_unique_run_folder(parent: Path, dut_address: str = "") -> Path:
         f"{timestamp} - {TEST_NAME} - {generator_name}",
         f"{timestamp} - Setpoint Transfer Function",
     )
-    candidate = parent / base_name
-    run_number = 1
-    while candidate.exists():
-        run_number += 1
-        candidate = parent / f"{base_name} - Run {run_number}"
-    candidate.mkdir(parents=False, exist_ok=False)
-    return candidate
+    return create_unique_folder(parent, base_name)
 
 
 def write_csv(path: Path, rows: list[dict[str, Any]]) -> None:

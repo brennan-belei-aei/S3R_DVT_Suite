@@ -33,6 +33,7 @@ from tkinter import filedialog, messagebox, ttk
 APP_TITLE = "RF Tuning Data Collection"
 APP_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
+from suite_common.output_folders import create_unique_folder, path_component  # noqa: E402
 from suite_common.config import plugin_settings_path  # noqa: E402
 import suite_common.bootstrap  # noqa: E402,F401  (AE command modules on sys.path)
 from suite_instruments.factory import InstrumentFactory  # noqa: E402
@@ -136,20 +137,12 @@ def counter_visa_resource(ip_address: str) -> str:
 
 
 def safe_component(value: str) -> str:
-    cleaned = re.sub(r'[<>:"/\\|?*]+', "_", str(value)).strip().rstrip(".")
-    return cleaned or "Unknown"
+    return path_component(value, "Unknown")
 
 
 def create_run_folder(parent: Path, generator_name: str) -> Path:
     stamp = datetime.now().astimezone().strftime("%Y-%m-%d_%H-%M-%S")
-    base = f"{stamp} - RF Tuning - {safe_component(generator_name)}"
-    candidate = parent / base
-    run_number = 2
-    while candidate.exists():
-        candidate = parent / f"{base} - Run {run_number}"
-        run_number += 1
-    candidate.mkdir(parents=False, exist_ok=False)
-    return candidate
+    return create_unique_folder(parent, f"{stamp} - RF Tuning - {safe_component(generator_name)}")
 
 
 @dataclass(frozen=True)
