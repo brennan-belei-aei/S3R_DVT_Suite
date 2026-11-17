@@ -35,6 +35,7 @@ from suite_common.output_folders import create_unique_folder, path_component  # 
 from suite_common.config import plugin_settings_path  # noqa: E402
 import suite_common.bootstrap  # noqa: E402,F401  (AE command modules on sys.path)
 from suite_instruments.factory import InstrumentFactory  # noqa: E402
+from suite_instruments.tektronix import read_waveform  # noqa: E402
 from suite_instruments.transport.visa import resource_manager  # noqa: E402
 SETTINGS_FILE = plugin_settings_path("arc_management", "collection")
 STOP = threading.Event()
@@ -167,36 +168,6 @@ def scope_recover(resource: str) -> str:
         if state not in {"0", "OFF", "STOP"}:
             raise RuntimeError(f"Scope recovery failed; acquisition state is {state}")
         return identity
-
-
-def capture_scope_channel(instrument, channel: int):
-    name = f"CH{channel}"
-    instrument.write(f"DATA:SOURCE {name}")
-    instrument.write("DATA:ENCDG RIBINARY")
-    instrument.write("DATA:WIDTH 2")
-    record_length = int(float(instrument.query("HORIZONTAL:RECORDLENGTH?")))
-    instrument.write("DATA:START 1")
-    instrument.write(f"DATA:STOP {record_length}")
-    xincr = float(instrument.query("WFMOUTPRE:XINCR?"))
-    xzero = float(instrument.query("WFMOUTPRE:XZERO?"))
-    pt_off = float(instrument.query("WFMOUTPRE:PT_OFF?"))
-    ymult = float(instrument.query("WFMOUTPRE:YMULT?"))
-    yzero = float(instrument.query("WFMOUTPRE:YZERO?"))
-    yoff = float(instrument.query("WFMOUTPRE:YOFF?"))
-    xunit = instrument.query("WFMOUTPRE:XUNIT?").strip().strip('"')
-    yunit = instrument.query("WFMOUTPRE:YUNIT?").strip().strip('"')
-    raw = np.asarray(instrument.query_binary_values(
-        "CURVE?", datatype="h", is_big_endian=True,
-        container=np.array, expect_termination=False), dtype=np.float64)
-    if not raw.size:
-        raise RuntimeError(f"No waveform points returned for {name}")
-    index = np.arange(raw.size, dtype=np.float64)
-    times = xzero + (index - pt_off) * xincr
-    values = (raw - yoff) * ymult + yzero
-    metadata = dict(channel=name, points=int(raw.size), xincr=xincr, xzero=xzero,
-                    pt_off=pt_off, ymult=ymult, yzero=yzero, yoff=yoff,
-                    xunit=xunit, yunit=yunit)
-    return times, values, metadata
 
 
 class SDG6022X:
@@ -368,7 +339,7 @@ def capture_all_channels(resource: str):
         identity = instrument.query("*IDN?").strip()
         for channel_number in (1, 2, 3, 4):
             name = f"CH{channel_number}"
-            times, values, channel_metadata = capture_scope_channel(instrument, channel_number)
+            times, values, channel_metadata = read_waveform(instrument, f"CH{channel_number}")
             if channel_number == 1:
                 common_times = times
             elif len(times) != len(common_times) or not np.allclose(times, common_times, rtol=0.0, atol=1e-12):

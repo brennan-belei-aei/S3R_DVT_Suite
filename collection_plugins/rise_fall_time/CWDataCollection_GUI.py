@@ -19,6 +19,7 @@ from datetime import datetime
 from time import sleep, time
 from suite_instruments.adapters import csr_check
 from suite_instruments.factory import InstrumentFactory
+from suite_instruments.tektronix import read_waveform
 from suite_instruments.transport.visa import resource_manager
 
 # TODO: Send command in scope setup function to set channel input impedance to 50 Ohms.
@@ -918,39 +919,9 @@ def save_wave(filename):
         scope.timeout = WAVEFORM_TRANSFER_TIMEOUT_MS
         scope.write("ACQUIRE:STATE STOP")
         scope.write("*WAI")
-        scope.write("DATA:SOURCE CH1")
-        scope.write("DATA:ENCDG RIBINARY")
-        scope.write("DATA:WIDTH 2")
-
-        actual_record_length = int(float(scope.query("HORIZONTAL:RECORDLENGTH?")))
-        scope.write("DATA:START 1")
-        scope.write(f"DATA:STOP {actual_record_length}")
-
-        xincr = float(scope.query("WFMOUTPRE:XINCR?"))
-        xzero = float(scope.query("WFMOUTPRE:XZERO?"))
-        pt_off = float(scope.query("WFMOUTPRE:PT_OFF?"))
-        ymult = float(scope.query("WFMOUTPRE:YMULT?"))
-        yzero = float(scope.query("WFMOUTPRE:YZERO?"))
-        yoff = float(scope.query("WFMOUTPRE:YOFF?"))
-        xunit = scope.query("WFMOUTPRE:XUNIT?").strip().strip('"') or "s"
-        yunit = scope.query("WFMOUTPRE:YUNIT?").strip().strip('"') or "V"
-
-        raw = np.asarray(
-            scope.query_binary_values(
-                "CURVE?",
-                datatype="h",
-                is_big_endian=True,
-                container=np.array,
-                expect_termination=False,
-            ),
-            dtype=np.float64,
-        )
-        if raw.size == 0:
-            raise RuntimeError("No waveform points returned for CH1.")
-
-        index = np.arange(raw.size, dtype=np.float64)
-        times = xzero + (index - pt_off) * xincr
-        values = (raw - yoff) * ymult + yzero
+        times, values, waveform = read_waveform(scope, "CH1")
+        xunit = waveform["xunit"] or "s"
+        yunit = waveform["yunit"] or "V"
 
         np.savetxt(
             partial_path,
@@ -962,7 +933,7 @@ def save_wave(filename):
         )
         partial_path.replace(output_path)
         print(
-            f"Waveform transfer complete: {raw.size:,} points saved locally "
+            f"Waveform transfer complete: {waveform['points']:,} points saved locally "
             f"to {output_path}"
         )
     except Exception:

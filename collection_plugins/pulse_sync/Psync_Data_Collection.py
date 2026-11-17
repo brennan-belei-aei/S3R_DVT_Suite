@@ -34,6 +34,7 @@ import suite_common.bootstrap  # noqa: F401
 from suite_common.bench import bench_default
 
 from suite_instruments.factory import InstrumentFactory
+from suite_instruments.tektronix import read_waveform
 from suite_instruments.transport.visa import resource_manager
 
 # Both generators keep the 7434753 command set (AE_Commands_7434753), not the default AECommandsUniversal.
@@ -234,35 +235,6 @@ def parse_ieee4882_block(data: bytes) -> bytes:
     return data[end:end + length]
 
 
-def _capture_channel(instrument: Any, ch: str):
-    instrument.write(f"DATA:SOURCE {ch}")
-    instrument.write("DATA:ENCDG RIBINARY")
-    instrument.write("DATA:WIDTH 2")
-    record_length = int(float(instrument.query("HORIZONTAL:RECORDLENGTH?")))
-    instrument.write("DATA:START 1")
-    instrument.write(f"DATA:STOP {record_length}")
-    xincr = float(instrument.query("WFMOUTPRE:XINCR?"))
-    xzero = float(instrument.query("WFMOUTPRE:XZERO?"))
-    pt_off = float(instrument.query("WFMOUTPRE:PT_OFF?"))
-    ymult = float(instrument.query("WFMOUTPRE:YMULT?"))
-    yzero = float(instrument.query("WFMOUTPRE:YZERO?"))
-    yoff = float(instrument.query("WFMOUTPRE:YOFF?"))
-    xunit = instrument.query("WFMOUTPRE:XUNIT?").strip().strip('"')
-    yunit = instrument.query("WFMOUTPRE:YUNIT?").strip().strip('"')
-    raw = np.asarray(instrument.query_binary_values(
-        "CURVE?", datatype="h", is_big_endian=True,
-        container=np.array, expect_termination=False), dtype=np.float64)
-    if not raw.size:
-        raise RuntimeError(f"No waveform points returned for {ch}")
-    index = np.arange(raw.size, dtype=np.float64)
-    times = xzero + (index - pt_off) * xincr
-    values = (raw - yoff) * ymult + yzero
-    meta = dict(channel=ch, points=raw.size, xincr=xincr, xzero=xzero,
-                pt_off=pt_off, ymult=ymult, yzero=yzero, yoff=yoff,
-                xunit=xunit, yunit=yunit)
-    return times, values, meta
-
-
 def capture(
     filename: str | Path,
     resource: str = DEFAULT_RESOURCE,
@@ -280,7 +252,7 @@ def capture(
         instrument.write("ACQUIRE:STATE STOP")
         instrument.query("*OPC?")
         for ch in CHANNELS:
-            times, values, meta = _capture_channel(instrument, ch)
+            times, values, meta = read_waveform(instrument, ch)
             captured[ch] = (times, values, meta)
             path = output / f"{ch}.csv"
             np.savetxt(path, np.column_stack((times, values)), delimiter=",",
