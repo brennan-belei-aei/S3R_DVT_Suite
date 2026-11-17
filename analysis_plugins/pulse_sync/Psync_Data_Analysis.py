@@ -15,6 +15,9 @@ import sys
 import tempfile
 import zipfile
 from pathlib import Path
+sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
+from suite_common.powerpoint import powerpoint_export_requested  # noqa: E402
+from suite_common.reports import open_with_default_app  # noqa: E402
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 
@@ -323,10 +326,6 @@ def create_comparison_plots(comparison, name_a, name_b, folder):
     return images
 
 
-def powerpoint_export_requested():
-    return os.environ.get("PARAMOUNT_POWERPOINT_EXPORT_ENABLED", "").strip() == "1"
-
-
 def export_powerpoint_package(configuration, images, data_a, data_b=None, comparison=None, comparison_workbook=None):
     if not powerpoint_export_requested():
         return None
@@ -474,11 +473,7 @@ def configure_gui():
 
 
 def open_file(path):
-    try:
-        if sys.platform.startswith("win"): os.startfile(path)
-        elif sys.platform=="darwin": os.system(f'open "{path}"')
-        else: os.system(f'xdg-open "{path}"')
-    except Exception: pass
+    open_with_default_app(path)
 
 
 def main():

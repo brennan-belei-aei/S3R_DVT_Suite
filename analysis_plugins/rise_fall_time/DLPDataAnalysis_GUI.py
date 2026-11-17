@@ -15,6 +15,7 @@ import sys
 import subprocess
 from pathlib import Path
 sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
+from suite_common.signals import centered_moving_average  # noqa: E402
 from suite_common.powerpoint import powerpoint_export_requested, snapshot_png_files, changed_png_files
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
@@ -681,18 +682,6 @@ def read_scope_csv(csv_path):
 # ==========================================================
 # ENVELOPE EXTRACTION
 # ==========================================================
-def centered_moving_average(values, window):
-    """Centered moving average with reflected padding and unchanged length."""
-    if window <= 1:
-        return np.asarray(values, dtype=float).copy()
-    if window % 2 == 0:
-        window += 1
-    pad = window // 2
-    padded = np.pad(np.asarray(values, dtype=float), pad, mode="reflect")
-    kernel = np.ones(window, dtype=float) / window
-    return np.convolve(padded, kernel, mode="valid")
-
-
 def extract_rf_envelope(time_values, voltage_values, rf_frequency_khz):
     """Return peak-equivalent envelope from a centered moving RMS calculation."""
     dt = float(np.median(np.diff(time_values)))

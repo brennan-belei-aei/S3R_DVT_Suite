@@ -1,6 +1,8 @@
 """Combined GUI for original Power Profile Smith-chart plots and B-minus-A delta plots."""
 import json, os, re, shutil, sys
 from pathlib import Path
+sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
+from suite_common.powerpoint import powerpoint_export_requested  # noqa: E402
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 import numpy as np
@@ -171,10 +173,6 @@ def gui():
             result.update(ok=True,ca=str(ca),cb=str(cb) if cb else None,dataset_a_label=dataset_a_label,dataset_b_label=dataset_b_label,out_a=str(dataset_a_output),out_b=str(dataset_b_output) if dataset_b_output else None,out_delta=str(delta_output),run_a=run_a.get(),run_b=run_b.get(),run_delta=run_delta.get(),impedance=imp.get(),original_metrics={k:v.get() for k,v in original_defs.items()},metric=m,delta_title=dtitle.get(),limit=float(lim.get()),delta_min=lo,delta_max=hi,filter=filt.get(),interpolate=interp.get(),interpolation=imethod.get(),dpi=int(float(dpi.get())),audit=audit.get(),difference_convention="B_MINUS_A",original_vswr=[1.1,1.6,2,2.5],delta_vswr=[1.1,1.6,2,2.5,3]);root.destroy()
         except Exception as e:messagebox.showerror("Invalid settings",str(e),parent=root)
     buttons=ttk.Frame(outer);buttons.pack(fill="x");ttk.Button(buttons,text="Cancel",command=root.destroy).pack(side="right",padx=8);ttk.Button(buttons,text="Start Analysis",command=start).pack(side="right");root.mainloop();return result
-
-def powerpoint_export_requested():
-    return os.environ.get("PARAMOUNT_POWERPOINT_EXPORT_ENABLED","").strip()=="1"
-
 
 def export_powerpoint_package(opts, generated_images, audit=None, audit_workbook=None):
     if not powerpoint_export_requested():return None

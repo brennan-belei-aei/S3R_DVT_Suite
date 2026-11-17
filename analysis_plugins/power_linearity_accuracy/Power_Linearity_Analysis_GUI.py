@@ -1,6 +1,9 @@
 """Standalone Power Linearity analysis and two-dataset comparison GUI."""
 import json, os, shutil, sys
 from pathlib import Path
+sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
+from suite_common.powerpoint import powerpoint_export_requested  # noqa: E402
+from suite_common.reports import open_with_default_app  # noqa: E402
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 import numpy as np
@@ -173,8 +176,6 @@ def write_compare(path,d,sa,sb,settings):
  with pd.ExcelWriter(path,engine='openpyxl') as w:
   d.to_excel(w,sheet_name='Condition Comparison',index=False);r=d.copy();r['Ranking']=r.filter(like='Absolute Difference').max(axis=1);r.sort_values('Ranking',ascending=False).to_excel(w,sheet_name='Difference Ranking',index=False);sa.to_excel(w,sheet_name='A Frequency Summary',index=False);sb.to_excel(w,sheet_name='B Frequency Summary',index=False);pd.DataFrame({'Setting':list(settings),'Value':list(settings.values())}).to_excel(w,sheet_name='Comparison Settings',index=False);autosize(w)
 
-def powerpoint_export_requested():
- return os.environ.get('PARAMOUNT_POWERPOINT_EXPORT_ENABLED','').strip()=='1'
 def export_powerpoint_package(c,images,avg_a,avg_b=None,comparison=None,wa=None,wb=None,cw=None):
  if not powerpoint_export_requested():return None
  text=os.environ.get('PARAMOUNT_POWERPOINT_PACKAGE_FOLDER','').strip()
@@ -217,9 +218,7 @@ def export_powerpoint_package(c,images,avg_a,avg_b=None,comparison=None,wa=None,
  manifest.write_text(json.dumps(data,indent=2),encoding='utf-8');return manifest
 
 def open_file(p):
- try:
-  if sys.platform.startswith('win'):os.startfile(p)
- except Exception:pass
+ open_with_default_app(p)
 
 def gui():
  r=tk.Tk();r.title(APP_TITLE);r.geometry('1000x760');o=ttk.Frame(r,padding=14);o.pack(fill='both',expand=True);ttk.Label(o,text=APP_TITLE,font=('Segoe UI',15,'bold')).pack(anchor='w');n=ttk.Notebook(o);n.pack(fill='both',expand=True,pady=10);tabs={x:ttk.Frame(n,padding=12) for x in ['Input Data','Limits','Plots','Comparison','Output']}

@@ -31,7 +31,7 @@ suite_apps/
 collection_plugins/<plugin id>/          plugin.json + collection script(s), one folder per plugin
 analysis_plugins/<plugin id>/            plugin.json + analysis script(s), same ids as collection
 suite_sdk/                               plugin registry, plugin.json schema, suite context
-suite_common/                            shared helpers (config paths, bench addresses, output folders, parsing)
+suite_common/                            shared helpers (config paths, bench addresses, output folders and name cleaning, parsing, reports, signals)
 suite_instruments/                       instrument abstraction layer: factory, interfaces, transports, adapters (AE modules incl. AECommandsUniversal = DUT adapter, Keysight)
 config/  runtime/                        committed defaults / per-PC settings (see Configuration)
 assets/presentation_themes/              PowerPoint theme (.thmx) used by the builder
@@ -92,3 +92,12 @@ Tests that exist on disk but are not offered in the GUIs yet (Arc Management, RF
 ## Docs
 
 See [docs/README.md](docs/README.md) for the documentation index: project memory, AI workflow, review write-ups, roadmap, and legacy notes. AI agents should start at [AGENTS.md](AGENTS.md). `archive/` holds unused legacy scripts kept for reference; nothing imports them. `tools/` holds standalone utilities that are not part of the suite.
+
+## Shared helpers (use these instead of copying code)
+
+- Run folders and file names: `suite_common.output_folders`.
+  - `create_unique_folder(parent, base_name)` applies the `" - Run N"` collision rule.
+  - `path_component()` and `path_component_strict()` clean names for Windows.
+  - `create_unique_test_output_folder()` builds the standard collection folder.
+- Tektronix waveform transfer: `suite_instruments.tektronix.read_waveform(scope, "CH1")`.
+- Analysis outputs: `suite_common.reports` (`open_with_default_app`, `size_workbook_columns`), `suite_common.signals.centered_moving_average`, and `suite_common.powerpoint.powerpoint_export_requested`.

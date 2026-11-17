@@ -4,10 +4,11 @@ import json
 import os
 import re
 import shutil
-import subprocess
 import sys
 from pathlib import Path
 sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
+from suite_common.reports import open_with_default_app  # noqa: E402
+from suite_common.signals import centered_moving_average  # noqa: E402
 from suite_common.powerpoint import powerpoint_export_requested, snapshot_png_files, changed_png_files
 import pandas as pd
 import numpy as np
@@ -787,18 +788,6 @@ def apply_hilbert(voltage, time, filter_cutoff_hz=None):
     if len(envelope) <= min_length:
         raise ValueError("Waveform is too short for zero-phase Hilbert-envelope filtering.")
     return filtfilt(b, a, envelope)
-
-
-def centered_moving_average(values, window):
-    """Centered moving average with reflected padding and unchanged length."""
-    values = np.asarray(values, dtype=float)
-    if window <= 1:
-        return values.copy()
-    if window % 2 == 0:
-        window += 1
-    pad = window // 2
-    padded = np.pad(values, pad, mode="reflect")
-    return np.convolve(padded, np.ones(window) / window, mode="valid")
 
 
 def extract_rms_peak_envelope(time, voltage, rf_frequency_hz):
@@ -2624,15 +2613,7 @@ def auto_size_excel(excel_path):
 
 
 def open_file(path):
-    try:
-        if os.name == "nt":
-            os.startfile(path)
-        elif sys.platform == "darwin":
-            subprocess.Popen(["open", path])
-        else:
-            subprocess.Popen(["xdg-open", path])
-    except Exception as exc:
-        print(f"Could not automatically open Excel file: {exc}")
+    open_with_default_app(path, on_error=lambda exc: print(f"Could not automatically open Excel file: {exc}"))
 
 
 def export_powerpoint_package(config,images,data_a,data_b,rise_compare,fall_compare,comparison_excel):

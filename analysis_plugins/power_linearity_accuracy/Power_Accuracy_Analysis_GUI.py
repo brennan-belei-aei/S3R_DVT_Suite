@@ -9,6 +9,9 @@ import os
 import shutil
 import sys
 from pathlib import Path
+sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
+from suite_common.powerpoint import powerpoint_export_requested  # noqa: E402
+from suite_common.reports import open_with_default_app, size_workbook_columns  # noqa: E402
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 
@@ -338,11 +341,7 @@ def create_comparison_plots(comparison, name_a, name_b, output_folder):
 
 
 def auto_size_workbook(writer):
-    for worksheet in writer.book.worksheets:
-        worksheet.freeze_panes = 'A2'; worksheet.auto_filter.ref = worksheet.dimensions
-        for cells in worksheet.columns:
-            width = max(len(str(cell.value)) if cell.value is not None else 0 for cell in cells)
-            worksheet.column_dimensions[cells[0].column_letter].width = min(max(width + 2, 10), 55)
+    size_workbook_columns(writer, max_width=55)
 
 
 def write_analysis_workbook(path, data, averages, summary, failures, settings, analysis_settings):
@@ -371,9 +370,6 @@ def write_comparison_workbook(path, comparison, summary_a, summary_b, settings):
         pd.DataFrame({'Setting': list(settings.keys()), 'Value': list(settings.values())}).to_excel(writer, sheet_name='Comparison Settings', index=False)
         auto_size_workbook(writer)
 
-
-def powerpoint_export_requested():
-    return os.environ.get('PARAMOUNT_POWERPOINT_EXPORT_ENABLED','').strip()=='1'
 
 def export_powerpoint_package(config,generated_images,averages_a,averages_b=None,comparison=None,workbook_a=None,workbook_b=None,comparison_workbook=None):
     if not powerpoint_export_requested():return None
@@ -413,13 +409,7 @@ def export_powerpoint_package(config,generated_images,averages_a,averages_b=None
     manifest_path.write_text(json.dumps(manifest,indent=2),encoding='utf-8');return manifest_path
 
 def open_file(path):
-    try:
-        if sys.platform.startswith('win'): os.startfile(path)
-        elif sys.platform == 'darwin':
-            import subprocess; subprocess.Popen(['open', str(path)])
-        else:
-            import subprocess; subprocess.Popen(['xdg-open', str(path)])
-    except Exception: pass
+    open_with_default_app(path)
 
 
 def configure_gui():

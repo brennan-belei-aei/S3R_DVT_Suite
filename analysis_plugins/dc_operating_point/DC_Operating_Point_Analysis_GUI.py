@@ -9,6 +9,9 @@ import os
 import shutil
 import sys
 from pathlib import Path
+sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
+from suite_common.powerpoint import powerpoint_export_requested  # noqa: E402
+from suite_common.reports import open_with_default_app, size_workbook_columns  # noqa: E402
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 
@@ -132,12 +135,7 @@ def safe_sheet_name(name):
 
 
 def auto_size_workbook(writer):
-    for worksheet in writer.book.worksheets:
-        worksheet.freeze_panes = "A2"
-        worksheet.auto_filter.ref = worksheet.dimensions
-        for column_cells in worksheet.columns:
-            length = max(len(str(cell.value)) if cell.value is not None else 0 for cell in column_cells)
-            worksheet.column_dimensions[column_cells[0].column_letter].width = min(max(length + 2, 10), 50)
+    size_workbook_columns(writer, max_width=50)
 
 
 def collect_csv_files(path):
@@ -704,10 +702,6 @@ def dataset_output_directory(selected_path):
     return path if path.is_dir() else path.parent
 
 
-def powerpoint_export_requested():
-    return os.environ.get("PARAMOUNT_POWERPOINT_EXPORT_ENABLED", "").strip() == "1"
-
-
 def export_powerpoint_package(configuration, generated_images, summary_a, summary_b=None,
                               comparison=None, workbook_a=None, workbook_b=None,
                               comparison_workbook=None):
@@ -760,17 +754,7 @@ def export_powerpoint_package(configuration, generated_images, summary_a, summar
 
 
 def open_file(path):
-    try:
-        if sys.platform.startswith("win"):
-            os.startfile(path)
-        elif sys.platform == "darwin":
-            import subprocess
-            subprocess.Popen(["open", path])
-        else:
-            import subprocess
-            subprocess.Popen(["xdg-open", path])
-    except Exception:
-        pass
+    open_with_default_app(path)
 
 
 def run_analysis():

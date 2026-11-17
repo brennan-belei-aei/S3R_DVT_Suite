@@ -6,6 +6,7 @@ import sys
 import subprocess
 from pathlib import Path
 sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
+from suite_common.signals import centered_moving_average  # noqa: E402
 from suite_common.powerpoint import powerpoint_export_requested, snapshot_png_files, changed_png_files
 
 import numpy as np
@@ -1102,18 +1103,6 @@ def calculate_fall_time(time, voltage, power_setpoint_w):
 # ==========================================================
 # RMS ENVELOPE AND COMPLETE-PULSE ANALYSIS
 # ==========================================================
-def centered_moving_average(values, window):
-    """Centered moving average with reflected padding and unchanged length."""
-    values = np.asarray(values, dtype=float)
-    if window <= 1:
-        return values.copy()
-    if window % 2 == 0:
-        window += 1
-    pad = window // 2
-    padded = np.pad(values, pad, mode="reflect")
-    return np.convolve(padded, np.ones(window) / window, mode="valid")
-
-
 def extract_rms_peak_envelope(time, voltage, rf_frequency_khz):
     """Create a peak-equivalent centered moving-RMS RF envelope."""
     time = np.asarray(time, dtype=float)

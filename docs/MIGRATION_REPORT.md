@@ -565,3 +565,37 @@ Bench checks:
 4. Power Profile: one frequency's tuner map. Confirm Navigator moves and stabilized rows.
 5. Harmonics: 2 frequencies x 1 setpoint. Confirm the analyzer span and RBW, and the spectrum CSV.
 6. Arc Management: confirm the GUI now shows regulation mode 6 (unless a saved setting overrides it).
+
+## Phase 7: deduplication
+
+I surveyed every top-level function in the plugins, apps and `suite_common`. No two copies were byte-identical; they had drifted apart, so each family was compared rule by rule.
+
+Consolidated helpers:
+
+| Shared helper | Replaces | Where |
+|---|---|---|
+| `suite_common.output_folders.path_component` | 9 copies of the simple Windows-name rule | Arc, AEBus latency, Pulse Sync, RF Ramping, RF Tuning collectors and analyses, analysis GUI |
+| `suite_common.output_folders.path_component_strict` | 11 copies of the strict rule (control characters, whitespace) | Analog-port-timing collectors and analyses, Digital Timing capture |
+| `suite_common.output_folders.create_unique_folder` | 20 `" - Run N"` collision loops | Collectors, analyses, the analysis GUI, `create_unique_test_output_folder` |
+| `suite_instruments.tektronix.read_waveform` | 5 copies of the `DATA:SOURCE ... CURVE?` transfer | CW, SLP, DLP, Arc Management, Pulse Sync |
+| `suite_common.reports` (`open_with_default_app`, `size_workbook_columns`) | 6 `open_file` and 3 `auto_size_workbook` copies | DC Operating Point, Harmonics, Power Accuracy/Linearity, Pulse Sync, CW analyses |
+| `suite_common.signals.centered_moving_average` | 3 copies | CW, SLP, DLP analyses |
+| `suite_common.powerpoint.powerpoint_export_requested` | 6 identical copies | DC Operating Point, Harmonics, Power Accuracy/Linearity/Profile, Pulse Sync analyses |
+
+How behavior was preserved:
+
+- Scripts keep their own function names, signatures, fallback text and folder-name construction, so every file and folder name is unchanged.
+- `tests/test_output_folders.py` and `tests/test_analysis_helpers.py` run verbatim copies of the original implementations against the shared ones: 3,000+ random names, and moving averages across window sizes.
+- All 29 golden SCPI/AE-bus scenarios are identical, including the waveform transfers. 429 tests pass, and pyflakes findings are unchanged except for imports that the change left unused, which were removed.
+- Twelve analysis scripts gained the repo-root import so they can use `suite_common`.
+
+Intentional differences:
+
+- CW, SLP and DLP: the empty-waveform error no longer ends with a period.
+- On macOS and Linux, every analysis now opens result files the same way. Windows behavior, where `os.startfile` is used, is unchanged.
+
+Deliberately not merged, because the copies differ in meaning, not just style:
+
+- `bool_value` (one accepts `valid`), `write_csv` (encodings, empty-row handling, atomic replace), `read_settings` (missing-file handling) and `window_median` (minimum sample count).
+- The RF Ramping and Digital Timing waveform readers (different encodings and command order).
+- The nine `export_powerpoint_package` variants (different tables and slides per analysis).
