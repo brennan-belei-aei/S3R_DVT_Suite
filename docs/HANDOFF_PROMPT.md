@@ -59,7 +59,7 @@ You are continuing a phased, behavior-preserving refactor of the S3R_DVT_Suite r
    - Open the DUT with `.create("generator")`.
    - Handlers for `pyvisa.VisaIOError` become `suite_instruments.errors.InstrumentError`. Preserve each branch's meaning: `InstrumentTimeout` is also a `TimeoutError`.
 3. **Verify:**
-   - `.venv\Scripts\python -m pytest tests -q -p no:cacheprovider -W ignore::SyntaxWarning` (429 tests currently pass; if pytest cannot access its default temp folder, add `--basetemp "$env:TEMP\pt"`), with all goldens identical and the guard test in `tests/test_golden_scpi.py` passing.
+   - `.venv\Scripts\python -m pytest tests -q -p no:cacheprovider -W ignore::SyntaxWarning` (432 tests currently pass; if pytest cannot access its default temp folder, add `--basetemp "$env:TEMP\pt"`), with all goldens identical and the guard test in `tests/test_golden_scpi.py` passing.
    - `.venv\Scripts\python -m pyflakes suite_common suite_sdk suite_apps Transparency_Test_Suite_Launcher.py tests` must be clean. The migrated scripts' pyflakes findings must be unchanged from before the migration.
    - Run `--self-test` on `Transparency_Test_Suite_Launcher.py`, `suite_apps\collection_gui.py` and `suite_apps\analysis_gui.py`. Only run a plugin script with `--self-test` if it literally handles that flag; otherwise it launches its GUI.
 4. Append a batch section with bench checks to `docs/MIGRATION_REPORT.md`, commit with the trailer `Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>`, and stop for review.

@@ -628,7 +628,7 @@ Deliberately not merged, because the copies differ in meaning, not just style:
 | 8 Docs | this commit | `AGENTS.md`, docs index, roadmap, final report |
 
 Final state:
-- **429 tests pass without hardware,** including 29 golden SCPI/AE-bus scenarios and the AE-frame goldens.
+- **432 tests pass without hardware,** including 29 golden SCPI/AE-bus scenarios and the AE-frame goldens.
 - pyflakes is clean on the shared packages, apps and tests.
 - The three app self-tests pass.
 - Separate commit: Arc Management's default regulation mode is 6 (`955316d`, owner decision).
