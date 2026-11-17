@@ -29,7 +29,7 @@ from tkinter import ttk, filedialog, messagebox
 sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
 import suite_common.bootstrap  # noqa: E402,F401
 
-import AECommandsUniversal  # noqa: E402
+from suite_instruments.factory import InstrumentFactory  # noqa: E402
 
 
 # ==========================================================
@@ -455,9 +455,9 @@ def main(split_cw=False):
 
     try:
 
-        Egen = AECommands_forFastDAQ.generator(
-            config["generator_ip"]
-        )
+        Egen = InstrumentFactory(
+            {"generator": config["generator_ip"]}, {"generator": "ae.fastdaq"}
+        ).create("generator")
 
         time.sleep(
             STANDARD_DELAY

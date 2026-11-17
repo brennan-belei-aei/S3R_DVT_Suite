@@ -7,8 +7,7 @@ from suite_common.bench import bench_default
 from suite_common.inputs import format_number_list, parse_number_list
 from suite_common.output_folders import create_unique_test_output_folder
 
-import Lynx
-import AECommandsUniversal
+from suite_instruments.factory import InstrumentFactory
 import csv
 import os
 from time import sleep, time
@@ -360,10 +359,11 @@ def initialize_instruments_and_output():
     global lynx, Egen, lynxSerial, unitSerial
     global outPath, outFname, fh, writer
 
-    lynx = Lynx.lynx(lynxPort)
+    factory = InstrumentFactory({"lynx": lynxPort, "generator": genIP})
+    lynx = factory.create("lynx")
     lynxSerial = lynx.reportSerialNumber()
 
-    Egen = AECommandsUniversal.generator(genIP)
+    Egen = factory.create("generator")
     unitSerial = Egen.reportSerialNumber()
     Egen.rfOFF()
 

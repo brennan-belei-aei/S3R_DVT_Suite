@@ -6,8 +6,6 @@ import suite_common.bootstrap  # noqa: F401
 from suite_common.bench import bench_default
 from suite_common.output_folders import create_unique_test_output_folder
 
-import AE_Com_Module
-import Lynx
 
 from tkinter import filedialog, ttk, messagebox
 from datetime import datetime
@@ -17,8 +15,7 @@ import math
 from time import ctime, sleep, time
 import os
 from tkinter import *
-import AECommandsUniversal
-import AECommands
+from suite_instruments.factory import InstrumentFactory
 
 # COMMS SETUP
 navPort = bench_default("navigator")
@@ -327,7 +324,8 @@ def configure_power_profile_with_gui():
 validate_gui_global_definitions()
 configure_power_profile_with_gui()
 
-lynx = Lynx.lynx(lynxPort)
+factory = InstrumentFactory({'lynx': lynxPort, 'navigator': navPort, 'generator': genIP})
+lynx = factory.create('lynx')
 lynxSerial = lynx.reportSerialNumber()
 
 # SETPOINT/OTHER SETUP
@@ -337,10 +335,10 @@ lynxSerial = lynx.reportSerialNumber()
 # maxVSWR configured by GUI
 
 # setup navigator
-nav = AECommands.navigator(navPort)
+nav = factory.create('navigator')
 
 # setup paramount
-Egen = AECommandsUniversal.generator(genIP)
+Egen = factory.create('generator')
 # Egen.unlock()
 unitSerial = Egen.reportSerialNumber()
 Egen.rfOFF()

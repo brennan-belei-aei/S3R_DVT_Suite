@@ -5,7 +5,7 @@ You are continuing a phased, behavior-preserving refactor of the S3R_DVT_Suite r
 ## Branches
 
 - `refactor/plugin-architecture` (tag `phase5-complete`): Phases 0–5. This is the known-good fallback; do not modify it.
-- `refactor/phase6-instruments`: Phase 6 work. **Continue here.** Latest commit: `4f4adb9`.
+- `refactor/phase6-instruments`: Phase 6 work. **Continue here.** Phase 6 is complete; run `git --no-pager log --oneline -5` for the latest commit.
 
 ## Owner decisions (Amendment A)
 
@@ -32,28 +32,18 @@ You are continuing a phased, behavior-preserving refactor of the S3R_DVT_Suite r
   - Batch 2: Setpoint Transfer Function, Analog Processing Timing.
   - Batch 3: Rise/Fall CW, SLP, DLP, and Pulse Sync (via a new `ae.7434753` adapter).
   - Batch 4: Arc Management, RF Ramping, RF Tuning, and the Digital Timing capture GUI plus CommandProcessing (via `ae.serial_timing`).
+  - Batch 5: DC Operating Point, Power Accuracy/Linearity/Profile and Harmonics, plus the Quasi-CW collectors (connection code only, via `ae.fastdaq`; they still need the missing `AECommands_forFastDAQ.py`).
+  - **Phase 6 exit criterion met**, and enforced by `test_no_collection_script_opens_instrument_drivers_directly`.
+- Arc Management's default regulation mode is now 6 (owner decision).
 - `docs/MIGRATION_REPORT.md` has a section per phase and batch, including bench checks for the owner.
 
 ## Remaining tasks
 
-1. **Phase 6 part 2, batch 5 (last).** Migrate the remaining direct importers:
-   - `dc_operating_point/DC_Operating_Point_Collection_GUI.py` (Lynx, AECommandsUniversal)
-   - `harmonics_spurious/Harmonics_Spurious_Collection.py` (AECommandsUniversal + Keysight)
-   - `power_linearity_accuracy/Power_Accuracy_Collection_GUI.py` and `Power_Linearity_Collection_GUI.py` (Lynx, AECommandsUniversal, AE_Com_Module, AECommands)
-   - `power_profile/Power_Profile_Collection_GUI.py` (AE_Com_Module, Lynx, AECommandsUniversal, AECommands)
-   - `quasi_cw_oscillations/QuasiCWOscillationsCollection_GUI.py` and `rise_fall_time/QuasiCWDataCollection_GUI.py` (AECommandsUniversal)
-
-   The adapters `ae.lynx`, `ae.navigator` and `keysight.n9320` already exist. Scripts that use raw `AE_Com_Module` may need a small catalog helper, as `csr_check` was for CW.
-
-   **Exit criterion for Phase 6:** no file under `collection_plugins/` imports pyvisa or an AE module directly. Check with:
-
-   `Get-ChildItem collection_plugins -Recurse -Filter *.py | Select-String '^\s*(import|from)\s+(pyvisa|AE_Com_Module|AECommandsUniversal|AECommands|AE_Commands_7434753|Lynx|AECommandsSerialTimingAdapter)\b'`
-2. **Phase 7:** deduplicate code that exists in 3 or more copies, such as scope waveform download, run-folder creation, `safe_component`/`safe_name`, and `visa_from_ip`-style helpers. Move them into `suite_common`/`suite_instruments`, keeping all goldens identical.
-3. **Phase 8:** update `README.md` and docs, add `AGENTS.md`, write the final migration report and bench checklist. Delete `_backup_local_settings/` only after the owner confirms.
-4. **Open issues to raise with the owner (do not silently fix):**
-   - RF Tuning needs `keysight_53220a_fast.py`, which has never been in the repo; it belongs in `suite_instruments/adapters/keysight/`.
-   - Arc Management's default regulation mode is 0, which AECommandsUniversal rejects.
-   - The Quasi/Split-CW collectors reference a missing `AECommandsForFastDAQ` module.
+1. **Phase 7 (next):** deduplicate code that exists in 3 or more copies, such as scope waveform download, run-folder creation, `safe_component`/`safe_name`, and `visa_from_ip`-style helpers. Move them into `suite_common`/`suite_instruments`, keeping all goldens identical.
+2. **Phase 8:** update `README.md` and docs, add `AGENTS.md`, write the final migration report and bench checklist. Delete `_backup_local_settings/` only after the owner confirms.
+3. **Open issues (owner decisions recorded; do not silently fix):**
+   - RF Tuning needs `keysight_53220a_fast.py`, which has never been in the repo; it belongs in `suite_instruments/adapters/keysight/`. The owner chose to leave this open for now.
+   - The Quasi/Split-CW collectors need `AECommands_forFastDAQ.py`, which is not in the repo. Their connection code already goes through `ae.fastdaq`; copying the module into `suite_instruments/adapters/ae/` makes them runnable. Record goldens for them then.
    - The pptx naming is deferred; the Paramount Plus and Apex firmware lists are empty.
 
 ## Required method for each migration batch
@@ -69,7 +59,7 @@ You are continuing a phased, behavior-preserving refactor of the S3R_DVT_Suite r
    - Open the DUT with `.create("generator")`.
    - Handlers for `pyvisa.VisaIOError` become `suite_instruments.errors.InstrumentError`. Preserve each branch's meaning: `InstrumentTimeout` is also a `TimeoutError`.
 3. **Verify:**
-   - `.venv\Scripts\python -m pytest tests -q -p no:cacheprovider -W ignore::SyntaxWarning` (402 tests currently pass), with all goldens identical and the guard test in `tests/test_golden_scpi.py` passing.
+   - `.venv\Scripts\python -m pytest tests -q -p no:cacheprovider -W ignore::SyntaxWarning` (415 tests currently pass; if pytest cannot access its default temp folder, add `--basetemp "$env:TEMP\pt"`), with all goldens identical and the guard test in `tests/test_golden_scpi.py` passing.
    - `.venv\Scripts\python -m pyflakes suite_common suite_sdk suite_apps Transparency_Test_Suite_Launcher.py tests` must be clean. The migrated scripts' pyflakes findings must be unchanged from before the migration.
    - Run `--self-test` on `Transparency_Test_Suite_Launcher.py`, `suite_apps\collection_gui.py` and `suite_apps\analysis_gui.py`. Only run a plugin script with `--self-test` if it literally handles that flag; otherwise it launches its GUI.
 4. Append a batch section with bench checks to `docs/MIGRATION_REPORT.md`, commit with the trailer `Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>`, and stop for review.

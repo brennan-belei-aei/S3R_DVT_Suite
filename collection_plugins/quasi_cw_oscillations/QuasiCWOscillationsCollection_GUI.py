@@ -21,7 +21,7 @@ from tkinter import ttk, filedialog, messagebox
 sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "suite_common").is_dir())))  # repo root
 import suite_common.bootstrap  # noqa: E402,F401
 
-import AECommandsUniversal  # noqa: E402
+from suite_instruments.factory import InstrumentFactory  # noqa: E402
 
 GENERATOR_IP = "PMNT0451C5"
 OUTPUT_FOLDER = str(Path.home())
@@ -129,7 +129,7 @@ def main():
     egen=None
 
     try:
-        egen=AECommands_forFastDAQ.generator(cfg['generator'])
+        egen=InstrumentFactory({'generator':cfg['generator']},{'generator':'ae.fastdaq'}).create('generator')
 
         time.sleep(STANDARD_DELAY)
 

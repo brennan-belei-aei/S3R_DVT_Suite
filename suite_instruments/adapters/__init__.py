@@ -11,7 +11,7 @@ import importlib
 from dataclasses import dataclass
 from typing import Any, Callable
 
-from suite_instruments.errors import InstrumentConnectionError
+from suite_instruments.errors import InstrumentConnectionError, InstrumentNotConfigured
 
 # Capabilities shared by every AECommandsUniversal-based generator.
 UNIVERSAL_GENERATOR_CAPS = frozenset({
@@ -27,6 +27,7 @@ class AdapterSpec:
     capabilities: frozenset[str]
     description: str
     create: Callable[[str, str, dict], Any]  # (address, role, options) -> instrument
+    checks_interface: bool = True  # False: the driver's API predates the role interface (see ae.fastdaq)
 
 
 def _ae_module(name: str):
@@ -53,6 +54,18 @@ def _ae_universal(address: str, role: str, options: dict) -> Any:
 
 def _ae_7434753(address: str, role: str, options: dict) -> Any:
     module = _ae_module("AE_Commands_7434753")
+    return _wrapped(_connect(role, address, lambda: module.generator(address)), "gen", role, address)
+
+
+def _ae_fastdaq(address: str, role: str, options: dict) -> Any:
+    try:
+        module = _ae_module("AECommands_forFastDAQ")
+    except ModuleNotFoundError as error:
+        if error.name != "AECommands_forFastDAQ":
+            raise
+        raise InstrumentNotConfigured(
+            "AECommands_forFastDAQ.py is not installed; copy it into suite_instruments/adapters/ae/",
+            role=role, resource=address) from error
     return _wrapped(_connect(role, address, lambda: module.generator(address)), "gen", role, address)
 
 
@@ -92,6 +105,10 @@ ADAPTERS: dict[str, AdapterSpec] = {spec.name: spec for spec in (
                 frozenset({"aebus", "ethernet", "rf_on_off", "power_setpoint", "regulation_mode", "pulsing",
                            "pulse_sync", "process_status"}),
                 "AE generator over Ethernet AEBus, 7434753 firmware command set (AE_Commands_7434753).", _ae_7434753),
+    AdapterSpec("ae.fastdaq", frozenset({"generator"}),
+                frozenset({"aebus", "ethernet", "rf_on_off", "power_setpoint", "regulation_mode", "dlp", "fastdaq"}),
+                "AE generator with the FastDAQ command set (AECommands_forFastDAQ; Quasi-CW collectors).", _ae_fastdaq,
+                checks_interface=False),  # module not in the repo; its callers use RF_ON/RF_OFF, not rfON/rfOFF
     AdapterSpec("ae.serial_timing", frozenset({"generator_com_port", "generator"}),
                 UNIVERSAL_GENERATOR_CAPS | {"serial", "rf_on_test"},
                 "AE generator over serial AEBus with single-frame RF ON (AECommandsSerialTimingAdapter).", _ae_serial_timing),

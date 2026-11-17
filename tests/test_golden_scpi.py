@@ -41,3 +41,13 @@ def test_migrated_script_uses_the_instrument_layer(script):
     source = (REPO_ROOT / script).read_text(encoding="utf-8")
     assert not DIRECT_IMPORT.findall(source), "migrated scripts get instruments from suite_instruments"
     assert "InstrumentFactory" in source
+
+
+def test_no_collection_script_opens_instrument_drivers_directly():
+    """Phase 6 exit criterion: every collection plugin gets its instruments from suite_instruments."""
+    offenders = [
+        f"{path.relative_to(REPO_ROOT)}: {match.group(0).strip()}"
+        for path in sorted((REPO_ROOT / "collection_plugins").rglob("*.py"))
+        for match in DIRECT_IMPORT.finditer(path.read_text(encoding="utf-8"))
+    ]
+    assert not offenders, offenders

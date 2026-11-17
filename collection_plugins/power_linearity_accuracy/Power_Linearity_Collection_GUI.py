@@ -6,7 +6,7 @@ Date last modified:     August 18, 2022
 Last Modified by:       Christopher McLean
 Revision of Python:     3.9
 Brief Description:      Sweeps frequency at maximum power and records changes in power
-Dependancies:           datetime, time, numpy, csv, os, tkinter, sys, Lynx AECommandsUniversal, AECommands
+Dependancies:           datetime, time, numpy, csv, os, tkinter, sys, suite_instruments (Lynx, AECommandsUniversal DUT, Navigator)
 
 """
 import sys
@@ -25,9 +25,7 @@ import os
 import csv
 from tkinter import *
 from tkinter import filedialog, messagebox
-import Lynx
-import AECommandsUniversal
-import AECommands
+from suite_instruments.factory import InstrumentFactory
 
 
 ERROR_LOG_NAME = "Power_Linearity_Error.log"
@@ -186,11 +184,12 @@ configure_instrument_addresses_before_connection()
 
 
 #Connect to Lynx
-lynx = Lynx.lynx(lynxID)
+factory = InstrumentFactory({'lynx': lynxID, 'generator': genID})
+lynx = factory.create('lynx')
 lynxSerial = str(lynx.reportSerialNumber())
 
 #Connect to Generator and get information
-Egen = AECommandsUniversal.generator(genID)
+Egen = factory.create('generator')
 # unitNum = Egen.reportSerialNumber(1)
 brandedCheck = Egen.reportSerialNumber(1)
 if brandedCheck[0] == 'X': #Checks to see if the first digit of the 315 exists
@@ -234,7 +233,7 @@ tunerCheck = 'N'
 if tunerCheck == 'Y':
 
     tunerCOM = input('Enter Tuner COM port: [COMXX] ')
-    nav = AECommands.navigator(tunerCOM)
+    nav = InstrumentFactory({'navigator': tunerCOM}).create('navigator')
 
     def motorsMoving(): # Need to be able to check Nav movement
         moving = 1

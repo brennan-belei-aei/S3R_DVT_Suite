@@ -88,8 +88,9 @@ class InstrumentFactory:
         address = (address if address is not None else self.addresses.get(role, "")).strip()
         if not address:
             raise InstrumentNotConfigured(f"no address in bench profile '{self.profile}'", role=role)
-        instrument = self.adapter(role).create(address, role, options)
-        if not isinstance(instrument, ROLE_INTERFACES[role]):
+        spec = self.adapter(role)
+        instrument = spec.create(address, role, options)
+        if spec.checks_interface and not isinstance(instrument, ROLE_INTERFACES[role]):
             raise InstrumentError(f"adapter '{self.adapter_name(role)}' does not implement {ROLE_INTERFACES[role].__name__}",
                                   role=role, resource=address)
         return instrument

@@ -503,7 +503,7 @@ Migration:
 - **Digital Timing (capture GUI and CommandProcessing):** the generator opens through `ae.serial_timing`, as `generator_com_port` for serial or `generator` for Ethernet.
   - VISA errors now arrive as `InstrumentError`, timeouts included as `InstrumentTimeout`, which is also a `TimeoutError`.
   - The three `pyvisa.VisaIOError` handlers catch `InstrumentError`, and the capture-step branch keeps its old meaning: VISA errors are recovered, and only the script's own arm/trigger timeouts get the short status. Both injected-timeout goldens prove this.
-- All 33 golden scenarios are identical. The full suite passes (402 tests). pyflakes findings are unchanged, and the scripts' `--self-test` runs pass.
+- All 24 golden scenarios are identical (an earlier version of this line said 33, which was a miscount). The full suite passes (402 tests). pyflakes findings are unchanged, and the scripts' `--self-test` runs pass.
 
 Only error text differs: an instrument that cannot be opened, or a VISA I/O failure, now reports the normalized error (role, resource, operation) wrapping the original pyvisa text.
 
@@ -518,3 +518,50 @@ Bench checks:
 2. RF Ramping: one power, one ramp time, rise and fall. Confirm the waveforms and `capture_index.csv`.
 3. RF Tuning: after the counter driver is supplied, run 1 sample of one transition. Confirm the Navigator move and the counter log.
 4. Digital Timing: `--check`, then a `--trial` run. Confirm RF ON/OFF captures and screenshots. Optionally run CommandProcessing on its bench unit.
+
+## Phase 6 part 2, batch 5: DC Operating Point, Power Accuracy/Linearity/Profile, Harmonics, Quasi-CW
+
+Golden logs were recorded from the unmodified scripts and committed first (`68a24df`). Each script runs end to end as `__main__` through its setup window:
+
+| Scenario | Matrix |
+|---|---|
+| `dc_operating_point` | 1 frequency x 2 setpoints, Lynx stabilization loop |
+| `power_accuracy` | Warm-up plus 3 frequencies |
+| `power_linearity` | Warm-up plus 3 frequencies x 24 powers (3 kW unit model) |
+| `power_profile` | 3 tuner maps x 2 loads, Navigator moves, Lynx stabilization |
+| `harmonics_spurious` | Harmonics and Spurious, 2 frequencies x 2 setpoints, Keysight analyzer |
+
+Harness additions:
+
+- An optional clock tick, for loops that poll `time()` without sleeping.
+- Console stdin, and `askopenfile` contents for the tuner maps.
+- `Frame`/`Entry` for `from tkinter import *`.
+- `sys.excepthook`, `sys.path` and `matplotlib.use` restored after each run.
+- A "finished" stdout marker, for scripts that swallow errors with `sys.exit()`.
+- Set values echoed without their Hz/dB unit.
+
+Migration (connection code only):
+
+- The Lynx, Navigator, Keysight analyzer and DUT open through `InstrumentFactory`.
+- Unused `AE_Com_Module` imports were removed from Power Accuracy and Power Profile.
+- In Power Linearity, the Navigator call in the disabled tuner branch (`tunerCheck = 'N'`) goes through the factory too.
+- All 29 golden scenarios are identical. The full suite passes (415 tests). The only new pyflakes finding is `'helperFunctions.*' imported but unused` in Harmonics; it became visible once the spectrum-analyzer `*` import was removed, and the import is unchanged.
+
+**Quasi-CW and Split-CW (owner decision: connection code only).** Both collectors call `AECommands_forFastDAQ.generator(...)`. That module has never been in the repository, so they could not run before and still cannot.
+
+- They now open the generator through a new, explicitly requested adapter, `ae.fastdaq`.
+- Until the module is found, the run stops with `InstrumentNotConfigured: AECommands_forFastDAQ.py is not installed; copy it into suite_instruments/adapters/ae/` instead of a `NameError`. Once it is copied there, they work unchanged.
+- `ae.fastdaq` skips the Generator interface check, because these scripts use the older `RF_ON`/`RF_OFF` method names.
+
+**Arc Management.** At the owner's request, the default regulation mode is now 6 (forward power); AECommandsUniversal rejects 0. Settings already saved in `runtime/` keep whatever value they hold.
+
+**Phase 6 exit criterion met.** No file under `collection_plugins/` imports pyvisa or an AE module directly, and `test_no_collection_script_opens_instrument_drivers_directly` enforces this.
+
+Bench checks:
+
+1. DC Operating Point: 1 frequency, 2 setpoints. Confirm the Lynx serial is read and the CSV rows are written.
+2. Power Accuracy: 3 frequency points and a short warm-up. Confirm the CSV and settings file.
+3. Power Linearity: confirm the warm-up and the first frequency's power steps.
+4. Power Profile: one frequency's tuner map. Confirm Navigator moves and stabilized rows.
+5. Harmonics: 2 frequencies x 1 setpoint. Confirm the analyzer span and RBW, and the spectrum CSV.
+6. Arc Management: confirm the GUI now shows regulation mode 6 (unless a saved setting overrides it).

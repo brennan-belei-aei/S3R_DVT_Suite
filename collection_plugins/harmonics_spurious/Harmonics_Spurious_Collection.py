@@ -9,14 +9,13 @@ from suite_common.output_folders import create_unique_test_output_folder
 
 from time import sleep, strftime, localtime
 from datetime import date, datetime
-import AECommandsUniversal
+from suite_instruments.factory import InstrumentFactory
 # EverestBusCommands import everest
 import os
 import csv
 import json
 import shutil
 import numpy as np
-from suite_instruments.adapters.keysight.spectrum_analyzer import *
 from helperFunctions import *
 import matplotlib
 from matplotlib import pyplot as plt
@@ -432,8 +431,9 @@ def initialize_instruments_and_output():
     global harmonics_average_writer, spurious_average_writer
     global cycle_spectra, COUPLER_DATA, copied_coupler_path
 
-    generator = AECommandsUniversal.generator(GENERATOR_ADDRESS)
-    sa = SpectrumAnalyzer(SPECTRUM_ANALYZER_ADDRESS)
+    factory = InstrumentFactory({"generator": GENERATOR_ADDRESS, "spectrum_analyzer": SPECTRUM_ANALYZER_ADDRESS})
+    generator = factory.create("generator")
+    sa = factory.create("spectrum_analyzer")
     gen_type = generator.reportPowerSupplyType()
     sa.singleSweep()
     SN = generator.reportSerialNumber()

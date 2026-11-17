@@ -238,3 +238,28 @@ def test_serial_timing_adapter_opens_like_the_direct_constructor(role, address, 
             gen.close()
         logs.append(bench.log)
     assert logs[0] == logs[1]
+
+
+def test_fastdaq_adapter_names_the_missing_module(monkeypatch):
+    from suite_instruments.errors import InstrumentNotConfigured
+    from suite_instruments.factory import InstrumentFactory
+
+    monkeypatch.setitem(sys.modules, "AECommands_forFastDAQ", None)  # import fails as if the file were absent
+    with pytest.raises(InstrumentNotConfigured, match="AECommands_forFastDAQ.py is not installed"):
+        InstrumentFactory({"generator": "PMNT1"}, {"generator": "ae.fastdaq"}).create("generator")
+
+
+def test_fastdaq_adapter_opens_the_fastdaq_generator(monkeypatch):
+    import types
+    from suite_instruments.factory import InstrumentFactory
+
+    class FastDaqGenerator:
+        def __init__(self, address):
+            self.address, self.gen = address, types.SimpleNamespace(create_buffer_cmd=lambda *a: [0, 0, 0])
+
+        def RF_ON(self): ...  # the Quasi-CW collectors' naming, not the Generator interface's rfON
+        def RF_OFF(self): ...
+
+    monkeypatch.setitem(sys.modules, "AECommands_forFastDAQ", types.SimpleNamespace(generator=FastDaqGenerator))
+    gen = InstrumentFactory({"generator": "PMNT1"}, {"generator": "ae.fastdaq"}).create("generator")
+    assert isinstance(gen, FastDaqGenerator) and gen.address == "PMNT1"

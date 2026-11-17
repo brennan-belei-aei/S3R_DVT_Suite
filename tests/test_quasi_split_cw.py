@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import importlib.util
 import re
+import sys
 import types
 
 import pytest
@@ -33,14 +34,23 @@ def _run_collection(split_cw: bool) -> list[str]:
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     log: list[str] = []
-    module.AECommands_forFastDAQ = types.SimpleNamespace(generator=lambda _ip: RecordingGenerator(log))
+    # The collector opens its generator through the ae.fastdaq adapter, which imports this module.
+    fastdaq = types.SimpleNamespace(generator=lambda _ip: RecordingGenerator(log))
     module.get_user_settings = lambda: {"generator_ip": "G", "output_folder": ".", "initial_power": 100}
     module.read_fastdaq_capture = lambda _gen: ([0], [0])
     module.create_run_folder = lambda *_args: "OUT"
     module.save_settings_file = lambda *_args: None
     module.save_waveform_csv = lambda *_args: None
     module.time = types.SimpleNamespace(sleep=lambda _s: None)
-    module.main(split_cw=split_cw)
+    saved = sys.modules.get("AECommands_forFastDAQ")
+    sys.modules["AECommands_forFastDAQ"] = fastdaq
+    try:
+        module.main(split_cw=split_cw)
+    finally:
+        if saved is None:
+            sys.modules.pop("AECommands_forFastDAQ", None)
+        else:
+            sys.modules["AECommands_forFastDAQ"] = saved
     return log
 
 
